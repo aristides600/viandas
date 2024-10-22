@@ -51,12 +51,20 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                             <li class="nav-item">
                                 <a class="nav-link text-white" href="internaciones.php">Internaciones</a>
                             </li>
+
                             <li class="nav-item">
                                 <a class="nav-link text-white" href="etiquetas.php">Etiquetas</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white" href="reportes.php">Reportes</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="usuarios.php"> Usuarios
+
+                                </a>
+
+                            </li>
+
                         </ul>
                         <!-- Información del usuario y botones a la derecha -->
                         <div class="d-flex ms-auto align-items-center">

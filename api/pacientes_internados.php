@@ -1,9 +1,10 @@
 <?php
 header('Content-Type: application/json');
-include 'db.php'; // Conexión a la base de datos
+
+include 'db.php'; // Incluye la conexión a la base de datos con PDO
 
 try {
-    // Preparar la consulta SQL
+    // Consulta SQL para obtener los pacientes internados
     $sql = "SELECT 
                 p.nombre AS nombre_paciente,
                 p.apellido AS apellido_paciente,
@@ -18,21 +19,23 @@ try {
             JOIN sectores s ON i.sector_id = s.id
             WHERE i.fecha_egreso IS NULL AND pd.estado = 1 AND pd.fecha_consumo = CURDATE()";
 
-    // Preparar la consulta con PDO
+    // Preparar la consulta
     $stmt = $conn->prepare($sql);
-
+    
     // Ejecutar la consulta
     $stmt->execute();
-
-    // Obtener los resultados en forma de array asociativo
+    
+    // Obtener los resultados como un array asociativo
     $pacientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Enviar el resultado como JSON
+    
+    // Devolver los resultados en formato JSON
     echo json_encode($pacientes);
 
 } catch (PDOException $e) {
-    // Manejo de errores en la consulta
+    // Manejo de errores
     error_log("Error en la consulta SQL: " . $e->getMessage()); // Registrar el error en el log del servidor
-    echo json_encode(['error' => 'Error al obtener los datos. Inténtalo más tarde.']);
+    echo json_encode(['error' => 'Error al obtener los datos. Inténtelo más tarde.']);
 }
+
+// Cerrar conexión (PDO no requiere explícitamente cerrar conexiones, se maneja automáticamente)
 ?>

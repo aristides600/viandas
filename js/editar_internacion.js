@@ -1,47 +1,71 @@
 const app = Vue.createApp({
     data() {
         return {
+            comidas: [],
             dietas: [],
-            nuevaDieta: {
+
+            form: {
+                paciente_id: '',
                 dieta_id: '',
-                internacion_id: 1,  // Suponiendo que este valor ya está asignado
-                usuario_id: 1       // Asigna el ID del usuario logueado
+                internacion_id: '',
+                comida_id: '',
+                fecha_consumo: '',
+                observacion: '',
+                acompaniante: false,
+                estado: 1
             }
         };
     },
     mounted() {
+        const id = new URLSearchParams(window.location.search).get('id'); // Obtener el ID de la internación
+        this.form.internacion_id = id;
+        this.obtenerDatosInternacion(id);
+        this.obtenerComidas();
         this.obtenerDietas();
+
     },
     methods: {
-        async obtenerDietas() {
-            try {
-                const response = await axios.get('api/dietas.php', {
-                    params: { internacion_id: this.nuevaDieta.internacion_id }
+        obtenerDatosInternacion(id) {
+            axios.get(`api/obtener_internacion.php?id=${id}`)
+                .then(response => {
+                    this.internacion = response.data;
+                    this.paciente = response.data; // Asignar datos del paciente e internación
+                    this.form.paciente_id = response.data.paciente_id; // Rellenar el campo del formulario
+                })
+                .catch(error => {
+                    console.error(error);
+                    Swal.fire('Error', 'No se pudieron cargar los datos del paciente', 'error');
                 });
-                this.dietas = response.data;
-            } catch (error) {
-                console.error('Error al obtener dietas', error);
-            }
         },
-        async agregarDieta() {
-            try {
-                const response = await axios.post('api/dietas.php', this.nuevaDieta);
-                Swal.fire('Éxito', response.data.message, 'success');
-                this.obtenerDietas();
-            } catch (error) {
-                Swal.fire('Error', 'No se pudo agregar la dieta', 'error');
-            }
-        },
-        async eliminarDieta(id) {
-            try {
-                const response = await axios.delete('dietas.php', {
-                    data: { id }
+        obtenerComidas() {
+            axios.get('api/comidas.php')
+                .then(response => {
+                    this.comidas = response.data;
+                })
+                .catch(error => {
+                    console.error(error);
+                    Swal.fire('Error', 'No se pudieron cargar los tipos de comida', 'error');
                 });
-                Swal.fire('Éxito', response.data.message, 'success');
-                this.obtenerDietas();
-            } catch (error) {
-                Swal.fire('Error', 'No se pudo eliminar la dieta', 'error');
-            }
+        },
+        obtenerDietas() {
+            axios.get('api/dietas.php')
+                .then(response => {
+                    this.dietas = response.data;
+                })
+                .catch(error => {
+                    console.error(error);
+                    Swal.fire('Error', 'No se pudieron cargar los tipos de dieta', 'error');
+                });
+        },
+        guardarDieta() {
+            axios.post('api/pacientes_dietas.php', this.form)
+                .then(response => {
+                    Swal.fire('Éxito', 'Dieta guardada correctamente', 'success');
+                })
+                .catch(error => {
+                    console.error(error);
+                    Swal.fire('Error', 'No se pudo guardar la dieta', 'error');
+                });
         }
     }
 });

@@ -1,5 +1,5 @@
 <?php
-require_once 'api/autenticacion.php';
+// require_once 'api/autenticacion.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

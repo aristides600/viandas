@@ -1,0 +1,110 @@
+styles.css
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+
+.navbar-nav {
+    flex-grow: 1;
+}
+
+.logout-button {
+    margin-left: auto;
+    background-color: #394bec;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+}
+
+.logout-button:hover {
+    background-color: #394bec;
+}
+
+.logout-button i {
+    margin-right: 0.5rem;
+}
+
+header {
+    background-color: #394bec;
+}
+
+footer {
+    margin-top: auto;
+    background-color: #394bec;
+    color: white;
+    padding: 10px 0;
+}
+#logo a img {
+    max-width: 90px;
+    max-height: 80px;
+}
+
+.navbar {
+    background-color: #007bff;
+}
+
+#opciones ul {
+    list-style: none;
+    padding: 0;
+}
+
+#opciones li {
+    margin-left: 30px;
+}
+
+#opciones a {
+    text-decoration: none;
+    color: white;
+}
+
+#opciones a:hover {
+    color: #87CEFA;
+}
+
+.dropdown-menu {
+    background-color: #007bff;
+}
+
+.dropdown-menu a {
+    color: white;
+}
+
+.dropdown-menu a:hover {
+    color: #87CEFA;
+}
+
+#navbarNav {
+    background-color: #007bff;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .navbar-nav {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-item {
+        width: 100%;
+        text-align: center;
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+
+    .logout-button {
+        width: 100%;
+        text-align: center;
+        margin: 10px 0;
+    }
+}
