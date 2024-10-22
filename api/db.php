@@ -2,7 +2,7 @@
 $servername = "localhost";  // o 127.0.0.1 si localhost da problemas
 $username = "root";         // usuario por defecto en XAMPP
 $password = "";             // contraseña vacía por defecto en XAMPP
-$database = "vianda";       // nombre de la base de datos
+$database = "cocina";       // nombre de la base de datos
 
 try {
     // Crear conexión PDO

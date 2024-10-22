@@ -3,6 +3,13 @@ require_once 'db.php';
 header('Content-Type: application/json');
 session_start();
 
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode(['message' => 'Usuario no autenticado']);
+    exit();
+}
+
 // Obtener la solicitud
 $method = $_SERVER['REQUEST_METHOD'];
 $input = json_decode(file_get_contents('php://input'), true);
@@ -11,7 +18,7 @@ switch ($method) {
     case 'GET':
         // Obtener todas las internaciones con datos relacionados
         $sql = "SELECT i.id, i.paciente_id, i.fecha_ingreso, i.fecha_egreso, 
-                       i.diagnostico, i.observacion, p.nombre AS paciente_nombre, 
+                       i.diagnostico, p.nombre AS paciente_nombre, 
                        pro.nombre AS profesional_nombre, s.nombre AS sector_nombre, 
                        u.nombre AS usuario_nombre, u.apellido AS usuario_apellido
                 FROM internaciones i
@@ -34,7 +41,6 @@ switch ($method) {
         $profesional_id = $input['profesional_id'];
         $sector_id = $input['sector_id'];
         $diagnostico = $input['diagnostico'];
-        $observacion = $input['observacion'];
         $usuario_id = $_SESSION['user_id'];
         $estado = 1;
 
@@ -49,10 +55,10 @@ switch ($method) {
             echo json_encode(['message' => 'El paciente ya está internado']);
         } else {
             // Insertar nueva internación
-            $sql = "INSERT INTO internaciones (paciente_id, fecha_ingreso, profesional_id, sector_id, usuario_id, diagnostico, observacion, estado)
-                    VALUES (?, NOW(), ?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO internaciones (paciente_id, fecha_ingreso, profesional_id, sector_id, usuario_id, diagnostico, estado)
+                    VALUES (?, NOW(), ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$paciente_id, $profesional_id, $sector_id, $usuario_id, $diagnostico, $observacion, $estado]);
+            $stmt->execute([$paciente_id, $profesional_id, $sector_id, $usuario_id, $diagnostico, $estado]);
 
             if ($stmt->rowCount() > 0) {
                 echo json_encode(["message" => "Internación agregada con éxito"]);
@@ -70,14 +76,13 @@ switch ($method) {
         $sector_id = $input['sector_id'];
         $fecha_egreso = $input['fecha_egreso'] ? $input['fecha_egreso'] : null;
         $diagnostico = $input['diagnostico'];
-        $observacion = $input['observacion'];
 
         // Actualizar la internación
         $sql = "UPDATE internaciones 
-                SET profesional_id = ?, sector_id = ?, fecha_egreso = ?, diagnostico = ?, observacion = ? 
+                SET profesional_id = ?, sector_id = ?, fecha_egreso = ?, diagnostico = ? 
                 WHERE id = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->execute([$profesional_id, $sector_id, $fecha_egreso, $diagnostico, $observacion, $id]);
+        $stmt->execute([$profesional_id, $sector_id, $fecha_egreso, $diagnostico, $id]);
 
         if ($stmt->rowCount() > 0) {
             echo json_encode(['message' => 'Internación editada correctamente']);

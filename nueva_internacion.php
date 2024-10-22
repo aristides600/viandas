@@ -81,7 +81,8 @@
                 <label for="profesional_id" class="form-label">Seleccionar Profesional</label>
                 <select class="form-control" v-model="nuevaInternacion.profesional_id" required>
                     <option v-for="profesional in profesionales" :key="profesional.id" :value="profesional.id">
-                        {{ profesional.nombre }}
+                        {{ profesional.nombre }} {{ profesional.apellido }}
+
                     </option>
                 </select>
             </div>
@@ -100,10 +101,10 @@
                 <input type="text" class="form-control" v-model="nuevaInternacion.diagnostico" required>
             </div>
 
-            <div class="mb-3">
+            <!-- <div class="mb-3">
                 <label for="observacion" class="form-label">Observación</label>
                 <input type="text" class="form-control" v-model="nuevaInternacion.observacion" required>
-            </div>
+            </div> -->
 
             <button type="submit" class="btn btn-primary">Agregar Internación</button>
         </form>
