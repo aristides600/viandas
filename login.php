@@ -1,5 +1,5 @@
 <?php
-//require_once 'api/autenticacion_abierta.php';
+require_once 'api/autenticacion_abierta.php';
 // require_once 'api/autenticacion.php';
 ?>
 <!DOCTYPE html>
@@ -8,7 +8,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .login-container {
             display: flex;
@@ -62,7 +63,7 @@
             <a class="navbar-brand" href="#">
                 <img src="./img/Logo.png" alt="Logo" width="50" height="40" class="d-inline-block align-text-top">
             </a>
-            <h3>Sistema de Gestión de Viandas</h3>
+            <h3>Sistema de Viandas</h3>
             <form @submit.prevent="login" class="text-center">
                 <div class="mb-3 text-center">
                     <label for="usuario" class="form-label">Usuario:</label>
@@ -80,7 +81,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <!-- <script src="./js/mensajes.js"></script> -->
+    <script src="./js/mensajes.js"></script>
     <script src="./js/login.js"></script>
 </body>
 

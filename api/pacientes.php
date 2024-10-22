@@ -1,7 +1,7 @@
 <?php
-include 'db.php'; // Asegúrate de tener tu conexión a la base de datos en db.php
+include 'db.php'; // Conexión a la base de datos
 
-header('Content-Type: application/json'); // Establece el tipo de contenido como JSON
+header('Content-Type: application/json');
 
 // Crear conexión PDO
 try {
@@ -12,11 +12,9 @@ try {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'] ?? null;
-
-    // Depura los datos recibidos
-    var_dump($_POST);
-    exit;
+    // Capturar la entrada JSON
+    $data = json_decode(file_get_contents('php://input'), true);
+    $action = $data['action'] ?? null;
 
     if (!$action) {
         echo json_encode(['success' => false, 'message' => 'Acción no especificada.']);
@@ -25,20 +23,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     switch ($action) {
         case 'create':
-            $nombre = $_POST['nombre'] ?? '';
-            $apellido = $_POST['apellido'] ?? '';
-            $dni = $_POST['dni'] ?? '';
-            $fecha_nacimiento = $_POST['fecha_nacimiento'] ?? null;
-            $telefono = $_POST['telefono'] ?? '';
-            $direccion = $_POST['direccion'] ?? '';
+            $nombre = $data['nombre'] ?? '';
+            $apellido = $data['apellido'] ?? '';
+            $dni = $data['dni'] ?? '';
+            $fecha_nacimiento = $data['fecha_nacimiento'] ?? null;
+            $telefono = $data['telefono'] ?? '';
+            $sexo_id = $data['sexo_id'] ?? '';
 
             if (empty($nombre) || empty($apellido) || empty($dni)) {
                 echo json_encode(['success' => false, 'message' => 'Todos los campos obligatorios deben ser completados.']);
                 exit;
             }
 
-            $stmt = $pdo->prepare("INSERT INTO pacientes (nombre, apellido, dni, fecha_nacimiento, telefono, direccion, estado) VALUES (?, ?, ?, ?, ?, ?, 1)");
-            if ($stmt->execute([$nombre, $apellido, $dni, $fecha_nacimiento, $telefono, $direccion])) {
+            $stmt = $pdo->prepare("INSERT INTO pacientes (nombre, apellido, dni, fecha_nacimiento, telefono, sexo_id, estado) VALUES (?, ?, ?, ?, ?, ?, 1)");
+            if ($stmt->execute([$nombre, $apellido, $dni, $fecha_nacimiento, $telefono, $sexo_id])) {
                 echo json_encode(['success' => true, 'message' => 'Paciente creado exitosamente.']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Error al crear paciente.']);
@@ -46,21 +44,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             break;
 
         case 'update':
-            $id = $_POST['id'] ?? null;
-            $nombre = $_POST['nombre'] ?? '';
-            $apellido = $_POST['apellido'] ?? '';
-            $dni = $_POST['dni'] ?? '';
-            $fecha_nacimiento = $_POST['fecha_nacimiento'] ?? null;
-            $telefono = $_POST['telefono'] ?? '';
-            $direccion = $_POST['direccion'] ?? '';
+            $id = $data['id'] ?? null;
+            $nombre = $data['nombre'] ?? '';
+            $apellido = $data['apellido'] ?? '';
+            $dni = $data['dni'] ?? '';
+            $fecha_nacimiento = $data['fecha_nacimiento'] ?? null;
+            $telefono = $data['telefono'] ?? '';
+            $sexo_id = $data['sexo_id'] ?? '';
 
             if (empty($nombre) || empty($apellido) || empty($dni) || !$id) {
                 echo json_encode(['success' => false, 'message' => 'Todos los campos obligatorios deben ser completados.']);
                 exit;
             }
 
-            $stmt = $pdo->prepare("UPDATE pacientes SET nombre=?, apellido=?, dni=?, fecha_nacimiento=?, telefono=?, direccion=? WHERE id=?");
-            if ($stmt->execute([$nombre, $apellido, $dni, $fecha_nacimiento, $telefono, $direccion, $id])) {
+            $stmt = $pdo->prepare("UPDATE pacientes SET nombre=?, apellido=?, dni=?, fecha_nacimiento=?, telefono=?, sexo_id=? WHERE id=?");
+            if ($stmt->execute([$nombre, $apellido, $dni, $fecha_nacimiento, $telefono, $sexo_id, $id])) {
                 echo json_encode(['success' => true, 'message' => 'Paciente actualizado exitosamente.']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Error al actualizar paciente.']);
@@ -68,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             break;
 
         case 'delete':
-            $id = $_POST['id'] ?? null;
+            $id = $data['id'] ?? null;
 
             if (!$id) {
                 echo json_encode(['success' => false, 'message' => 'ID no especificado.']);

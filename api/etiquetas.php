@@ -28,13 +28,13 @@ if ($action == 'obtener_sectores') {
         WHERE i.sector_id = ?
           AND (i.fecha_ingreso BETWEEN ? AND ? OR i.fecha_egreso IS NULL OR i.fecha_egreso <= ?)
     ";
-    
+
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("isss", $sector_id, $fecha_desde, $fecha_hasta, $fecha_hasta);
     $stmt->execute();
     $result = $stmt->get_result();
     $internaciones = $result->fetch_all(MYSQLI_ASSOC);
-    
+
     echo json_encode($internaciones);
 }
 

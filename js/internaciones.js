@@ -1,72 +1,28 @@
-const app = Vue.createApp({
+const { createApp } = Vue;
+
+createApp({
     data() {
         return {
-            pacientes: [],
-            profesionales: [],
-            dietas: [],
-            sectores: [],
-            internacion: {
-                paciente_id: '',
-                fecha_ingreso: '',
-                fecha_egreso: '',
-                dieta_id: '',
-                profesional_id: '',
-                sector_id: '',
-                diagnostico: '',
-                observacion: ''
-            },
-            mensaje: ''
+            internaciones: [],  // Arreglo para almacenar las internaciones
+      
         };
     },
     mounted() {
-        this.obtenerDatosIniciales();
+        // Cargar internaciones, sectores y profesionales al montar la aplicación
+        this.cargarInternaciones();
+    
     },
     methods: {
-        obtenerDatosIniciales() {
-            axios.get('api/internaciones.php?action=datos_iniciales')
-                .then(response => {
-                    this.pacientes = response.data.pacientes;
-                    this.profesionales = response.data.profesionales;
-                    this.dietas = response.data.dietas;
-                    this.sectores = response.data.sectores;
-                })
-                .catch(error => {
-                    console.error("Error al obtener los datos iniciales:", error);
-                });
+       
+        cargarInternaciones() {
+            fetch('api/internaciones.php', { method: 'GET' })
+                .then(response => response.json())
+                .then(data => { this.internaciones = data; })
+                .catch(error => console.error(error));
         },
-        registrarInternacion() {
-            axios.post('api/internaciones.php?action=registrar', this.internacion)
-                .then(response => {
-                    if (response.data.success) {
-                        Swal.fire(
-                            'Éxito',
-                            'Internación registrada exitosamente.',
-                            'success'
-                        );
-                        this.limpiarFormulario();
-                    } else {
-                        Swal.fire(
-                            'Error',
-                            response.data.message,
-                            'error'
-                        );
-                    }
-                })
-                .catch(error => {
-                    console.error("Error al registrar la internación:", error);
-                });
+       
+        nuevaInternacion() {
+            window.location.href = "nueva_internacion.php";
         },
-        limpiarFormulario() {
-            this.internacion = {
-                paciente_id: '',
-                fecha_ingreso: '',
-                fecha_egreso: '',
-                dieta_id: '',
-                profesional_id: '',
-                sector_id: '',
-                diagnostico: '',
-                observacion: ''
-            };
-        }
     }
 }).mount('#app');

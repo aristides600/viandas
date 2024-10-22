@@ -9,8 +9,9 @@ const app = Vue.createApp({
                 dni: '',
                 fecha_nacimiento: '',
                 telefono: '',
-                direccion: ''
+                sexo_id: ''
             },
+            sexos: [],  // Aquí se almacenarán los sexos
             editando: false
         };
     },
@@ -24,10 +25,29 @@ const app = Vue.createApp({
                     console.error('Error al obtener pacientes:', error);
                 });
         },
+        obtenerSexos() {
+            axios.get('api/sexos.php', { params: { action: 'read' } })
+                .then(response => {
+                    this.sexos = response.data;
+                })
+                .catch(error => {
+                    console.error('Error al obtener sexos:', error);
+                });
+        },
+        obtenerNombreSexo(sexo_id) {
+            const sexo = this.sexos.find(s => s.id === sexo_id);
+            return sexo ? sexo.nombre : 'Desconocido';  // Devuelve el nombre del sexo o 'Desconocido' si no se encuentra
+        },
+        formatearFecha(fecha) {
+            if (!fecha) return '';
+            const [year, month, day] = fecha.split('-');
+            return `${day}-${month}-${year}`;  // Formatea la fecha como dd-mm-yyyy
+        },
+       
         guardarPaciente() {
             const action = this.editando ? 'update' : 'create';
             const datos = { ...this.paciente, action };
-            console.log(datos); // Verifica en la consola que 'action' esté presente
+
             axios.post('api/pacientes.php', datos)
                 .then(response => {
                     Swal.fire(response.data.message);
@@ -40,8 +60,7 @@ const app = Vue.createApp({
                     console.error('Error al guardar paciente:', error);
                 });
         },
-        
-        
+
 
         editarPaciente(paciente) {
             this.paciente = { ...paciente };
@@ -79,13 +98,14 @@ const app = Vue.createApp({
                 dni: '',
                 fecha_nacimiento: '',
                 telefono: '',
-                direccion: ''
+                sexo_id: ''
             };
             this.editando = false;
         }
     },
     mounted() {
         this.obtenerPacientes();
+        this.obtenerSexos();
     }
 });
 
