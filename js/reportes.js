@@ -1,83 +1,90 @@
-const { createApp } = Vue;
-
-createApp({
+const app = Vue.createApp({
     data() {
         return {
-            fechaDesde: '',
-            fechaHasta: '',
-            reporte: [],
-            subtotales: [],
-            totalGeneral: 0,
-            chart: null  // Referencia al gráfico
+            fechaDesde: '',  // Fecha de inicio del informe
+            fechaHasta: '',  // Fecha de fin del informe
+            reporte: [],     // Datos del informe
+            subtotales: [],  // Subtotales por sector
+            totalGeneral: 0, // Total general de dietas
+            dietaChart: null // Nueva propiedad para el gráfico
         };
     },
+    mounted() {
+        this.obtenerPacientes(); // Cargar pacientes al iniciar
+    },
     methods: {
-        async generarReporte() {
-            try {
-                const response = await fetch(`api/reporte.php?fecha_desde=${this.fechaDesde}&fecha_hasta=${this.fechaHasta}`);
-                if (!response.ok) {
-                    throw new Error('Error en la solicitud al servidor');
-                }
-                const data = await response.json();
-                if (data.error) {
-                    console.error(data.error);
-                } else {
-                    this.reporte = data;
-                    this.calcularSubtotales();
-                    this.generarGrafico();  // Generar gráfico después de obtener los datos
-                }
-            } catch (error) {
-                console.error('Error al obtener los datos:', error);
-            }
+        obtenerPacientes() {
+            // Obtener pacientes internados
+            axios.get('api/pacientes_internados.php')
+                .then(response => {
+                    console.log(response.data); // Verifica que los datos incluyan nombre_sector
+                    this.pacientes = response.data;
+                })
+                .catch(error => {
+                    console.error(error);
+                    Swal.fire('Error', 'No se pudieron cargar los pacientes internados', 'error');
+                });
         },
-        
-        calcularSubtotales() {
-            const subtotales = {};
-            let totalGeneral = 0;
+        generarReporte() {
+            // Obtener los datos del reporte
+            axios.get(`api/reportes.php?fecha_desde=${this.fechaDesde}&fecha_hasta=${this.fechaHasta}`)
+                .then(response => {
+                    this.reporte = response.data;
 
+                    // Calcular subtotales y total general
+                    this.calcularSubtotales();
+                    this.totalGeneral = this.reporte.reduce((total, dieta) => total + dieta.cantidad, 0);
+
+                    // Generar gráfico
+                    this.generarGrafico();
+                })
+                .catch(error => {
+                    console.error(error);
+                    Swal.fire('Error', 'No se pudo generar el informe', 'error');
+                });
+        },
+        calcularSubtotales() {
+            this.subtotales = [];
+            const sectores = {};
+
+            // Calcular subtotales por sector
             this.reporte.forEach(dieta => {
-                if (!subtotales[dieta.sector]) {
-                    subtotales[dieta.sector] = 0;
+                if (!sectores[dieta.sector]) {
+                    sectores[dieta.sector] = 0;
                 }
-                subtotales[dieta.sector] += parseInt(dieta.cantidad);
-                totalGeneral += parseInt(dieta.cantidad);
+                sectores[dieta.sector] += dieta.cantidad;
             });
 
-            this.subtotales = Object.keys(subtotales).map(sector => ({
-                sector: sector,
-                total: subtotales[sector]
-            }));
-            this.totalGeneral = totalGeneral;
+            for (const sector in sectores) {
+                this.subtotales.push({ sector, total: sectores[sector] });
+            }
         },
-
         generarGrafico() {
-            // Destruir el gráfico anterior si existe
-            if (this.chart) {
-                this.chart.destroy();
+            // Limpiar el gráfico existente
+            if (this.dietaChart) {
+                this.dietaChart.destroy();
             }
 
-            const ctx = document.getElementById('dietaChart').getContext('2d');
-            const sectores = this.subtotales.map(item => item.sector);
-            const cantidades = this.subtotales.map(item => item.total);
+            // Obtener datos para el gráfico
+            const labels = this.reporte.map(dieta => dieta.dieta);
+            const data = this.reporte.map(dieta => dieta.cantidad);
 
-            this.chart = new Chart(ctx, {
-                type: 'bar',
+            const ctx = document.getElementById('dietaChart').getContext('2d');
+
+            this.dietaChart = new Chart(ctx, {
+                type: 'bar', // Tipo de gráfico
                 data: {
-                    labels: sectores,
+                    labels: labels,
                     datasets: [{
                         label: 'Cantidad de Dietas',
-                        data: cantidades,
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
+                        data: data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1
                     }]
                 },
                 options: {
                     responsive: true,
-                    animation: {
-                        duration: 1000,  // Duración de la animación en ms
-                        easing: 'easeOutBounce'  // Efecto de animación
-                    },
                     scales: {
                         y: {
                             beginAtZero: true
@@ -85,6 +92,72 @@ createApp({
                     }
                 }
             });
+        },
+        generarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+        
+            // Cargar la imagen
+            const logoPath = '/vianda/img/logo.png'; // Asegúrate de que esta ruta sea correcta
+            const img = new Image();
+            img.src = logoPath;
+            
+            img.onload = () => {
+                doc.addImage(img, 'PNG', 10, 10, 30, 30); // Posición (x, y) y tamaño (ancho, alto)
+        
+                // Título
+                doc.setFontSize(22);
+                doc.text('Informe de Internaciones', doc.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
+        
+                // Espacio después del título
+                doc.setFontSize(12);
+                doc.text('Fecha Desde: ' + this.fechaDesde, 10, 40);
+                doc.text('Fecha Hasta: ' + this.fechaHasta, 10, 50);
+                doc.text('----------------------------------------', 10, 60);
+        
+                let y = 70; // Posición inicial para las dietas
+        
+                // Encabezados de la tabla
+                doc.autoTable({
+                    head: [['Sector', 'Dieta', 'Cantidad']],
+                    body: this.reporte.map(dieta => [dieta.sector, dieta.dieta, dieta.cantidad]),
+                    startY: y,
+                    theme: 'grid',
+                    styles: {
+                        fontSize: 10,
+                        cellPadding: 3,
+                        halign: 'center',
+                    },
+                    headStyles: {
+                        fillColor: [75, 192, 192],
+                        textColor: [255, 255, 255],
+                        fontStyle: 'bold'
+                    }
+                });
+        
+                // Espacio después de la tabla
+                y += this.reporte.length * 10 + 30;
+        
+                // Subtotales
+                this.subtotales.forEach(subtotal => {
+                    doc.text(`${subtotal.sector}: ${subtotal.total} dietas`, 10, y);
+                    y += 10;
+                });
+        
+                // Total General
+                doc.text(`Total General: ${this.totalGeneral} dietas`, 10, y);
+        
+                // Guardar el documento
+                doc.save('informe_internaciones.pdf');
+            };
+        
+            img.onerror = () => {
+                console.error('Error al cargar la imagen');
+                Swal.fire('Error', 'No se pudo cargar el logo', 'error');
+            };
         }
+        
     }
-}).mount('#app');
+});
+
+app.mount('#app');

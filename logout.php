@@ -1,6 +1,7 @@
 <?php
 session_start();
 session_destroy();
-echo json_encode(['success' => true]);
+// Redirigir a la página de login
+header("Location: login.php");
 exit();
 ?>
