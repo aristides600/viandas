@@ -63,7 +63,7 @@ require_once 'api/autenticacion_abierta.php';
             <a class="navbar-brand" href="#">
                 <img src="./img/Logo.png" alt="Logo" width="50" height="40" class="d-inline-block align-text-top">
             </a>
-            <h3>Sistema de Viandas</h3>
+            <h3>Sistema de Dietas</h3>
             <form @submit.prevent="login" class="text-center">
                 <div class="mb-3 text-center">
                     <label for="usuario" class="form-label">Usuario:</label>
