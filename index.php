@@ -173,9 +173,10 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item"><a class="nav-link" href="pacientes.php">Pacientes</a></li>
-                        <li class="nav-item"><a class="nav-link" href="internaciones.php">Internaciones</a></li>
+                        <li class="nav-item"><a class="nav-link" href="internaciones.php">Internados</a></li>
+                        
+                        <li class="nav-item"><a class="nav-link" href="pacientes_internados.php">Dietas</a></li>
                         <li class="nav-item"><a class="nav-link" href="etiquetas.php">Etiquetas</a></li>
-                        <li class="nav-item"><a class="nav-link" href="pacientes_internados.php">Internados</a></li>
                         <li class="nav-item"><a class="nav-link" href="reportes.php">Reportes</a></li>
                         <li class="nav-item"><a class="nav-link" href="usuarios.php">Usuarios</a></li>
                     </ul>

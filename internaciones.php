@@ -47,7 +47,7 @@
                     <td>{{ internacion.diagnostico }}</td>
                     <td>{{ internacion.observacion }}</td>
                     <td>
-                        <button class="btn btn-warning btn-sm" @click="editarInternacion(internacion.id)">Editar</button>
+                        <button class="btn btn-warning btn-sm" @click="dietaInternacion(internacion.id)">Dieta</button>
                     </td>
                 </tr>
             </tbody>

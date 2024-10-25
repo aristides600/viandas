@@ -24,8 +24,8 @@ createApp({
         nuevaInternacion() {
             window.location.href = "nueva_internacion.php";
         },
-        editarInternacion(id) {
-            window.location.href = "editar_internacion.php?id=" + id;
+        dietaInternacion(id) {
+            window.location.href = "dieta_internacion.php?id=" + id;
         },
     }
 }).mount('#app');

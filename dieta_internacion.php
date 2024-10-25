@@ -69,7 +69,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>
-    <script src="./js/editar_internacion.js"></script>
+    <script src="./js/dieta_internacion.js"></script>
 
 
 </body>
