@@ -22,7 +22,6 @@
         <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido">
 
         <!-- Tabla de pacientes -->
-        <!-- Tabla de pacientes -->
         <table class="table table-striped">
             <thead>
                 <tr>

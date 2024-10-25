@@ -173,9 +173,9 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item"><a class="nav-link" href="pacientes.php">Pacientes</a></li>
-                        <li class="nav-item"><a class="nav-link" href="internaciones.php">Internados</a></li>
+                        <li class="nav-item"><a class="nav-link" href="internados.php">Internados</a></li>
                         
-                        <li class="nav-item"><a class="nav-link" href="pacientes_internados.php">Dietas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="pacientes_dietas.php">Dietas</a></li>
                         <li class="nav-item"><a class="nav-link" href="etiquetas.php">Etiquetas</a></li>
                         <li class="nav-item"><a class="nav-link" href="reportes.php">Reportes</a></li>
                         <li class="nav-item"><a class="nav-link" href="usuarios.php">Usuarios</a></li>
@@ -210,9 +210,9 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header"><i class="bi bi-hospital"></i> Internaciones</div>
+                    <div class="card-header"><i class="bi bi-hospital"></i> Internados</div>
                     <div class="card-body">
-                        <a href="internaciones.php" class="btn btn-primary">Ir a Internaciones</a>
+                        <a href="internados.php" class="btn btn-primary">Ir a Internados</a>
                     </div>
                 </div>
                 <div class="card">
