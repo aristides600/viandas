@@ -20,25 +20,30 @@ try {
     switch ($method) {
         case 'GET':
             // Consulta SQL para obtener internaciones con datos relacionados, aplicando filtro opcional
-            $sql = "SELECT i.id, i.paciente_id, i.fecha_ingreso, i.fecha_egreso, 
-                           i.diagnostico, CONCAT(p.apellido, ', ', p.nombre) AS paciente_nombre, 
-                           pro.nombre AS profesional_nombre, s.nombre AS sector_nombre, 
-                           u.nombre AS usuario_nombre, u.apellido AS usuario_apellido,
-                           pd.observacion
+            $sql = "SELECT i.id, i.paciente_id, i.fecha_ingreso, 
+                           MAX(i.fecha_egreso) AS fecha_egreso, 
+                           MAX(i.diagnostico) AS diagnostico, 
+                           CONCAT(p.apellido, ', ', p.nombre) AS paciente_nombre, 
+                           pro.nombre AS profesional_nombre, 
+                           s.nombre AS sector_nombre, 
+                           u.nombre AS usuario_nombre, 
+                           u.apellido AS usuario_apellido,
+                           MAX(pd.observacion) AS observacion
                     FROM internaciones i
                     JOIN pacientes p ON i.paciente_id = p.id
                     JOIN profesionales pro ON i.profesional_id = pro.id
                     JOIN sectores s ON i.sector_id = s.id
                     JOIN usuarios u ON i.usuario_id = u.id
                     LEFT JOIN pacientes_dietas pd ON pd.internacion_id = i.id
-                    WHERE i.estado = 1";
+                    WHERE i.estado = 1
+                    GROUP BY i.paciente_id
+                    ORDER BY i.fecha_ingreso DESC";
 
             // Agregar condición de búsqueda si hay un término de búsqueda
             if ($searchTerm) {
-                $sql .= " AND (p.dni LIKE :search OR p.apellido LIKE :search)";
+                $sql .= " HAVING (p.dni LIKE :search OR p.apellido LIKE :search)";
             }
 
-            $sql .= " ORDER BY i.fecha_ingreso DESC";
             $stmt = $conn->prepare($sql);
 
             // Enlazar el término de búsqueda si existe

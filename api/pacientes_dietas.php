@@ -17,7 +17,21 @@ $acompaniante = $data['acompaniante'] ? 1 : 0;
 $estado = 1;
 
 try {
-    // Preparar la consulta SQL
+    // Verificar si ya existe un registro para el mismo paciente, comida y fecha de consumo
+    $checkSql = "SELECT COUNT(*) FROM pacientes_dietas WHERE paciente_id = :paciente_id AND comida_id = :comida_id AND fecha_consumo = :fecha_consumo";
+    $checkStmt = $conn->prepare($checkSql);
+    $checkStmt->bindParam(':paciente_id', $paciente_id, PDO::PARAM_INT);
+    $checkStmt->bindParam(':comida_id', $comida_id, PDO::PARAM_INT);
+    $checkStmt->bindParam(':fecha_consumo', $fecha_consumo, PDO::PARAM_STR);
+    $checkStmt->execute();
+
+    if ($checkStmt->fetchColumn() > 0) {
+        // Si existe un registro, mostrar mensaje de error
+        echo json_encode(['error' => 'Ya existe una dieta registrada para esta comida y fecha.']);
+        exit;
+    }
+
+    // Preparar la consulta SQL para insertar el registro si no hay duplicados
     $sql = "INSERT INTO pacientes_dietas 
             (paciente_id, dieta_id, internacion_id, comida_id, fecha_consumo, observacion, acompaniante, estado) 
             VALUES (:paciente_id, :dieta_id, :internacion_id, :comida_id, :fecha_consumo, :observacion, :acompaniante, :estado)";

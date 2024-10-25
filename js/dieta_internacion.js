@@ -57,16 +57,31 @@ const app = Vue.createApp({
                     Swal.fire('Error', 'No se pudieron cargar los tipos de dieta', 'error');
                 });
         },
+        // guardarDieta() {
+        //     axios.post('api/pacientes_dietas.php', this.form)
+        //         .then(response => {
+        //             Swal.fire('Éxito', 'Dieta guardada correctamente', 'success');
+        //         })
+        //         .catch(error => {
+        //             console.error(error);
+        //             Swal.fire('Error', 'No se pudo guardar la dieta', 'error');
+        //         });
+        // }
         guardarDieta() {
             axios.post('api/pacientes_dietas.php', this.form)
                 .then(response => {
-                    Swal.fire('Éxito', 'Dieta guardada correctamente', 'success');
+                    if (response.data.message) {
+                        Swal.fire('Éxito', response.data.message, 'success');
+                    } else if (response.data.error) {
+                        Swal.fire('Error', response.data.error, 'error');
+                    }
                 })
                 .catch(error => {
                     console.error(error);
                     Swal.fire('Error', 'No se pudo guardar la dieta', 'error');
                 });
         }
+        
     }
 });
 app.mount('#app');

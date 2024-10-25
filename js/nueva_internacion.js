@@ -64,7 +64,7 @@ createApp({
         },
         agregarInternacion() {
             const nuevaInternacionConPaciente = { ...this.nuevaInternacion, paciente_id: this.documento.paciente_id };
-            axios.post('api/internaciones.php', nuevaInternacionConPaciente)
+            axios.post('api/internados.php', nuevaInternacionConPaciente)
                 .then(response => {
                     // this.cargarInternaciones();  // Actualiza la lista de internaciones
                     this.nuevaInternacion = { paciente_id: '', profesional_id: '', sector_id: '', diagnostico: ''};  // Resetea el formulario
