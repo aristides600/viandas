@@ -1,4 +1,3 @@
-// Archivo: internados.js
 const { createApp } = Vue;
 
 createApp({

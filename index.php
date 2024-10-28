@@ -199,7 +199,7 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
 
         <!-- Contenido Principal -->
         <main class="container mt-4">
-            <h1 class="text-center">Sistema de Gestión de Dietas</h1>
+            <!-- <h1 class="text-center">Sistema de Gestión de Dietas</h1> -->
 
             <!-- Tarjetas responsivas -->
             <div class="card-container mt-4">
@@ -226,7 +226,7 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
 
         <!-- Footer -->
         <footer class="text-center">
-            <p>&copy; Copyright 2024 | HRRG | Desarrollado por InfoSys</p>
+            <p>&copy; Copyright 2024 | Ministerio de Salud | Desarrollado por InfoSys</p>
         </footer>
     </div>
 

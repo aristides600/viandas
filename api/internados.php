@@ -91,26 +91,30 @@ try {
             break;
 
         case 'PUT':
-            // Editar una internación existente
+            // Dar de alta a una internación existente
             $id = $input['id'];
-            $paciente_id = $input['paciente_id'];
-            $profesional_id = $input['profesional_id'];
-            $sector_id = $input['sector_id'];
-            $fecha_egreso = $input['fecha_egreso'] ? $input['fecha_egreso'] : null;
-            $diagnostico = $input['diagnostico'];
+            $fecha_egreso = date('Y-m-d H:i:s');
+            $estado = 0; // Cambiar estado a falso
 
             // Actualizar la internación
             $sql = "UPDATE internaciones 
-                    SET profesional_id = ?, sector_id = ?, fecha_egreso = ?, diagnostico = ? 
-                    WHERE id = ?";
+                        SET fecha_egreso = ?, estado = ? 
+                        WHERE id = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$profesional_id, $sector_id, $fecha_egreso, $diagnostico, $id]);
+            $stmt->execute([$fecha_egreso, $estado, $id]);
+
+            // Actualizar el estado en la tabla pacientes_dietas
+            $sqlDietas = "UPDATE pacientes_dietas 
+                              SET estado = 0 
+                              WHERE internacion_id = ?";
+            $stmtDietas = $conn->prepare($sqlDietas);
+            $stmtDietas->execute([$id]);
 
             if ($stmt->rowCount() > 0) {
-                echo json_encode(['message' => 'Internación editada correctamente']);
+                echo json_encode(['message' => 'Alta realizada correctamente']);
             } else {
                 http_response_code(500);
-                echo json_encode(['message' => 'Error al editar la internación']);
+                echo json_encode(['message' => 'Error al realizar la alta']);
             }
             break;
 
@@ -126,4 +130,3 @@ try {
 
 // Cerrar la conexión
 $conn = null;
-?>
