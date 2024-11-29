@@ -16,7 +16,7 @@ try {
             JOIN pacientes_dietas pd ON p.id = pd.paciente_id AND i.id = pd.internacion_id
             JOIN dietas d ON pd.dieta_id = d.id
             JOIN sectores s ON i.sector_id = s.id
-            WHERE i.fecha_egreso IS NULL AND pd.estado = 1 AND pd.fecha_consumo = CURDATE()";
+            WHERE i.fecha_egreso IS NULL AND pd.estado = 1";
 
     // Preparar la consulta con PDO
     $stmt = $conn->prepare($sql);

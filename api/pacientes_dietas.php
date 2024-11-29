@@ -1,63 +1,102 @@
 <?php
-// Conexión a la base de datos
-require_once 'db.php'; // Incluye el archivo de conexión PDO
-header('Content-Type: application/json');
+session_start();
 
-// Recibir los datos del formulario en formato JSON
-$data = json_decode(file_get_contents("php://input"), true);
+// Incluir el archivo de conexión
+require 'db.php';
 
-// Extraer los valores del array $data
-$paciente_id = $data['paciente_id'];
-$dieta_id = $data['dieta_id'];
-$internacion_id = $data['internacion_id'];
-$comida_id = $data['comida_id'];
-$fecha_consumo = $data['fecha_consumo'];
-$observacion = $data['observacion'];
-$acompaniante = $data['acompaniante'] ? 1 : 0;
-$estado = 1;
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Usuario no autenticado']);
+    exit();
+}
+
+// Obtener el ID del usuario autenticado
+$usuario_id = $_SESSION['user_id'];
+
+// Obtener el método de la solicitud
+$method = $_SERVER['REQUEST_METHOD'];
 
 try {
-    // Verificar si ya existe un registro para el mismo paciente, comida y fecha de consumo
-    $checkSql = "SELECT COUNT(*) FROM pacientes_dietas WHERE paciente_id = :paciente_id AND comida_id = :comida_id AND fecha_consumo = :fecha_consumo";
-    $checkStmt = $conn->prepare($checkSql);
-    $checkStmt->bindParam(':paciente_id', $paciente_id, PDO::PARAM_INT);
-    $checkStmt->bindParam(':comida_id', $comida_id, PDO::PARAM_INT);
-    $checkStmt->bindParam(':fecha_consumo', $fecha_consumo, PDO::PARAM_STR);
-    $checkStmt->execute();
+    switch ($method) {
+        case 'GET':
+            $sql = "SELECT
+                        pd.id,
+                        pd.paciente_id,
+                        pd.dieta_id,
+                        d.codigo AS codigo_dieta,
+                        pd.usuario_id,
+                        pd.internacion_id,
+                        pd.fecha_consumo,
+                        pd.observacion,
+                        pd.acompaniante,
+                        pd.estado,
+                        pd.postre_id,
+                        i.sector_id,
+                        p.nombre AS nombre_paciente,
+                        p.apellido AS apellido_paciente,
+                        s.nombre AS nombre_sector,
+                        DATEDIFF(CURDATE(), p.fecha_nacimiento) DIV 365 AS edad
+                    FROM pacientes_dietas pd
+                    JOIN pacientes p ON p.id = pd.paciente_id
+                    JOIN internaciones i ON i.id = pd.internacion_id
+                    JOIN sectores s ON s.id = i.sector_id
+                    JOIN dietas d ON d.id = pd.dieta_id
+                    WHERE pd.estado = 1";
 
-    if ($checkStmt->fetchColumn() > 0) {
-        // Si existe un registro, mostrar mensaje de error
-        echo json_encode(['error' => 'Ya existe una dieta registrada para esta comida y fecha.']);
-        exit;
-    }
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+            break;
 
-    // Preparar la consulta SQL para insertar el registro si no hay duplicados
-    $sql = "INSERT INTO pacientes_dietas 
-            (paciente_id, dieta_id, internacion_id, comida_id, fecha_consumo, observacion, acompaniante, estado) 
-            VALUES (:paciente_id, :dieta_id, :internacion_id, :comida_id, :fecha_consumo, :observacion, :acompaniante, :estado)";
+        case 'POST':
+            // Obtener los datos enviados
+            $data = json_decode(file_get_contents('php://input'), true);
 
-    // Preparar la sentencia
-    $stmt = $conn->prepare($sql);
+            // Validar campos obligatorios
+            if (empty($data['paciente_id']) || empty($data['dieta_id']) || empty($data['internacion_id'])) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Faltan datos obligatorios']);
+                exit();
+            }
 
-    // Vincular los valores con los parámetros
-    $stmt->bindParam(':paciente_id', $paciente_id, PDO::PARAM_INT);
-    $stmt->bindParam(':dieta_id', $dieta_id, PDO::PARAM_INT);
-    $stmt->bindParam(':internacion_id', $internacion_id, PDO::PARAM_INT);
-    $stmt->bindParam(':comida_id', $comida_id, PDO::PARAM_INT);
-    $stmt->bindParam(':fecha_consumo', $fecha_consumo, PDO::PARAM_STR);
-    $stmt->bindParam(':observacion', $observacion, PDO::PARAM_STR);
-    $stmt->bindParam(':acompaniante', $acompaniante, PDO::PARAM_INT);
-    $stmt->bindParam(':estado', $estado, PDO::PARAM_INT);
+            // Sanear datos
+            $paciente_id = intval($data['paciente_id']);
+            $dieta_id = intval($data['dieta_id']);
+            $internacion_id = intval($data['internacion_id']);
+            $observacion = htmlspecialchars(trim($data['observacion'] ?? ''));
+            $acompaniante = isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0;
+            $postre_id = !empty($data['postre_id']) ? intval($data['postre_id']) : null;
 
-    // Ejecutar la sentencia
-    if ($stmt->execute()) {
-        echo json_encode(['message' => 'Dieta guardada correctamente']);
-    } else {
-        echo json_encode(['error' => 'No se pudo guardar la dieta']);
+            // Insertar en la base de datos
+            $sql = "INSERT INTO pacientes_dietas 
+                        (paciente_id, dieta_id, internacion_id, usuario_id, estado, observacion, acompaniante, postre_id) 
+                    VALUES 
+                        (:paciente_id, :dieta_id, :internacion_id, :usuario_id, 1, :observacion, :acompaniante, :postre_id)";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':paciente_id' => $paciente_id,
+                ':dieta_id' => $dieta_id,
+                ':internacion_id' => $internacion_id,
+                ':usuario_id' => $usuario_id,
+                ':observacion' => $observacion,
+                ':acompaniante' => $acompaniante,
+                ':postre_id' => $postre_id,
+            ]);
+
+            echo json_encode(['message' => 'Dieta guardada correctamente']);
+            break;
+
+        default:
+            http_response_code(405);
+            echo json_encode(['error' => 'Método no permitido']);
+            break;
     }
 } catch (PDOException $e) {
-    // Capturar errores y devolver un mensaje JSON
-    error_log("Error en la consulta: " . $e->getMessage()); // Registrar el error en el log del servidor
-    echo json_encode(['error' => 'Error en el servidor. Inténtalo más tarde.']);
+    http_response_code(500);
+    echo json_encode(['error' => 'Error en la base de datos: ' . $e->getMessage()]);
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Error inesperado: ' . $e->getMessage()]);
 }
 ?>

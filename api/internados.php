@@ -13,7 +13,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 try {
-    // Obtener la solicitud
+    // Obtener el método de solicitud
     $method = $_SERVER['REQUEST_METHOD'];
     $input = json_decode(file_get_contents('php://input'), true);
 
@@ -24,14 +24,12 @@ try {
                            MAX(i.fecha_egreso) AS fecha_egreso, 
                            MAX(i.diagnostico) AS diagnostico, 
                            CONCAT(p.apellido, ', ', p.nombre) AS paciente_nombre, 
-                           pro.nombre AS profesional_nombre, 
                            s.nombre AS sector_nombre, 
                            u.nombre AS usuario_nombre, 
                            u.apellido AS usuario_apellido,
                            MAX(pd.observacion) AS observacion
                     FROM internaciones i
                     JOIN pacientes p ON i.paciente_id = p.id
-                    JOIN profesionales pro ON i.profesional_id = pro.id
                     JOIN sectores s ON i.sector_id = s.id
                     JOIN usuarios u ON i.usuario_id = u.id
                     LEFT JOIN pacientes_dietas pd ON pd.internacion_id = i.id
@@ -60,7 +58,6 @@ try {
             date_default_timezone_set('America/Argentina/Buenos_Aires');
 
             $paciente_id = $input['paciente_id'];
-            $profesional_id = $input['profesional_id'];
             $sector_id = $input['sector_id'];
             $diagnostico = $input['diagnostico'];
             $usuario_id = $_SESSION['user_id'];
@@ -77,10 +74,10 @@ try {
                 echo json_encode(['message' => 'El paciente ya está internado']);
             } else {
                 // Insertar nueva internación
-                $sql = "INSERT INTO internaciones (paciente_id, fecha_ingreso, profesional_id, sector_id, usuario_id, diagnostico, estado)
-                        VALUES (?, NOW(), ?, ?, ?, ?, ?)";
+                $sql = "INSERT INTO internaciones (paciente_id, fecha_ingreso, sector_id, usuario_id, diagnostico, estado)
+                        VALUES (?, NOW(), ?, ?, ?, ?)";
                 $stmt = $conn->prepare($sql);
-                $stmt->execute([$paciente_id, $profesional_id, $sector_id, $usuario_id, $diagnostico, $estado]);
+                $stmt->execute([$paciente_id, $sector_id, $usuario_id, $diagnostico, $estado]);
 
                 if ($stmt->rowCount() > 0) {
                     echo json_encode(["message" => "Internación agregada con éxito"]);
@@ -113,8 +110,7 @@ try {
             if ($stmt->rowCount() > 0) {
                 echo json_encode(['message' => 'Alta realizada correctamente']);
             } else {
-                http_response_code(500);
-                echo json_encode(['message' => 'Error al realizar la alta']);
+                echo json_encode(['message' => 'Error al realizar el alta']);
             }
             break;
 
@@ -124,9 +120,6 @@ try {
             break;
     }
 } catch (PDOException $e) {
-    error_log("Error en la consulta SQL: " . $e->getMessage());
-    echo json_encode(['error' => 'Error al obtener los datos. Inténtelo más tarde.']);
+    echo json_encode(['message' => 'Error de servidor']);
 }
-
-// Cerrar la conexión
-$conn = null;
+?>

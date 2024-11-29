@@ -26,6 +26,9 @@ createApp({
         nuevaInternacion() {
             window.location.href = "nueva_internacion.php";
         },
+        editarInternacion(id) {
+            window.location.href = "editar_dieta.php?id=" + id;
+        },
         dietaInternacion(id) {
             window.location.href = "dieta_internacion.php?id=" + id;
         },
@@ -37,12 +40,12 @@ createApp({
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                this.cargarInternaciones();
-            })
-            .catch(error => console.error(error));
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    this.cargarInternaciones();
+                })
+                .catch(error => console.error(error));
         }
     }
 }).mount('#app');

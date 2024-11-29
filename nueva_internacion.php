@@ -17,16 +17,16 @@
         <h1>Nueva Internación</h1>
 
         <!-- Formulario para agregar una nueva internación -->
-        <!-- <h2>Nueva Internación</h2> -->
         <form @submit.prevent="agregarInternacion">
             <div class="mb-3">
-                <label for="dni" class="form-label">DNI del Paciente</label>
-                <input type="search" v-model="dni" @input="buscarPacientes" class="form-control" id="dni" required>
+                <label for="busqueda" class="form-label">Buscar Paciente (DNI o Apellido)</label>
+                <input type="text" v-model="busqueda" @input="buscarPacientes" class="form-control" id="busqueda" placeholder="Ingrese DNI o Apellido">
             </div>
+
 
             <!-- Mensaje si no hay coincidencias -->
             <div v-if="sinCoincidencias" class="alert alert-warning" role="alert">
-                No se encontraron pacientes con ese DNI.
+                No se encontraron pacientes con ese DNI o apellido.
             </div>
 
             <!-- Tabla de coincidencias -->
@@ -56,40 +56,14 @@
                 </table>
             </div>
 
-            <div v-if="pacienteSeleccionado" class="card mb-3">
+            <div v-if="pacienteSeleccionado" class="card mt-3">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Información del Paciente</h5>
-                    <div class="row">
-                        <div class="col-6">
-                            <p class="card-text"><strong>DNI:</strong> {{ pacienteSeleccionado.dni }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <p class="card-text"><strong>Nombre:</strong> {{ pacienteSeleccionado.nombre }}</p>
-                        </div>
-                        <div class="col-6">
-                            <p class="card-text"><strong>Apellido:</strong> {{ pacienteSeleccionado.apellido }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <p class="card-text"><strong>Fecha de Nacimiento:</strong> {{ pacienteSeleccionado.fecha_nacimiento }}</p>
-                        </div>
-                    </div>
+                    <h5 class="card-title">{{ pacienteSeleccionado.nombre }} {{ pacienteSeleccionado.apellido }}</h5>
+                    <p class="card-text">DNI: {{ pacienteSeleccionado.dni }}</p>
+                    <button class="btn btn-secondary" @click="limpiarPaciente">Limpiar Selección</button>
                 </div>
             </div>
-
-            <div class="mb-3">
-                <label for="profesional_id" class="form-label">Seleccionar Profesional</label>
-                <select class="form-control" v-model="nuevaInternacion.profesional_id" required>
-                    <option v-for="profesional in profesionales" :key="profesional.id" :value="profesional.id">
-                        {{ profesional.nombre }} {{ profesional.apellido }}
-
-                    </option>
-                </select>
-            </div>
-
+            
             <div class="mb-3">
                 <label for="sector_id" class="form-label">Seleccionar Sector</label>
                 <select class="form-control" v-model="nuevaInternacion.sector_id" required>
@@ -103,11 +77,6 @@
                 <label for="diagnostico" class="form-label">Diagnóstico</label>
                 <input type="text" class="form-control" v-model="nuevaInternacion.diagnostico" required>
             </div>
-
-            <!-- <div class="mb-3">
-                <label for="observacion" class="form-label">Observación</label>
-                <input type="text" class="form-control" v-model="nuevaInternacion.observacion" required>
-            </div> -->
 
             <button type="submit" class="btn btn-primary">Agregar Internación</button>
         </form>

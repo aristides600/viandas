@@ -24,7 +24,6 @@
             <thead>
                 <tr>
                     <th>Paciente</th>
-                    <th>Profesional</th>
                     <th>Sector</th>
                     <th>Fecha de Ingreso</th>
                     <th>Fecha de Egreso</th>
@@ -36,7 +35,6 @@
             <tbody>
                 <tr v-for="(internacion, index) in internaciones" :key="internacion.id + '-' + index">
                     <td>{{ internacion.paciente_nombre }}</td>
-                    <td>{{ internacion.profesional_nombre }}</td>
                     <td>{{ internacion.sector_nombre }}</td>
                     <td>{{ internacion.fecha_ingreso }}</td>
                     <td>{{ internacion.fecha_egreso ? internacion.fecha_egreso : '-' }}</td>
@@ -45,6 +43,9 @@
                     <td>
                         <button class="btn btn-warning btn-sm" @click="dietaInternacion(internacion.id)">
                             <i class="bi bi-list"></i> Dieta
+                        </button>
+                        <button class="btn btn-blue btn-sm" @click="editarInternacion(internacion.id)">
+                            <i class="bi bi-pencil"></i> Editar
                         </button>
                         <button class="btn btn-danger btn-sm" @click="darAlta(internacion.id)">
                             <i class="bi bi-box-arrow-up"></i> Alta

@@ -1,50 +1,49 @@
 const app = Vue.createApp({
     data() {
         return {
-            comidas: [],
+            paciente: null,
+            internacion: null,
             dietas: [],
-
-            form: {
+            postres: [],
+            dietaInternacion: {
                 paciente_id: '',
                 dieta_id: '',
                 internacion_id: '',
-                comida_id: '',
-                fecha_consumo: '',
                 observacion: '',
                 acompaniante: false,
-                estado: 1
-            }
+                postre_id: null,
+            },
         };
     },
     mounted() {
-        const id = new URLSearchParams(window.location.search).get('id'); // Obtener el ID de la internación
-        this.form.internacion_id = id;
-        this.obtenerDatosInternacion(id);
-        this.obtenerComidas();
-        this.obtenerDietas();
-
+        const id = new URLSearchParams(window.location.search).get('id');
+        if (id) {
+            this.dietaInternacion.internacion_id = id;
+            this.obtenerInternacion(id);
+            this.obtenerDietas();
+            this.obtenerPostres();
+        }
     },
     methods: {
-        obtenerDatosInternacion(id) {
-            axios.get(`api/obtener_internacion.php?id=${id}`)
+        obtenerInternacion(id) {
+            if (!id) {
+                Swal.fire('Error', 'El ID de la internación es inválido.', 'error');
+                return;
+            }
+            axios.get(`api/dieta_internacion.php?internacion_id=${id}`)
                 .then(response => {
-                    this.internacion = response.data;
-                    this.paciente = response.data; // Asignar datos del paciente e internación
-                    this.form.paciente_id = response.data.paciente_id; // Rellenar el campo del formulario
+                    const data = response.data;
+                    if (data.paciente && data.internacion) {
+                        this.paciente = data.paciente;
+                        this.internacion = data.internacion;
+                        this.dietaInternacion.paciente_id = data.paciente.id;
+                    } else {
+                        Swal.fire('Error', 'No se encontró la información del paciente.', 'error');
+                    }
                 })
                 .catch(error => {
-                    console.error(error);
-                    Swal.fire('Error', 'No se pudieron cargar los datos del paciente', 'error');
-                });
-        },
-        obtenerComidas() {
-            axios.get('api/comidas.php')
-                .then(response => {
-                    this.comidas = response.data;
-                })
-                .catch(error => {
-                    console.error(error);
-                    Swal.fire('Error', 'No se pudieron cargar los tipos de comida', 'error');
+                    console.error('Error:', error.response ? error.response.data : error);
+                    Swal.fire('Error', 'No se pudo cargar la información del paciente.', 'error');
                 });
         },
         obtenerDietas() {
@@ -52,36 +51,53 @@ const app = Vue.createApp({
                 .then(response => {
                     this.dietas = response.data;
                 })
-                .catch(error => {
-                    console.error(error);
-                    Swal.fire('Error', 'No se pudieron cargar los tipos de dieta', 'error');
+                .catch(() => {
+                    Swal.fire('Error', 'No se pudieron cargar las dietas.', 'error');
                 });
         },
-        // guardarDieta() {
-        //     axios.post('api/pacientes_dietas.php', this.form)
-        //         .then(response => {
-        //             Swal.fire('Éxito', 'Dieta guardada correctamente', 'success');
-        //         })
-        //         .catch(error => {
-        //             console.error(error);
-        //             Swal.fire('Error', 'No se pudo guardar la dieta', 'error');
-        //         });
-        // }
-        guardarDieta() {
-            axios.post('api/pacientes_dietas.php', this.form)
+        obtenerPostres() {
+            axios.get('api/postres.php')
                 .then(response => {
-                    if (response.data.message) {
-                        Swal.fire('Éxito', response.data.message, 'success');
-                    } else if (response.data.error) {
-                        Swal.fire('Error', response.data.error, 'error');
-                    }
+                    this.postres = response.data;
                 })
-                .catch(error => {
-                    console.error(error);
-                    Swal.fire('Error', 'No se pudo guardar la dieta', 'error');
+                .catch(() => {
+                    Swal.fire('Error', 'No se pudieron cargar los postres.', 'error');
                 });
-        }
-        
-    }
+        },
+        guardarDieta() {
+            if (!this.dietaInternacion.paciente_id || !this.dietaInternacion.dieta_id || !this.dietaInternacion.internacion_id) {
+                Swal.fire('Error', 'Todos los campos obligatorios deben completarse.', 'error');
+                return;
+            }
+
+            // Convertir datos a los formatos correctos
+            this.dietaInternacion.paciente_id = parseInt(this.dietaInternacion.paciente_id);
+            this.dietaInternacion.dieta_id = parseInt(this.dietaInternacion.dieta_id);
+            this.dietaInternacion.internacion_id = parseInt(this.dietaInternacion.internacion_id);
+
+            // Enviar datos al servidor
+            axios.post('api/pacientes_dietas.php', this.dietaInternacion)
+                .then(() => {
+                    Swal.fire('Éxito', 'Dieta asignada correctamente.', 'success');
+                    this.reiniciarFormulario();
+                })
+                .catch((error) => {
+                    const mensaje = error.response?.data?.error || 'No se pudo guardar la dieta.';
+                    Swal.fire('Error', mensaje, 'error');
+                });
+        },
+
+
+        reiniciarFormulario() {
+            this.dietaInternacion = {
+                paciente_id: '',
+                dieta_id: '',
+                internacion_id: '',
+                observacion: '',
+                acompaniante: false,
+                postre_id: null,
+            };
+        },
+    },
 });
 app.mount('#app');

@@ -24,7 +24,7 @@ const app = Vue.createApp({
     methods: {
         async cargarDietas() {
             try {
-                const response = await axios.get('api/pacientes_internados.php');
+                const response = await axios.get('api/pacientes_dietas.php');
                 this.dietas = response.data;
             } catch (error) {
                 Swal.fire('Error', 'No se pudieron cargar las dietas.', 'error');
@@ -34,14 +34,13 @@ const app = Vue.createApp({
             const doc = new jsPDF();
             doc.text('Reporte de Dietas por Sector', 10, 10);
             doc.autoTable({
-                head: [['Sector', 'Apellido', 'Nombre', 'Edad', 'Sexo', 'Código de Dieta', 'Observación', 'Comida', 'Fecha Consumo']],
+                head: [['Sector', 'Apellido', 'Nombre', 'Edad', 'Código de Dieta', 'Observación', 'Comida', 'Fecha Consumo']],
                 body: this.pacientesFiltrados.map(dieta => [
                     dieta.nombre_sector,
                     dieta.apellido_paciente,
                     dieta.nombre_paciente,
                     dieta.edad,
-                    dieta.sexo,
-                    dieta.codigo_dieta,
+                    dieta.codigo_dieta, // Código de la dieta
                     dieta.observacion,
                     dieta.nombre_comida,
                     dieta.fecha_consumo

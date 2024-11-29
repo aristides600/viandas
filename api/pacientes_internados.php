@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-include 'db.php'; // Conexión a la base de datos con PDO
+include 'db.php';
 
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
 
@@ -30,8 +30,7 @@ try {
         JOIN sectores s ON i.sector_id = s.id
         JOIN comidas c ON pd.comida_id = c.id
         WHERE i.fecha_egreso IS NULL 
-          AND pd.estado = 1 
-          AND pd.fecha_consumo = CURDATE()
+          AND pd.estado = 1
     ";
 
     if ($searchTerm) {

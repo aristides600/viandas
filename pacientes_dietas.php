@@ -24,21 +24,19 @@
                         <th>Apellido</th>
                         <th>Nombre</th>
                         <th>Edad</th>
-                        <th>Sexo</th>
-                        <th>Código de Dieta</th>
+                        <th>Código de Dieta</th> <!-- Nueva columna para el código de la dieta -->
                         <th>Observación</th>
                         <th>Comida</th>
                         <th>Fecha Consumo</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="dieta in pacientesFiltrados" :key="dieta.internacion_id">
+                    <tr v-for="dieta in pacientesFiltrados" :key="dieta.id">
                         <td>{{ dieta.nombre_sector }}</td>
                         <td>{{ dieta.apellido_paciente }}</td>
                         <td>{{ dieta.nombre_paciente }}</td>
                         <td>{{ dieta.edad }}</td>
-                        <td>{{ dieta.sexo }}</td>
-                        <td>{{ dieta.codigo_dieta }}</td>
+                        <td>{{ dieta.codigo_dieta }}</td> <!-- Mostrar el código de la dieta -->
                         <td>{{ dieta.observacion }}</td>
                         <td>{{ dieta.nombre_comida }}</td>
                         <td>{{ dieta.fecha_consumo }}</td>
@@ -55,7 +53,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.15/jspdf.plugin.autotable.min.js"></script>
     <script src="./js/pacientes_dietas.js"></script>
