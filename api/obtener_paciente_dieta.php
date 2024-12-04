@@ -5,7 +5,7 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
     try {
-        $query = $conn->prepare("SELECT * FROM pacientes_dietas WHERE id = :id");
+        $query = $conn->prepare("SELECT * FROM pacientes_dietas pd JOIN internaciones i ON pd.internacion_id = i.id WHERE i.id = :id");
         $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->execute();
 

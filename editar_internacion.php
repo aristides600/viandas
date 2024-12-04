@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editar Pacientes Dietas</title>
+  <title>Editar Internación</title>
   <link href="./cdn/bootstrap.min.css" rel="stylesheet">
   <link href="./cdn/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="./css/estilos.css">
@@ -13,8 +13,8 @@
 <body>
   <?php include 'header.php'; ?>
   <div id="app" class="container mt-5">
-    <h2>Editar Dieta</h2>
-    <form @submit.prevent="editarDieta">
+    <h2>Editar Internación</h2>
+    <form @submit.prevent="editarInternacion">
       <div class="row">
         <!-- Tarjeta de Datos del Paciente -->
         <div class="col-md-6">
@@ -43,48 +43,45 @@
                 <strong>Diagnóstico:</strong> {{ internacion.diagnostico }}<br>
                 <strong>Fecha de Ingreso:</strong> {{ internacion.fecha_ingreso }}<br>
                 <strong>Fecha de Egreso:</strong> {{ internacion.fecha_egreso || 'Sin egreso registrado' }}<br>
+                <strong>Sector:</strong> {{ sectorNombre }}<br>
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Campos del formulario -->
       <div class="mb-3">
-        <label for="dieta_id" class="form-label">Dieta</label>
-        <select v-model="pacienteDieta.dieta_id" class="form-control" id="dieta_id" required>
-          <option v-for="dieta in dietas" :key="dieta.id" :value="dieta.id" :title="dieta.nombre">{{ dieta.nombre }}</option>
+        <label for="sectorId" class="form-label">Sector</label>
+        <select
+          id="sectorId"
+          class="form-select"
+          v-model="internacion.sector_id"
+          required>
+          <option value="" disabled>Seleccionar Sector</option>
+          <option v-for="sector in sectores" :key="sector.id" :value="sector.id">
+            {{ sector.nombre }}
+          </option>
         </select>
       </div>
-      <!-- <div class="mb-3">
-        <label for="fecha_consumo" class="form-label">Fecha de Consumo</label>
-        <input type="date" v-model="pacienteDieta.fecha_consumo" class="form-control" id="fecha_consumo" required>
-      </div> -->
+
+      <!-- Campo de texto para el Diagnóstico -->
       <div class="mb-3">
-        <label for="acompaniante" class="form-label">¿Acompañante?</label>
-        <input
-          type="checkbox"
-          v-model="pacienteDieta.acompaniante"
-          id="acompaniante"
-          aria-label="Marcar si hay acompañante">
+        <label for="diagnostico" class="form-label">Diagnóstico</label>
+        <textarea
+          id="diagnostico"
+          class="form-control"
+          rows="4"
+          v-model="internacion.diagnostico"
+          required></textarea>
       </div>
-      <div class="mb-3">
-        <label for="observacion" class="form-label">Observación</label>
-        <textarea v-model="pacienteDieta.observacion" class="form-control" id="observacion" rows="3"></textarea>
-      </div>
-      <div class="mb-3">
-        <label for="postre_id" class="form-label">Postre</label>
-        <select v-model="pacienteDieta.postre_id" class="form-control" id="postre_id">
-          <option v-for="postre in postres" :key="postre.id" :value="postre.id">{{ postre.nombre }}</option>
-        </select>
-      </div>
+
       <button type="submit" class="btn btn-primary">Guardar Cambios</button>
     </form>
   </div>
   <script src="./cdn/vue.global.js"></script>
   <script src="./cdn/axios.min.js"></script>
   <script src="./cdn/sweetalert2@10.js"></script>
-  <script src="./js/editar_dieta.js"></script>
+  <script src="./js/editar_internacion.js"></script>
   <?php include 'footer.php'; ?>
 </body>
 

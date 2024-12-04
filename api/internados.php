@@ -1,6 +1,8 @@
 <?php
 require_once 'db.php';
+
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+$estado = isset($_GET['estado']) ? $_GET['estado'] : 'pendiente';
 
 header('Content-Type: application/json');
 session_start();
@@ -20,22 +22,41 @@ try {
     switch ($method) {
         case 'GET':
             // Consulta SQL para obtener internaciones con datos relacionados, aplicando filtro opcional
-            $sql = "SELECT i.id, i.paciente_id, i.fecha_ingreso, 
-                           MAX(i.fecha_egreso) AS fecha_egreso, 
-                           MAX(i.diagnostico) AS diagnostico, 
-                           CONCAT(p.apellido, ', ', p.nombre) AS paciente_nombre, 
-                           s.nombre AS sector_nombre, 
-                           u.nombre AS usuario_nombre, 
-                           u.apellido AS usuario_apellido,
-                           MAX(pd.observacion) AS observacion
-                    FROM internaciones i
-                    JOIN pacientes p ON i.paciente_id = p.id
-                    JOIN sectores s ON i.sector_id = s.id
-                    JOIN usuarios u ON i.usuario_id = u.id
-                    LEFT JOIN pacientes_dietas pd ON pd.internacion_id = i.id
-                    WHERE i.estado = 1
-                    GROUP BY i.paciente_id
-                    ORDER BY i.fecha_ingreso DESC";
+            if ($estado == 'pendiente') {
+                $sql = "SELECT i.id, i.paciente_id, i.fecha_ingreso, 
+                               i.fecha_egreso, 
+                               i.diagnostico,
+                               p.dni, 
+                               p.apellido,
+                               p.nombre,
+                               s.nombre AS sector_nombre, 
+                               u.nombre AS usuario_nombre, 
+                               u.apellido AS usuario_apellido,
+                               pd.observacion
+                        FROM internaciones i
+                        JOIN pacientes p ON i.paciente_id = p.id
+                        JOIN sectores s ON i.sector_id = s.id
+                        JOIN usuarios u ON i.usuario_id = u.id
+                        LEFT JOIN pacientes_dietas pd ON pd.internacion_id = i.id
+                        WHERE i.estado = 1 AND i.fecha_egreso IS NULL";
+            } else {
+                $sql = "SELECT i.id, i.paciente_id, i.fecha_ingreso, 
+                               i.fecha_egreso, 
+                               i.diagnostico, 
+                               p.dni, 
+                               p.apellido,
+                               p.nombre,
+                               s.nombre AS sector_nombre, 
+                               u.nombre AS usuario_nombre, 
+                               u.apellido AS usuario_apellido,
+                               pd.observacion
+                        FROM internaciones i
+                        JOIN pacientes p ON i.paciente_id = p.id
+                        JOIN sectores s ON i.sector_id = s.id
+                        JOIN usuarios u ON i.usuario_id = u.id
+                        LEFT JOIN pacientes_dietas pd ON pd.internacion_id = i.id
+                        WHERE i.estado = 0 AND i.fecha_egreso IS NOT NULL";
+            }
 
             // Agregar condición de búsqueda si hay un término de búsqueda
             if ($searchTerm) {
@@ -50,18 +71,19 @@ try {
             }
 
             $stmt->execute();
-            $internaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            echo json_encode($internaciones);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode($result);
             break;
 
         case 'POST':
+            // Registrar una nueva internación
             date_default_timezone_set('America/Argentina/Buenos_Aires');
 
             $paciente_id = $input['paciente_id'];
             $sector_id = $input['sector_id'];
             $diagnostico = $input['diagnostico'];
             $usuario_id = $_SESSION['user_id'];
-            $estado = 1;
+            $estado = 1; // Estado de internación (1 = activo)
 
             // Verificar si el paciente ya está internado
             $checkQuery = "SELECT id FROM internaciones WHERE paciente_id = ? AND estado != 0 AND fecha_egreso IS NULL";
@@ -73,53 +95,70 @@ try {
                 http_response_code(409);
                 echo json_encode(['message' => 'El paciente ya está internado']);
             } else {
-                // Insertar nueva internación
-                $sql = "INSERT INTO internaciones (paciente_id, fecha_ingreso, sector_id, usuario_id, diagnostico, estado)
-                        VALUES (?, NOW(), ?, ?, ?, ?)";
-                $stmt = $conn->prepare($sql);
-                $stmt->execute([$paciente_id, $sector_id, $usuario_id, $diagnostico, $estado]);
+                try {
+                    // Insertar nueva internación
+                    $sql = "INSERT INTO internaciones (paciente_id, fecha_ingreso, sector_id, usuario_id, diagnostico, estado)
+                            VALUES (?, NOW(), ?, ?, ?, ?)";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->execute([$paciente_id, $sector_id, $usuario_id, $diagnostico, $estado]);
 
-                if ($stmt->rowCount() > 0) {
-                    echo json_encode(["message" => "Internación agregada con éxito"]);
-                } else {
-                    echo json_encode(["message" => "Error al agregar la internación"]);
+                    if ($stmt->rowCount() > 0) {
+                        echo json_encode(["message" => "Internación agregada con éxito"]);
+                    } else {
+                        echo json_encode(["message" => "Error al agregar la internación"]);
+                    }
+                } catch (PDOException $e) {
+                    error_log("Error SQL: " . $e->getMessage());
+                    http_response_code(500);
+                    echo json_encode(['error' => 'Error interno del servidor al agregar internación']);
                 }
             }
             break;
 
         case 'PUT':
-            // Dar de alta a una internación existente
-            $id = $input['id'];
-            $fecha_egreso = date('Y-m-d H:i:s');
-            $estado = 0; // Cambiar estado a falso
+            // Actualizar internación
+            $input = json_decode(file_get_contents('php://input'), true);
 
-            // Actualizar la internación
-            $sql = "UPDATE internaciones 
-                        SET fecha_egreso = ?, estado = ? 
-                        WHERE id = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([$fecha_egreso, $estado, $id]);
+            try {
+                // Obtener los datos enviados
+                $id = $input['id'] ?? null;
+                $sector_id = $input['sector_id'] ?? null;
+                $diagnostico = $input['diagnostico'] ?? null;
 
-            // Actualizar el estado en la tabla pacientes_dietas
-            $sqlDietas = "UPDATE pacientes_dietas 
-                              SET estado = 0 
-                              WHERE internacion_id = ?";
-            $stmtDietas = $conn->prepare($sqlDietas);
-            $stmtDietas->execute([$id]);
+                // Verificar que todos los datos necesarios estén presentes
+                if (!$id || !$sector_id || !$diagnostico) {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'Faltan datos necesarios (ID, sector, diagnóstico).']);
+                    exit();
+                }
 
-            if ($stmt->rowCount() > 0) {
-                echo json_encode(['message' => 'Alta realizada correctamente']);
-            } else {
-                echo json_encode(['message' => 'Error al realizar el alta']);
+                // Preparar y ejecutar la consulta para actualizar la internación
+                $sql = "UPDATE internaciones SET sector_id = :sector_id, diagnostico = :diagnostico WHERE id = :id";
+                $stmt = $conn->prepare($sql);
+
+                // Enlazar los parámetros de la consulta para evitar inyecciones SQL
+                $stmt->bindParam(':sector_id', $sector_id, PDO::PARAM_INT);
+                $stmt->bindParam(':diagnostico', $diagnostico, PDO::PARAM_STR);
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+                // Ejecutar la consulta
+                $stmt->execute();
+
+                // Verificar si se realizó alguna actualización
+                if ($stmt->rowCount() > 0) {
+                    echo json_encode(['message' => 'La internación fue actualizada correctamente.']);
+                } else {
+                    http_response_code(404);
+                    echo json_encode(['message' => 'No se encontró la internación o no hubo cambios.']);
+                }
+            } catch (PDOException $e) {
+                // Manejo de errores SQL
+                error_log("Error SQL: " . $e->getMessage());
+                http_response_code(500);
+                echo json_encode(['error' => 'Error interno del servidor al actualizar la internación.']);
             }
-            break;
-
-        default:
-            http_response_code(405);
-            echo json_encode(['message' => 'Método no permitido']);
             break;
     }
 } catch (PDOException $e) {
-    echo json_encode(['message' => 'Error de servidor']);
+    echo json_encode(['message' => 'Error de servidor', 'error' => $e->getMessage()]);
 }
-?>

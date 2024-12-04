@@ -14,16 +14,32 @@
     <?php include 'header.php'; ?>
     <div id="app" class="container mt-4">
         <h1>Gestión de Internaciones</h1>
+
+        <!-- Filtros de estado -->
         <div>
+            <label class="me-3">
+                <input type="radio" v-model="filtroEstado" value="pendiente"> Pendientes
+            </label>
+            <label>
+                <input type="radio" v-model="filtroEstado" value="cerrada"> Cerradas
+            </label>
+        </div>
+
+        <div class="mt-3">
             <button class="btn btn-sm btn-primary me-2" @click="nuevaInternacion">
                 <i class="bi bi-plus"></i> Nueva Internación
             </button>
         </div>
+
+        <!-- Buscador -->
         <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido">
+
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Paciente</th>
+                    <th>D.N.I.</th>
+                    <th>Apellidos</th>
+                    <th>Nombres</th>
                     <th>Sector</th>
                     <th>Fecha de Ingreso</th>
                     <th>Fecha de Egreso</th>
@@ -34,7 +50,9 @@
             </thead>
             <tbody>
                 <tr v-for="(internacion, index) in internaciones" :key="internacion.id + '-' + index">
-                    <td>{{ internacion.paciente_nombre }}</td>
+                    <td>{{ internacion.dni }}</td>
+                    <td>{{ internacion.apellido }}</td>
+                    <td>{{ internacion.nombre }}</td>
                     <td>{{ internacion.sector_nombre }}</td>
                     <td>{{ internacion.fecha_ingreso }}</td>
                     <td>{{ internacion.fecha_egreso ? internacion.fecha_egreso : '-' }}</td>
@@ -42,12 +60,12 @@
                     <td>{{ internacion.observacion }}</td>
                     <td>
                         <button class="btn btn-warning btn-sm" @click="dietaInternacion(internacion.id)">
-                            <i class="bi bi-list"></i> Dieta
+                            <i class="bi bi-plus"></i> Dieta
                         </button>
-                        <button class="btn btn-blue btn-sm" @click="editarInternacion(internacion.id)">
-                            <i class="bi bi-pencil"></i> Editar
+                        <button class="btn btn-info btn-sm" @click="editarInternacion(internacion.id)">
+                            <i class="bi bi-pencil"></i>
                         </button>
-                        <button class="btn btn-danger btn-sm" @click="darAlta(internacion.id)">
+                        <button class="btn btn-success btn-sm" @click="altaInternacion(internacion.id)">
                             <i class="bi bi-box-arrow-up"></i> Alta
                         </button>
                     </td>
@@ -55,6 +73,9 @@
             </tbody>
         </table>
     </div>
+    <?php include 'footer.php'; ?>
+
+
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>

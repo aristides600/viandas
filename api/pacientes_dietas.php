@@ -17,9 +17,12 @@ $usuario_id = $_SESSION['user_id'];
 // Obtener el método de la solicitud
 $method = $_SERVER['REQUEST_METHOD'];
 
+// Obtener el ID de la dieta desde la URL si está disponible
+$dieta_id = isset($_GET['id']) ? intval($_GET['id']) : null;
+
 try {
     switch ($method) {
-        case 'GET':
+        case 'GET': // Obtener dietas
             $sql = "SELECT
                         pd.id,
                         pd.paciente_id,
@@ -49,42 +52,91 @@ try {
             echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
             break;
 
-        case 'POST':
-            // Obtener los datos enviados
+        case 'POST': // Crear una nueva dieta
             $data = json_decode(file_get_contents('php://input'), true);
 
-            // Validar campos obligatorios
             if (empty($data['paciente_id']) || empty($data['dieta_id']) || empty($data['internacion_id'])) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Faltan datos obligatorios']);
                 exit();
             }
 
-            // Sanear datos
-            $paciente_id = intval($data['paciente_id']);
-            $dieta_id = intval($data['dieta_id']);
-            $internacion_id = intval($data['internacion_id']);
-            $observacion = htmlspecialchars(trim($data['observacion'] ?? ''));
-            $acompaniante = isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0;
-            $postre_id = !empty($data['postre_id']) ? intval($data['postre_id']) : null;
+            // Verificar si ya existe un registro con paciente_id y estado = 1
+            $checkSql = "SELECT COUNT(*) FROM pacientes_dietas WHERE paciente_id = :paciente_id AND estado = 1";
+            $checkStmt = $conn->prepare($checkSql);
+            $checkStmt->execute([':paciente_id' => intval($data['paciente_id'])]);
+            $existingCount = $checkStmt->fetchColumn();
 
-            // Insertar en la base de datos
+            if ($existingCount > 0) {
+                http_response_code(400);
+                echo json_encode(['error' => 'El paciente ya tiene una dieta activa.']);
+                exit();
+            }
+
+            // Insertar nueva dieta
             $sql = "INSERT INTO pacientes_dietas 
-                        (paciente_id, dieta_id, internacion_id, usuario_id, estado, observacion, acompaniante, postre_id) 
-                    VALUES 
-                        (:paciente_id, :dieta_id, :internacion_id, :usuario_id, 1, :observacion, :acompaniante, :postre_id)";
+                            (paciente_id, dieta_id, internacion_id, usuario_id, estado, observacion, acompaniante, postre_id) 
+                        VALUES 
+                            (:paciente_id, :dieta_id, :internacion_id, :usuario_id, 1, :observacion, :acompaniante, :postre_id)";
             $stmt = $conn->prepare($sql);
             $stmt->execute([
-                ':paciente_id' => $paciente_id,
-                ':dieta_id' => $dieta_id,
-                ':internacion_id' => $internacion_id,
+                ':paciente_id' => intval($data['paciente_id']),
+                ':dieta_id' => intval($data['dieta_id']),
+                ':internacion_id' => intval($data['internacion_id']),
                 ':usuario_id' => $usuario_id,
-                ':observacion' => $observacion,
-                ':acompaniante' => $acompaniante,
-                ':postre_id' => $postre_id,
+                ':observacion' => htmlspecialchars(trim($data['observacion'] ?? '')),
+                ':acompaniante' => isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0,
+                ':postre_id' => !empty($data['postre_id']) ? intval($data['postre_id']) : null,
             ]);
 
-            echo json_encode(['message' => 'Dieta guardada correctamente']);
+            echo json_encode(['mensaje' => 'Dieta creada correctamente']);
+            break;
+
+
+        case 'PUT': // Actualizar dieta existente
+            if (!$dieta_id) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Falta el ID de la dieta']);
+                exit();
+            }
+
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            $sql = "UPDATE pacientes_dietas 
+                    SET 
+                        paciente_id = :paciente_id,
+                        dieta_id = :dieta_id,
+                        internacion_id = :internacion_id,
+                        observacion = :observacion,
+                        acompaniante = :acompaniante,
+                        postre_id = :postre_id
+                    WHERE id = :id";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':paciente_id' => intval($data['paciente_id']),
+                ':dieta_id' => intval($data['dieta_id']),
+                ':internacion_id' => intval($data['internacion_id']),
+                ':observacion' => htmlspecialchars(trim($data['observacion'] ?? '')),
+                ':acompaniante' => isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0,
+                ':postre_id' => !empty($data['postre_id']) ? intval($data['postre_id']) : null,
+                ':id' => $dieta_id,
+            ]);
+
+            echo json_encode(['mensaje' => 'Dieta actualizada correctamente']);
+            break;
+
+        case 'DELETE': // Borrado lógico
+            if (!$dieta_id) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Falta el ID de la dieta']);
+                exit();
+            }
+
+            $sql = "UPDATE pacientes_dietas SET estado = 0 WHERE id = :id";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([':id' => $dieta_id]);
+
+            echo json_encode(['mensaje' => 'Dieta eliminada correctamente']);
             break;
 
         default:
@@ -99,4 +151,3 @@ try {
     http_response_code(500);
     echo json_encode(['error' => 'Error inesperado: ' . $e->getMessage()]);
 }
-?>

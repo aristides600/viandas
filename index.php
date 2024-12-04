@@ -221,6 +221,12 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                         <a href="etiquetas.php" class="btn btn-primary">Ir a Etiquetas</a>
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-egg-fried me-2"></i> Dietas</div>
+                    <div class="card-body">
+                        <a href="pacientes_dietas.php" class="btn btn-primary">Ir a Dietas</a>
+                    </div>
+                </div>
             </div>
         </main>
 

@@ -4,14 +4,13 @@ const app = Vue.createApp({
     data() {
         return {
             dietas: [],
-            filtro: '' // Valor del filtro para la búsqueda
+            filtro: ''
         };
     },
     mounted() {
         this.cargarDietas();
     },
     computed: {
-        // Método computado para filtrar dietas por DNI o Apellido
         pacientesFiltrados() {
             return this.dietas.filter(dieta => {
                 const apellido = dieta.apellido_paciente.toLowerCase();
@@ -30,7 +29,36 @@ const app = Vue.createApp({
                 Swal.fire('Error', 'No se pudieron cargar las dietas.', 'error');
             }
         },
-        generatePDF() {
+        editarDieta(id) {
+            window.location.href = "editar_dieta.php?id=" + id;
+        },
+        verDietas(internacion_id) {
+            // window.location.href = `dietas_consumidas.php?internacion_id=${internacion_id}`;
+            window.location.href = "dietas_consumidas.php?internacion_id=" + internacion_id;
+
+        },
+
+        async eliminarDieta(id) {
+            try {
+                const confirmacion = await Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: 'Esta acción marcará la dieta como eliminada.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                });
+
+                if (confirmacion.isConfirmed) {
+                    await axios.delete(`api/pacientes_dietas.php?id=${id}`);
+                    Swal.fire('Éxito', 'La dieta ha sido eliminada.', 'success');
+                    this.cargarDietas();
+                }
+            } catch (error) {
+                Swal.fire('Error', 'No se pudo eliminar la dieta.', 'error');
+            }
+        },
+        generarPDF() {
             const doc = new jsPDF();
             doc.text('Reporte de Dietas por Sector', 10, 10);
             doc.autoTable({
@@ -40,7 +68,7 @@ const app = Vue.createApp({
                     dieta.apellido_paciente,
                     dieta.nombre_paciente,
                     dieta.edad,
-                    dieta.codigo_dieta, // Código de la dieta
+                    dieta.codigo_dieta,
                     dieta.observacion,
                     dieta.nombre_comida,
                     dieta.fecha_consumo

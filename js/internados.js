@@ -4,7 +4,8 @@ createApp({
     data() {
         return {
             internaciones: [],
-            filtro: ''
+            filtro: '',
+            filtroEstado: 'pendiente', // Filtro por estado (pendiente o cerrada)
         };
     },
     mounted() {
@@ -13,39 +14,49 @@ createApp({
     watch: {
         filtro() {
             this.cargarInternaciones();
+        },
+        filtroEstado() {
+            this.cargarInternaciones();
         }
     },
+    
     methods: {
         cargarInternaciones() {
-            const url = `api/internados.php?search=${this.filtro}`;
+            console.log("Filtro Estado:", this.filtroEstado);
+            const url = `api/internados.php?search=${this.filtro}&estado=${this.filtroEstado}`;
             fetch(url, { method: 'GET' })
                 .then(response => response.json())
                 .then(data => { this.internaciones = data; })
                 .catch(error => console.error(error));
         },
+        
         nuevaInternacion() {
             window.location.href = "nueva_internacion.php";
         },
         editarInternacion(id) {
-            window.location.href = "editar_dieta.php?id=" + id;
+            window.location.href = "editar_internacion.php?id=" + id;
         },
         dietaInternacion(id) {
             window.location.href = "dieta_internacion.php?id=" + id;
         },
-        darAlta(id) {
-            const url = `api/internados.php`;
-            const payload = { id: id, accion: "alta" };
-            fetch(url, {
+        altaInternacion(id) {
+            fetch('api/alta_internacion.php', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({ id: id })
             })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    this.cargarInternaciones();
-                })
-                .catch(error => console.error(error));
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('Éxito', data.success, 'success');
+                } else {
+                    Swal.fire('Error', data.error || 'Ocurrió un error', 'error');
+                }
+            })
+            .catch(error => {
+                Swal.fire('Error', 'Error de conexión', 'error');
+                console.error('Error:', error);
+            });
         }
     }
 }).mount('#app');

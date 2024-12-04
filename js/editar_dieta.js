@@ -15,8 +15,8 @@ const app = Vue.createApp({
             pacienteDieta: {
                 id: null,
                 dieta_id: null,
-                fecha_consumo: null,
-                acompaniante: false,
+                // fecha_consumo: null,
+                acompaniante: null, // Valor inicial
                 observacion: '',
                 postre_id: null,
             },
@@ -25,51 +25,52 @@ const app = Vue.createApp({
         };
     },
     mounted() {
+        // Obtener el ID de la tabla `pacientes_dietas` desde la URL
         const id = new URLSearchParams(window.location.search).get('id');
         if (id) {
-            this.obtenerDatosInternacion(id);
-            this.obtenerPacienteDieta(id);
-
-
+            this.obtenerDatosRelacionados(id);
         }
         this.cargarDietas();
         this.cargarPostres();
+        this.pacienteDieta.acompaniante = !!this.pacienteDieta.acompaniante;
     },
     methods: {
-        obtenerDatosInternacion(id) {
-            axios.get(`api/obtener_datos_internacion.php?id=${id}`)
+        obtenerDatosRelacionados(id) {
+            axios.get(`api/obtener_datos_paciente_dieta.php?id=${id}`)
                 .then(response => {
                     const datos = response.data;
+
+                    // Datos del paciente
                     this.paciente = {
-                        nombre: datos.nombre,
-                        apellido: datos.apellido,
-                        dni: datos.dni,
+                        nombre: datos.nombre_paciente,
+                        apellido: datos.apellido_paciente,
+                        dni: datos.dni_paciente,
                         fecha_nacimiento: datos.fecha_nacimiento
                     };
+
+                    // Datos de la internación
                     this.internacion = {
                         diagnostico: datos.diagnostico,
                         fecha_ingreso: datos.fecha_ingreso,
                         fecha_egreso: datos.fecha_egreso
                     };
+
+                    // Datos de la dieta
+                    this.pacienteDieta = {
+                        id: datos.id_dieta,
+                        dieta_id: datos.dieta_id,
+                        fecha_consumo: datos.fecha_consumo,
+                        // acompaniante: datos.acompaniante,
+                        acompaniante: datos.acompaniante === 1, // Conversión a booleano
+                        observacion: datos.observacion,
+                        postre_id: datos.postre_id
+                    };
                 })
                 .catch(error => {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: `No se pudieron cargar los datos de la internación: ${error.message}`
-                    });
-                });
-        },
-        obtenerPacienteDieta(id) {
-            axios.get(`api/obtener_paciente_dieta.php?id=${id}`)
-                .then(response => {
-                    this.pacienteDieta = response.data;
-                })
-                .catch(error => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: `No se pudo cargar la dieta del paciente: ${error.message}`,
+                        text: `No se pudieron cargar los datos relacionados: ${error.message}`,
                     });
                 });
         },
@@ -91,14 +92,41 @@ const app = Vue.createApp({
                     Swal.fire('Error', 'No se pudieron cargar los postres.', 'error');
                 });
         },
-        guardarCambios() {
-            axios.put('api/editar_paciente_dieta.php', this.pacienteDieta)
+        editarDieta() {
+            // Verificar campos obligatorios
+            if (!this.pacienteDieta.dieta_id) {
+                Swal.fire('Error', 'Por favor, complete todos los campos obligatorios.', 'error');
+                return;
+            }
+
+            axios.put(`api/editar_paciente_dieta.php?id=${this.pacienteDieta.id}`, this.pacienteDieta)
                 .then(() => {
-                    Swal.fire('Éxito', 'Los cambios fueron guardados correctamente.', 'success');
+                    Swal.fire('Éxito', 'La dieta fue actualizada correctamente.', 'success');
                 })
-                .catch(() => {
-                    Swal.fire('Error', 'No se pudieron guardar los cambios.', 'error');
+                .catch(error => {
+                    Swal.fire('Error', `No se pudo actualizar la dieta: ${error.response.data.message}`, 'error');
                 });
+        },
+        eliminarDieta() {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Esta acción eliminará la dieta del paciente.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    axios.delete(`api/eliminar_paciente_dieta.php?id=${this.pacienteDieta.id}`)
+                        .then(() => {
+                            Swal.fire('Éxito', 'La dieta fue eliminada correctamente.', 'success');
+                            window.location.href = 'listado_dietas.php';
+                        })
+                        .catch(error => {
+                            Swal.fire('Error', `No se pudo eliminar la dieta: ${error.response.data.message}`, 'error');
+                        });
+                }
+            });
         }
     }
 });

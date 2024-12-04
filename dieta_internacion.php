@@ -13,7 +13,7 @@
 <body>
     <?php include 'header.php'; ?>
     <div id="app" class="container mt-5">
-        <h2>Gestión de Dietas</h2>
+        <h2>Asignar Dieta</h2>
 
         <!-- Tarjeta de datos del paciente -->
         <div class="row mb-4">

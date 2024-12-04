@@ -1,37 +1,49 @@
 <?php
-// Conexión a la base de datos
-require_once 'db.php';
-header('Content-Type: application/json');
+include 'db.php'; // Asegúrate de que el archivo db.php contiene la conexión PDO.
 
-// Obtener el ID de la internación desde el parámetro de la URL
-$internacion_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$id = $_GET['id'] ?? null;
 
-if ($internacion_id > 0) {
-    try {
-        // Consulta para obtener los datos del paciente y la internación
-        $sql = "SELECT i.id AS internacion_id, i.fecha_ingreso, i.fecha_egreso, i.diagnostico, p.id AS paciente_id, p.dni, p.nombre, p.apellido, p.fecha_nacimiento, p.sexo_id, p.telefono
-                FROM internaciones i
-                JOIN pacientes p ON i.paciente_id = p.id
-                WHERE i.id = :internacion_id";
+if (!$id) {
+    http_response_code(400);
+    echo json_encode(['error' => 'ID no proporcionado.']);
+    exit;
+}
 
-        // Preparar la consulta
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':internacion_id', $internacion_id, PDO::PARAM_INT);
-        $stmt->execute();
+$query = "
+    SELECT 
+        i.id,
+        i.diagnostico,
+        i.fecha_ingreso,
+        i.fecha_egreso,
+        i.sector_id,
+        s.nombre AS nombre_sector,
+        p.nombre AS nombre_paciente,
+        p.apellido AS apellido_paciente,
+        p.dni AS dni_paciente,
+        p.fecha_nacimiento
+    FROM internaciones i
+    JOIN sectores s ON i.sector_id = s.id
+    JOIN pacientes p ON i.paciente_id = p.id
+    WHERE i.id = :id
+";
 
-        // Obtener los resultados
-        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+try {
+    $stmt = $conn->prepare($query); // Preparar consulta
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT); // Vincular el parámetro de entrada
+    $stmt->execute(); // Ejecutar la consulta
 
-        if ($resultado) {
-            echo json_encode($resultado);
-        } else {
-            echo json_encode(['error' => 'No se encontró la internación']);
-        }
-    } catch (PDOException $e) {
-        error_log("Error en la consulta: " . $e->getMessage());
-        echo json_encode(['error' => 'Error al obtener los datos']);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC); // Obtener los datos
+
+    if ($result) {
+        echo json_encode($result); // Devolver los datos como JSON
+    } else {
+        http_response_code(404);
+        echo json_encode(['error' => 'Internación no encontrada.']);
     }
-} else {
-    echo json_encode(['error' => 'ID de internación no válido']);
+} catch (PDOException $e) {
+    // Manejo de errores
+    error_log("Error al consultar la base de datos: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(['error' => 'Error interno del servidor.']);
 }
 ?>

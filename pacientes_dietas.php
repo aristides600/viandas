@@ -16,34 +16,57 @@
         <div class="container mt-5">
             <!-- Campo de búsqueda por DNI o Apellido -->
             <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido">
-            <h2>Dietas por Sector</h2>
+            <h2>Dietas de Internados</h2>
             <table class="table table-bordered">
                 <thead>
                     <tr>
+                        <th>ID internacion</th>
+
                         <th>Sector</th>
                         <th>Apellido</th>
                         <th>Nombre</th>
                         <th>Edad</th>
-                        <th>Código de Dieta</th> <!-- Nueva columna para el código de la dieta -->
+                        <th>Código de Dieta</th>
                         <th>Observación</th>
                         <th>Comida</th>
                         <th>Fecha Consumo</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="dieta in pacientesFiltrados" :key="dieta.id">
+                        <td>{{ dieta.internacion_id}}</td>
+
+
                         <td>{{ dieta.nombre_sector }}</td>
                         <td>{{ dieta.apellido_paciente }}</td>
                         <td>{{ dieta.nombre_paciente }}</td>
                         <td>{{ dieta.edad }}</td>
-                        <td>{{ dieta.codigo_dieta }}</td> <!-- Mostrar el código de la dieta -->
+                        <td>{{ dieta.codigo_dieta }}</td>
                         <td>{{ dieta.observacion }}</td>
                         <td>{{ dieta.nombre_comida }}</td>
                         <td>{{ dieta.fecha_consumo }}</td>
+                        <td>
+                            <!-- Botón de editar -->
+                            <button class="btn btn-info btn-sm" @click="editarDieta(dieta.id)">
+                                <i class="bi bi-pencil"></i> 
+                            </button>
+
+                            <!-- Botón de eliminar -->
+                            <button class="btn btn-danger btn-sm" @click="eliminarDieta(dieta.id)">
+                                <i class="bi bi-trash"></i> 
+                            </button>
+
+                            <!-- Botón de ver dietas -->
+                            <button class="btn btn-secondary btn-sm" @click="verDietas(dieta.internacion_id)">
+                                <i class="bi bi-eye"></i> Dietas
+                            </button>
+
+                        </td>
                     </tr>
                 </tbody>
             </table>
-            <button class="btn btn-primary mt-3" @click="generatePDF">Generar PDF</button>
+            <button class="btn btn-primary mt-3" @click="generarPDF">Generar PDF</button>
         </div>
         <div v-if="pacientesFiltrados.length === 0">
             <p>No se encontraron resultados para la búsqueda.</p>
