@@ -54,23 +54,30 @@
                     <td>{{ internacion.apellido }}</td>
                     <td>{{ internacion.nombre }}</td>
                     <td>{{ internacion.sector_nombre }}</td>
-                    <td>{{ internacion.fecha_ingreso }}</td>
-                    <td>{{ internacion.fecha_egreso ? internacion.fecha_egreso : '-' }}</td>
+                    <td>{{ formatearFecha(internacion.fecha_ingreso) }}</td>
+                    <td>{{ formatearFecha(internacion.fecha_egreso ? internacion.fecha_egreso : '-') }}</td>
                     <td>{{ internacion.diagnostico }}</td>
                     <td>{{ internacion.observacion }}</td>
                     <td>
-                        <button class="btn btn-warning btn-sm" @click="dietaInternacion(internacion.id)">
+                        <!-- Mostrar botones solo si no está cerrada -->
+                        <button v-if="filtroEstado !== 'cerrada'" class="btn btn-warning btn-sm" @click="dietaInternacion(internacion.id)">
                             <i class="bi bi-plus"></i> Dieta
                         </button>
-                        <button class="btn btn-info btn-sm" @click="editarInternacion(internacion.id)">
+                        <button v-if="filtroEstado !== 'cerrada'" class="btn btn-info btn-sm" @click="editarInternacion(internacion.id)">
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <button class="btn btn-success btn-sm" @click="altaInternacion(internacion.id)">
+                        <button v-if="filtroEstado !== 'cerrada'" class="btn btn-success btn-sm" @click="altaInternacion(internacion.id)">
                             <i class="bi bi-box-arrow-up"></i> Alta
+                        </button>
+
+                        <!-- Mostrar botón Detalles solo si está cerrada -->
+                        <button v-if="filtroEstado === 'cerrada'" class="btn btn-primary btn-sm" @click="detallesInternacion(internacion.id)">
+                            <i class="bi bi-eye"></i> Detalles
                         </button>
                     </td>
                 </tr>
             </tbody>
+
         </table>
     </div>
     <?php include 'footer.php'; ?>

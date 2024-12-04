@@ -56,9 +56,10 @@
             <thead>
                 <tr>
                     <!-- <th>ID</th> -->
-                    <th>Nombres</th>
-                    <th>Apellidos</th>
                     <th>DNI</th>
+                    <th>Apellidos</th>
+                    <th>Nombres</th>
+                                
                     <th>Fecha de Nacimiento</th>
                     <th>Teléfono</th>
                     <th>Sexo</th>
@@ -68,9 +69,10 @@
             <tbody>
                 <tr v-for="paciente in pacientes" :key="paciente.id">
                     <!-- <td>{{ paciente.id }}</td> -->
-                    <td>{{ paciente.nombre }}</td>
-                    <td>{{ paciente.apellido }}</td>
                     <td>{{ paciente.dni }}</td>
+                    <td>{{ paciente.apellido }}</td>
+                    <td>{{ paciente.nombre }}</td>
+                                       
                     <td>{{ formatearFecha(paciente.fecha_nacimiento) }}</td>
                     <td>{{ paciente.telefono }}</td>
                     <td>{{ obtenerNombreSexo(paciente.sexo_id) }}</td>
