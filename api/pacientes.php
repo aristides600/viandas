@@ -7,15 +7,32 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
     case 'GET':
-        // Corrige el alias "sexo" en la consulta y asegúrate de que se traigan todos los pacientes activos
-        $stmt = $conn->prepare("SELECT p.id, p.dni, p.nombre, p.apellido, p.fecha_nacimiento, s.nombre AS sexo, p.fecha_alta, p.estado
-                               FROM pacientes p
-                               JOIN sexos s ON p.sexo_id = s.id
-                               WHERE p.estado = 1");
-        $stmt->execute();
+        $buscar = isset($_GET['buscar']) ? '%' . strtoupper(trim($_GET['buscar'])) . '%' : null;
+
+        if ($buscar) {
+            $stmt = $conn->prepare(
+                "SELECT p.id, p.dni, p.nombre, p.apellido, p.fecha_nacimiento, s.nombre AS sexo, p.fecha_alta, p.estado
+                 FROM pacientes p
+                 JOIN sexos s ON p.sexo_id = s.id
+                 WHERE p.estado = 1 AND (
+                     p.dni LIKE ? OR p.nombre LIKE ? OR p.apellido LIKE ? OR s.nombre LIKE ?
+                 )"
+            );
+            $stmt->execute([$buscar, $buscar, $buscar, $buscar]);
+        } else {
+            $stmt = $conn->prepare(
+                "SELECT p.id, p.dni, p.nombre, p.apellido, p.fecha_nacimiento, s.nombre AS sexo, p.fecha_alta, p.estado
+                 FROM pacientes p
+                 JOIN sexos s ON p.sexo_id = s.id
+                 WHERE p.estado = 1"
+            );
+            $stmt->execute();
+        }
+
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($result);
         break;
+
 
     case 'POST':
         $data = json_decode(file_get_contents('php://input'), true);

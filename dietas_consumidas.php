@@ -14,7 +14,7 @@
     <?php include 'header.php'; ?>
 
     <div id="app" class="container mt-5">
-        <h1 class="text-center mb-4">Registro de Cambios de Dietas</h1>
+        <h2 class="text-center mb-4">Cambios de Dietas</h2>
 
         <div v-if="cambiosDietas.length === 0" class="alert alert-warning text-center">
             No hay registros de cambios de dietas para esta internación.

@@ -23,28 +23,23 @@ const app = Vue.createApp({
         },
         guardarPaciente() {
             const datos = { ...this.paciente };
-
+        
             axios.post('api/pacientes.php', datos)
                 .then(response => {
-                    Swal.fire('Éxito', response.data.message, 'success');
-                    if (response.data.success) {
-                        this.limpiarFormulario();
-                    }
+                    Swal.fire('Éxito', response.data.message, 'success')
+                        .then(() => {
+                            if (response.data.success) {
+                                location.reload(); // Recargar la página
+                            }
+                        });
                 })
                 .catch(error => {
                     Swal.fire('Error', error.response.data.message, 'error');
                     console.error('Error al guardar paciente:', error);
                 });
         },
-        limpiarFormulario() {
-            this.paciente = {
-                dni: '',
-                nombre: '',
-                apellido: '',
-                fecha_nacimiento: '',
-                sexo_id: ''
-            };
-        }
+        
+        
     },
     mounted() {
         this.obtenerSexos();
