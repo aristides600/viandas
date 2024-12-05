@@ -20,32 +20,32 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>ID internacion</th>
-
+                        <!-- <th>ID internacion</th> -->
                         <th>Sector</th>
                         <th>Apellido</th>
                         <th>Nombre</th>
                         <th>Edad</th>
-                        <th>Código de Dieta</th>
+                        <th>Código</th>
+                        <th>Nombre Dieta</th>
                         <th>Observación</th>
-                        <th>Comida</th>
-                        <th>Fecha Consumo</th>
+                        <!-- <th>Comida</th> -->
+                        <th>Fecha Asignada</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="dieta in pacientesFiltrados" :key="dieta.id">
-                        <td>{{ dieta.internacion_id}}</td>
-
-
+                        <!-- <td>{{ dieta.internacion_id}}</td> -->
                         <td>{{ dieta.nombre_sector }}</td>
                         <td>{{ dieta.apellido_paciente }}</td>
                         <td>{{ dieta.nombre_paciente }}</td>
                         <td>{{ dieta.edad }}</td>
                         <td>{{ dieta.codigo_dieta }}</td>
+                        <td>{{ dieta.nombre_dieta }}</td>
                         <td>{{ dieta.observacion }}</td>
-                        <td>{{ dieta.nombre_comida }}</td>
-                        <td>{{ dieta.fecha_consumo }}</td>
+                        <!-- <td>{{ dieta.nombre_comida }}</td> -->
+                        <td>{{ formatearFecha(dieta.fecha_consumo) }}</td>
+
                         <td>
                             <!-- Botón de editar -->
                             <button class="btn btn-info btn-sm" @click="editarDieta(dieta.id)">

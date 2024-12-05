@@ -37,6 +37,22 @@ const app = Vue.createApp({
             window.location.href = "dietas_consumidas.php?internacion_id=" + internacion_id;
 
         },
+        formatearFecha(fecha) {
+            if (!fecha || fecha === '-') return '-'; // Manejar valores nulos, vacíos o "-"
+        
+            // Intentar interpretar la fecha de manera segura
+            const date = new Date(fecha);
+        
+            // Verificar si la fecha es válida
+            if (isNaN(date.getTime())) return '-'; // Si no es válida, retornar "-"
+        
+            const dia = date.getDate().toString().padStart(2, '0');
+            const mes = (date.getMonth() + 1).toString().padStart(2, '0'); // Los meses son base 0
+            const anio = date.getFullYear();
+        
+            return `${dia}/${mes}/${anio}`;
+        },
+        
 
         async eliminarDieta(id) {
             try {

@@ -28,6 +28,7 @@ try {
                         pd.paciente_id,
                         pd.dieta_id,
                         d.codigo AS codigo_dieta,
+                        d.nombre AS nombre_dieta,
                         pd.usuario_id,
                         pd.internacion_id,
                         pd.fecha_consumo,
@@ -73,25 +74,29 @@ try {
                 exit();
             }
 
+            // Convertir los valores a mayúsculas
+            $observacion = strtoupper(htmlspecialchars(trim($data['observacion'] ?? '')));
+            $acompaniante = isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0;
+            $postre_id = !empty($data['postre_id']) ? intval($data['postre_id']) : null;
+
             // Insertar nueva dieta
             $sql = "INSERT INTO pacientes_dietas 
-                            (paciente_id, dieta_id, internacion_id, usuario_id, estado, observacion, acompaniante, postre_id) 
-                        VALUES 
-                            (:paciente_id, :dieta_id, :internacion_id, :usuario_id, 1, :observacion, :acompaniante, :postre_id)";
+                                (paciente_id, dieta_id, internacion_id, usuario_id, estado, observacion, acompaniante, postre_id) 
+                            VALUES 
+                                (:paciente_id, :dieta_id, :internacion_id, :usuario_id, 1, :observacion, :acompaniante, :postre_id)";
             $stmt = $conn->prepare($sql);
             $stmt->execute([
                 ':paciente_id' => intval($data['paciente_id']),
                 ':dieta_id' => intval($data['dieta_id']),
                 ':internacion_id' => intval($data['internacion_id']),
                 ':usuario_id' => $usuario_id,
-                ':observacion' => htmlspecialchars(trim($data['observacion'] ?? '')),
-                ':acompaniante' => isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0,
-                ':postre_id' => !empty($data['postre_id']) ? intval($data['postre_id']) : null,
+                ':observacion' => $observacion,
+                ':acompaniante' => $acompaniante,
+                ':postre_id' => $postre_id,
             ]);
 
             echo json_encode(['mensaje' => 'Dieta creada correctamente']);
             break;
-
 
         case 'PUT': // Actualizar dieta existente
             if (!$dieta_id) {
@@ -102,28 +107,34 @@ try {
 
             $data = json_decode(file_get_contents('php://input'), true);
 
+            // Convertir los valores a mayúsculas
+            $observacion = strtoupper(htmlspecialchars(trim($data['observacion'] ?? '')));
+            $acompaniante = isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0;
+            $postre_id = !empty($data['postre_id']) ? intval($data['postre_id']) : null;
+
             $sql = "UPDATE pacientes_dietas 
-                    SET 
-                        paciente_id = :paciente_id,
-                        dieta_id = :dieta_id,
-                        internacion_id = :internacion_id,
-                        observacion = :observacion,
-                        acompaniante = :acompaniante,
-                        postre_id = :postre_id
-                    WHERE id = :id";
+                        SET 
+                            paciente_id = :paciente_id,
+                            dieta_id = :dieta_id,
+                            internacion_id = :internacion_id,
+                            observacion = :observacion,
+                            acompaniante = :acompaniante,
+                            postre_id = :postre_id
+                        WHERE id = :id";
             $stmt = $conn->prepare($sql);
             $stmt->execute([
                 ':paciente_id' => intval($data['paciente_id']),
                 ':dieta_id' => intval($data['dieta_id']),
                 ':internacion_id' => intval($data['internacion_id']),
-                ':observacion' => htmlspecialchars(trim($data['observacion'] ?? '')),
-                ':acompaniante' => isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0,
-                ':postre_id' => !empty($data['postre_id']) ? intval($data['postre_id']) : null,
+                ':observacion' => $observacion,
+                ':acompaniante' => $acompaniante,
+                ':postre_id' => $postre_id,
                 ':id' => $dieta_id,
             ]);
 
             echo json_encode(['mensaje' => 'Dieta actualizada correctamente']);
             break;
+
 
         case 'DELETE': // Borrado lógico
             if (!$dieta_id) {

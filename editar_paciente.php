@@ -4,18 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD de Pacientes</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <title>Editar Paciente</title>
+    <link href="./cdn/bootstrap.min.css" rel="stylesheet">
+    <link href="./cdn/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/estilos.css">
 </head>
 
 <body>
-
     <?php include 'header.php'; ?>
     <div id="app" class="container mt-5">
-        <h2>Nuevo Paciente</h2>
-        <form @submit.prevent="guardarPaciente">
+        <h2>Editar Paciente</h2>
+        <form @submit.prevent="editarPaciente">
             <div class="mb-3">
                 <label for="dni" class="form-label">DNI</label>
                 <input type="text" id="dni" v-model="paciente.dni" class="form-control" required>
@@ -34,24 +33,22 @@
             </div>
             <div class="mb-3">
                 <label for="sexo_id" class="form-label">Sexo</label>
-                <select id="sexo_id" v-model="paciente.sexo_id" class="form-control" required>
+                <select id="sexo_id" v-model="paciente.sexo_id" class="form-control">
                     <option value="" disabled>Seleccione Sexo</option>
                     <option v-for="sexo in sexos" :key="sexo.id" :value="sexo.id">
                         {{ sexo.nombre }}
                     </option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
         </form>
     </div>
+    <script src="./cdn/vue.global.js"></script>
+    <script src="./cdn/axios.min.js"></script>
+    <script src="./cdn/sweetalert2@10.js"></script>
+    <script src="./js/editar_paciente.js"></script>
+
     <?php include 'footer.php'; ?>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>
-    <script src="./js/nuevo_paciente.js"></script>
-
 </body>
 
 </html>

@@ -18,10 +18,10 @@
         <!-- Filtros de estado -->
         <div>
             <label class="me-3">
-                <input type="radio" v-model="filtroEstado" value="pendiente"> Pendientes
+                <input type="radio" v-model="filtroEstado" value="pendiente"> Internados
             </label>
             <label>
-                <input type="radio" v-model="filtroEstado" value="cerrada"> Cerradas
+                <input type="radio" v-model="filtroEstado" value="cerrada"> Altas
             </label>
         </div>
 

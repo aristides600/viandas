@@ -3,94 +3,107 @@ include 'db.php'; // Conexión a la base de datos
 
 header('Content-Type: application/json');
 
-// Crear conexión PDO
-try {
-    $pdo = new PDO("mysql:host=$servername;dbname=$database;charset=utf8mb4", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die(json_encode(['success' => false, 'message' => 'Error al conectar con la base de datos: ' . $e->getMessage()]));
-}
+$method = $_SERVER['REQUEST_METHOD'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Capturar la entrada JSON
-    $data = json_decode(file_get_contents('php://input'), true);
-    $action = $data['action'] ?? null;
+switch ($method) {
+    case 'GET':
+        // Corrige el alias "sexo" en la consulta y asegúrate de que se traigan todos los pacientes activos
+        $stmt = $conn->prepare("SELECT p.id, p.dni, p.nombre, p.apellido, p.fecha_nacimiento, s.nombre AS sexo, p.fecha_alta, p.estado
+                               FROM pacientes p
+                               JOIN sexos s ON p.sexo_id = s.id
+                               WHERE p.estado = 1");
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($result);
+        break;
 
-    if (!$action) {
-        echo json_encode(['success' => false, 'message' => 'Acción no especificada.']);
-        exit;
-    }
+    case 'POST':
+        $data = json_decode(file_get_contents('php://input'), true);
+        if ($data) {
+            $dni = strtoupper($data['dni']);
+            $nombre = strtoupper($data['nombre']);
+            $apellido = strtoupper($data['apellido']);
+            $fecha_nacimiento = $data['fecha_nacimiento'];
+            $sexo_id = $data['sexo_id'];
 
-    switch ($action) {
-        case 'create':
-            $nombre = $data['nombre'] ?? '';
-            $apellido = $data['apellido'] ?? '';
-            $dni = $data['dni'] ?? '';
-            $fecha_nacimiento = $data['fecha_nacimiento'] ?? null;
-            $telefono = $data['telefono'] ?? '';
-            $sexo_id = $data['sexo_id'] ?? '';
+            $stmt = $conn->prepare("SELECT COUNT(*) FROM pacientes WHERE dni = ?");
+            $stmt->execute([$dni]);
+            $count = $stmt->fetchColumn();
 
-            if (empty($nombre) || empty($apellido) || empty($dni)) {
-                echo json_encode(['success' => false, 'message' => 'Todos los campos obligatorios deben ser completados.']);
-                exit;
-            }
-
-            $stmt = $pdo->prepare("INSERT INTO pacientes (nombre, apellido, dni, fecha_nacimiento, telefono, sexo_id, estado) VALUES (?, ?, ?, ?, ?, ?, 1)");
-            if ($stmt->execute([$nombre, $apellido, $dni, $fecha_nacimiento, $telefono, $sexo_id])) {
-                echo json_encode(['success' => true, 'message' => 'Paciente creado exitosamente.']);
+            if ($count > 0) {
+                http_response_code(400);
+                echo json_encode(['message' => 'El DNI ya está registrado']);
             } else {
-                echo json_encode(['success' => false, 'message' => 'Error al crear paciente.']);
+                $stmt = $conn->prepare(
+                    "INSERT INTO pacientes (dni, nombre, apellido, fecha_nacimiento, sexo_id, fecha_alta, estado) 
+                        VALUES (?, ?, ?, ?, ?, NOW(), 1)"
+                );
+                $stmt->execute([
+                    $dni,
+                    $nombre,
+                    $apellido,
+                    $fecha_nacimiento,
+                    $sexo_id
+                ]);
+                echo json_encode(['message' => 'Paciente agregado exitosamente']);
             }
-            break;
+        } else {
+            http_response_code(400);
+            echo json_encode(['message' => 'Datos inválidos']);
+        }
+        break;
 
-        case 'update':
-            $id = $data['id'] ?? null;
-            $nombre = $data['nombre'] ?? '';
-            $apellido = $data['apellido'] ?? '';
-            $dni = $data['dni'] ?? '';
-            $fecha_nacimiento = $data['fecha_nacimiento'] ?? null;
-            $telefono = $data['telefono'] ?? '';
-            $sexo_id = $data['sexo_id'] ?? '';
 
-            if (empty($nombre) || empty($apellido) || empty($dni) || !$id) {
-                echo json_encode(['success' => false, 'message' => 'Todos los campos obligatorios deben ser completados.']);
-                exit;
-            }
+    case 'PUT':
+        $data = json_decode(file_get_contents('php://input'), true);
+        if ($data && isset($_GET['id'])) {
+            // Convertir todos los campos a mayúsculas
+            $dni = strtoupper($data['dni']);
+            $nombre = strtoupper($data['nombre']);
+            $apellido = strtoupper($data['apellido']);
+            $fecha_nacimiento = strtoupper($data['fecha_nacimiento']);
+            $sexo_id = strtoupper($data['sexo_id']);
 
-            $stmt = $pdo->prepare("UPDATE pacientes SET nombre=?, apellido=?, dni=?, fecha_nacimiento=?, telefono=?, sexo_id=? WHERE id=?");
-            if ($stmt->execute([$nombre, $apellido, $dni, $fecha_nacimiento, $telefono, $sexo_id, $id])) {
-                echo json_encode(['success' => true, 'message' => 'Paciente actualizado exitosamente.']);
+            // Validar que el DNI no esté duplicado
+            $stmt = $conn->prepare("SELECT COUNT(*) FROM pacientes WHERE dni = ? AND id != ?");
+            $stmt->execute([$dni, $_GET['id']]);
+            $count = $stmt->fetchColumn();
+
+            if ($count > 0) {
+                http_response_code(400);
+                echo json_encode(['message' => 'El DNI ya está registrado']);
             } else {
-                echo json_encode(['success' => false, 'message' => 'Error al actualizar paciente.']);
+                // Actualizar los datos del paciente
+                $stmt = $conn->prepare("UPDATE pacientes SET dni = ?, nombre = ?, apellido = ?, fecha_nacimiento = ?, sexo_id = ? 
+                WHERE id = ? AND estado = 1");
+                $stmt->execute([
+                    $dni,
+                    $nombre,
+                    $apellido,
+                    $fecha_nacimiento,
+                    $sexo_id,
+                    $_GET['id']
+                ]);
+                echo json_encode(['message' => 'Paciente actualizado exitosamente']);
             }
-            break;
+        } else {
+            http_response_code(400);
+            echo json_encode(['message' => 'Datos inválidos o ID no especificado']);
+        }
+        break;
 
-        case 'delete':
-            $id = $data['id'] ?? null;
+    case 'DELETE':
+        if (isset($_GET['id'])) {
+            $stmt = $conn->prepare("UPDATE pacientes SET estado = 0 WHERE id = ?");
+            $stmt->execute([$_GET['id']]);
+            echo json_encode(['message' => 'Paciente eliminado exitosamente']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['message' => 'ID no especificado']);
+        }
+        break;
 
-            if (!$id) {
-                echo json_encode(['success' => false, 'message' => 'ID no especificado.']);
-                exit;
-            }
-
-            $stmt = $pdo->prepare("UPDATE pacientes SET estado=0 WHERE id=?");
-            if ($stmt->execute([$id])) {
-                echo json_encode(['success' => true, 'message' => 'Paciente marcado como eliminado exitosamente.']);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Error al marcar paciente como eliminado.']);
-            }
-            break;
-
-        default:
-            echo json_encode(['success' => false, 'message' => 'Acción no válida.']);
-            break;
-    }
+    default:
+        http_response_code(405);
+        echo json_encode(['message' => 'Método no permitido']);
 }
-
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'read') {
-    $stmt = $pdo->prepare("SELECT * FROM pacientes WHERE estado = 1");
-    $stmt->execute();
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo json_encode($result);
-}
-?>

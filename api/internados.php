@@ -81,7 +81,7 @@ try {
 
             $paciente_id = $input['paciente_id'];
             $sector_id = $input['sector_id'];
-            $diagnostico = $input['diagnostico'];
+            $diagnostico = strtoupper($input['diagnostico']); // Convertir a mayúsculas
             $usuario_id = $_SESSION['user_id'];
             $estado = 1; // Estado de internación (1 = activo)
 
@@ -98,7 +98,7 @@ try {
                 try {
                     // Insertar nueva internación
                     $sql = "INSERT INTO internaciones (paciente_id, fecha_ingreso, sector_id, usuario_id, diagnostico, estado)
-                            VALUES (?, NOW(), ?, ?, ?, ?)";
+                                VALUES (?, NOW(), ?, ?, ?, ?)";
                     $stmt = $conn->prepare($sql);
                     $stmt->execute([$paciente_id, $sector_id, $usuario_id, $diagnostico, $estado]);
 
@@ -123,7 +123,7 @@ try {
                 // Obtener los datos enviados
                 $id = $input['id'] ?? null;
                 $sector_id = $input['sector_id'] ?? null;
-                $diagnostico = $input['diagnostico'] ?? null;
+                $diagnostico = isset($input['diagnostico']) ? strtoupper($input['diagnostico']) : null; // Convertir a mayúsculas
 
                 // Verificar que todos los datos necesarios estén presentes
                 if (!$id || !$sector_id || !$diagnostico) {

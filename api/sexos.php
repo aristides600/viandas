@@ -1,19 +1,24 @@
 <?php
-include 'db.php';
-
+require_once 'db.php';
 header('Content-Type: application/json');
 
-try {
-    $pdo = new PDO("mysql:host=$servername;dbname=$database;charset=utf8mb4", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die(json_encode(['success' => false, 'message' => 'Error al conectar con la base de datos: ' . $e->getMessage()]));
+// Obtener la solicitud
+$method = $_SERVER['REQUEST_METHOD'];
+$input = json_decode(file_get_contents('php://input'), true);
+
+switch ($method) {
+    case 'GET':
+        // Obtener todos los sexos
+        try {
+            $stmt = $conn->query("SELECT * FROM sexos");
+            $sexos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode($sexos);
+        } catch (PDOException $e) {
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+        break;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'read') {
-    $stmt = $pdo->prepare("SELECT * FROM sexos");
-    $stmt->execute();
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo json_encode($result);
-}
+// Cerrar la conexión
+$conn = null;
 ?>

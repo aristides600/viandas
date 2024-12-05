@@ -2,41 +2,21 @@ const app = Vue.createApp({
     data() {
         return {
             pacientes: [],
-            paciente: {
-                id: null,
-                nombre: '',
-                apellido: '',
-                dni: '',
-                fecha_nacimiento: '',
-                telefono: '',
-                sexo_id: ''
-            },
-            sexos: [],  // Aquí se almacenarán los sexos
-            editando: false
+            paciente: {},
         };
+    },
+    mounted() {
+        this.obtenerPacientes();
     },
     methods: {
         obtenerPacientes() {
-            axios.get('api/pacientes.php', { params: { action: 'read' } })
+            axios.get('api/pacientes.php')
                 .then(response => {
                     this.pacientes = response.data;
                 })
                 .catch(error => {
-                    console.error('Error al obtener pacientes:', error);
+                    console.error(error);
                 });
-        },
-        obtenerSexos() {
-            axios.get('api/sexos.php', { params: { action: 'read' } })
-                .then(response => {
-                    this.sexos = response.data;
-                })
-                .catch(error => {
-                    console.error('Error al obtener sexos:', error);
-                });
-        },
-        obtenerNombreSexo(sexo_id) {
-            const sexo = this.sexos.find(s => s.id === sexo_id);
-            return sexo ? sexo.nombre : 'Desconocido';  // Devuelve el nombre del sexo o 'Desconocido' si no se encuentra
         },
         formatearFecha(fecha) {
             if (!fecha) return '';
@@ -44,69 +24,28 @@ const app = Vue.createApp({
             return `${day}-${month}-${year}`;  // Formatea la fecha como dd-mm-yyyy
         },
        
-        guardarPaciente() {
-            const action = this.editando ? 'update' : 'create';
-            const datos = { ...this.paciente, action };
+        editarPaciente(id) {
+            window.location.href = "editar_paciente.php?id=" + id;
+        },
 
-            axios.post('api/pacientes.php', datos)
+        eliminarPaciente(id) {
+            axios.delete(`api/pacientes.php?id=${id}`)
                 .then(response => {
-                    Swal.fire(response.data.message);
-                    if (response.data.success) {
-                        this.obtenerPacientes();
-                        this.resetFormulario();
-                    }
+                    Swal.fire('Éxito', response.data.message, 'success');
+                    this.obtenerPacientes();  // Recargar la lista de pacientes
                 })
                 .catch(error => {
-                    console.error('Error al guardar paciente:', error);
+                    if (error.response && error.response.data) {
+                        Swal.fire('Error', error.response.data.message, 'error');
+                    }
                 });
         },
+        
+        nuevoPaciente() {
+            window.location.href = "nuevo_paciente.php";
 
-
-        editarPaciente(paciente) {
-            this.paciente = { ...paciente };
-            this.editando = true;
-        },
-        eliminarPaciente(id) {
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: 'No podrás revertir esta acción.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then(result => {
-                if (result.isConfirmed) {
-                    axios.post('api/pacientes.php', { id, action: 'delete' })
-                        .then(response => {
-                            Swal.fire(response.data.message);
-                            if (response.data.success) {
-                                this.obtenerPacientes();
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error al eliminar paciente:', error);
-                        });
-                }
-            });
-        },
-
-        resetFormulario() {
-            this.paciente = {
-                id: null,
-                nombre: '',
-                apellido: '',
-                dni: '',
-                fecha_nacimiento: '',
-                telefono: '',
-                sexo_id: ''
-            };
-            this.editando = false;
         }
     },
-    mounted() {
-        this.obtenerPacientes();
-        this.obtenerSexos();
-    }
 });
 
 app.mount('#app');
