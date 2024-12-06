@@ -18,8 +18,15 @@
         <form @submit.prevent="guardarPaciente">
             <div class="mb-3">
                 <label for="dni" class="form-label">DNI</label>
-                <input type="text" id="dni" v-model="paciente.dni" class="form-control" required>
+                <input
+                    type="integer"
+                    id="dni"
+                    v-model="paciente.dni"
+                    class="form-control"
+                    required
+                    maxlength="8">
             </div>
+
             <div class="mb-3">
                 <label for="apellido" class="form-label">Apellidos</label>
                 <input type="text" id="apellido" v-model="paciente.apellido" class="form-control" required>

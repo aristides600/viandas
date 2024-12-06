@@ -46,6 +46,23 @@ const app = Vue.createApp({
                     Swal.fire('Error', 'No se pudo cargar la información del paciente.', 'error');
                 });
         },
+        formatoFecha(fecha) {
+            if (!fecha || fecha === '-') return '-'; // Manejar valores nulos, vacíos o "-"
+
+            // Asegurarse de que la fecha sea interpretable por el objeto Date
+            const date = new Date(fecha);
+            if (isNaN(date)) return '-'; // Si no es válida, retornar "-"
+
+            const dia = date.getDate().toString().padStart(2, '0');
+            const mes = (date.getMonth() + 1).toString().padStart(2, '0'); // Los meses son base 0
+            const anio = date.getFullYear();
+
+            const horas = date.getHours().toString().padStart(2, '0');
+            const minutos = date.getMinutes().toString().padStart(2, '0');
+            const segundos = date.getSeconds().toString().padStart(2, '0');
+
+            return `${dia}/${mes}/${anio} ${horas}:${minutos}:${segundos}`;
+        },
         obtenerDietas() {
             axios.get('api/dietas.php')
                 .then(response => {

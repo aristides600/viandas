@@ -13,7 +13,7 @@
 <body>
     <?php include 'header.php'; ?>
     <div id="app" class="container mt-4">
-        <h1>Gestión de Internaciones</h1>
+        <h2>Gestión de Internaciones</h2>
 
         <!-- Filtros de estado -->
         <div>
@@ -42,7 +42,7 @@
                     <th>Nombres</th>
                     <th>Sector</th>
                     <th>Fecha de Ingreso</th>
-                    <th>Fecha de Egreso</th>
+                    <th>Fecha de Alta</th>
                     <th>Diagnóstico</th>
                     <th>Observación</th>
                     <th>Acciones</th>

@@ -27,14 +27,15 @@
                         <p class="card-text">
                             <strong>Nombre:</strong> {{ paciente.nombre }} {{ paciente.apellido }}<br>
                             <strong>DNI:</strong> {{ paciente.dni }}<br>
-                            <strong>Fecha de Nacimiento:</strong> {{ paciente.fecha_nacimiento }}<br>
+                            <strong>Fecha de Nacimiento:</strong> {{ formatoFecha(paciente.fecha_nacimiento) }}<br>
                             <strong>Diagnóstico:</strong> {{ internacion.diagnostico }}<br>
-                            <strong>Fecha de Ingreso:</strong> {{ internacion.fecha_ingreso }}<br>
-                            <strong>Fecha de Egreso:</strong> {{ internacion.fecha_egreso ? internacion.fecha_egreso : '-' }}
+                            <strong>Fecha de Ingreso:</strong> {{ formatoFecha(internacion.fecha_ingreso) }}<br>
+                            <strong>Fecha de Egreso:</strong> {{ formatoFecha(internacion.fecha_egreso || '-') }}
                         </p>
                     </div>
                 </div>
             </div>
+
         </div>
 
         <!-- Cambiar Dieta -->
@@ -57,7 +58,7 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="observacion" class="form-label">Observación</label>
+                <label for="observacion" class="form-label">Cama - Observaciónes</label>
                 <textarea class="form-control" v-model="dietaInternacion.observacion" required></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Guardar Dieta</button>
