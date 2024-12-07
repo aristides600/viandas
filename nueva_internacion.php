@@ -14,7 +14,7 @@
 
     <?php include 'header.php'; ?>
     <div id="app" class="container mt-4">
-        <h1>Nueva Internación</h1>
+        <h2>Nueva Internación</h2>
 
         <!-- Formulario para agregar una nueva internación -->
         <form @submit.prevent="agregarInternacion">

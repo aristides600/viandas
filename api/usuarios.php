@@ -2,90 +2,93 @@
 require_once 'db.php';
 header('Content-Type: application/json');
 
-// Obtener la solicitud
 $method = $_SERVER['REQUEST_METHOD'];
-
-// Leer el cuerpo de la solicitud
 $input = json_decode(file_get_contents("php://input"), true);
 
 try {
     switch ($method) {
         case 'GET':
-            // Listar usuarios
-            $stmt = $conn->prepare("SELECT u.id, u.dni, u.apellido, u.nombre, u.usuario, u.estado, u.rol_id, r.nombre as rol FROM usuarios u JOIN roles r ON u.rol_id = r.id");
+            $stmt = $conn->prepare("SELECT u.id, u.dni, u.apellido, u.nombre, u.usuario, u.rol_id, r.nombre as rol 
+                                    FROM usuarios u 
+                                    JOIN roles r ON u.rol_id = r.id 
+                                    WHERE u.estado = 1");
             $stmt->execute();
             $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
             echo json_encode($usuarios);
             break;
 
         case 'POST':
-            // Crear usuario
-            $dni = $input['dni'];
-            $apellido = strtoupper($input['apellido']);
-            $nombre = strtoupper($input['nombre']);
-
-            $usuario = $input['usuario'];
-            $clave = password_hash($input['clave'], PASSWORD_BCRYPT);
-            $rol_id = $input['rol_id'];
-            $estado = 1;
-
-            // Verificar si el usuario o DNI ya existe
-            $stmt = $conn->prepare("SELECT COUNT(*) FROM usuarios WHERE dni = ? OR usuario = ?");
-            $stmt->execute([$dni, $usuario]);
+            // Verificar si el DNI o el usuario ya existen
+            $stmt = $conn->prepare("SELECT COUNT(*) FROM usuarios WHERE (dni = :dni OR usuario = :usuario) AND estado = 1");
+            $stmt->execute([':dni' => $input['dni'], ':usuario' => $input['usuario']]);
             if ($stmt->fetchColumn() > 0) {
-                http_response_code(409); // Conflict
-                echo json_encode(['error' => 'El DNI o el nombre de usuario ya existe']);
+                http_response_code(409);
+                echo json_encode(['error' => 'El DNI o el usuario ya existen.']);
                 exit;
             }
 
-            // Insertar el nuevo usuario
-            $stmt = $conn->prepare("INSERT INTO usuarios (dni, apellido, nombre, usuario, clave, rol_id, estado) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$dni, $apellido, $nombre, $usuario, $clave, $rol_id, $estado]);
-
+            // Insertar nuevo usuario
+            $stmt = $conn->prepare("INSERT INTO usuarios (dni, apellido, nombre, usuario, clave, rol_id, estado) 
+                                    VALUES (:dni, :apellido, :nombre, :usuario, :clave, :rol_id, 1)");
+            $stmt->execute([
+                ':dni' => $input['dni'],
+                ':apellido' => $input['apellido'],
+                ':nombre' => $input['nombre'],
+                ':usuario' => $input['usuario'],
+                ':clave' => password_hash($input['clave'], PASSWORD_BCRYPT),
+                ':rol_id' => $input['rol_id']
+            ]);
             echo json_encode(['message' => 'Usuario creado con éxito']);
             break;
 
         case 'PUT':
-            // Editar usuario
-            $id = $_GET['id'];
-            $dni = $input['dni'];
-            $apellido = strtoupper($input['apellido']);
-            $nombre = strtoupper($input['nombre']);
-            $usuario = $input['usuario'];
-            $rol_id = $input['rol_id'];
-            // $estado = $input['estado'];
-
-            // Verificar si el nuevo DNI o usuario ya existen en otro registro
-            $stmt = $conn->prepare("SELECT COUNT(*) FROM usuarios WHERE (dni = ? OR usuario = ?) AND id != ?");
-            $stmt->execute([$dni, $usuario, $id]);
+            // Validar unicidad de DNI y usuario para otro usuario
+            $stmt = $conn->prepare("SELECT COUNT(*) FROM usuarios WHERE 
+                                    (dni = :dni OR usuario = :usuario) AND id != :id AND estado = 1");
+            $stmt->execute([
+                ':dni' => $input['dni'],
+                ':usuario' => $input['usuario'],
+                ':id' => $input['id']
+            ]);
             if ($stmt->fetchColumn() > 0) {
-                http_response_code(409); // Conflict
-                echo json_encode(['error' => 'El DNI o el nombre de usuario ya existe en otro registro']);
+                http_response_code(409);
+                echo json_encode(['error' => 'El DNI o el usuario ya están en uso por otro usuario.']);
                 exit;
             }
 
             // Actualizar usuario
-            $stmt = $conn->prepare("UPDATE usuarios SET dni = ?, apellido = ?, nombre = ?, usuario = ?, rol_id = ? WHERE id = ?");
-            $stmt->execute([$dni, $apellido, $nombre, $usuario, $rol_id, $id]);
-
+            $stmt = $conn->prepare("UPDATE usuarios SET dni = :dni, apellido = :apellido, nombre = :nombre, 
+                                    usuario = :usuario, clave = :clave, rol_id = :rol_id WHERE id = :id");
+            $stmt->execute([
+                ':id' => $input['id'],
+                ':dni' => $input['dni'],
+                ':apellido' => $input['apellido'],
+                ':nombre' => $input['nombre'],
+                ':usuario' => $input['usuario'],
+                ':clave' => password_hash($input['clave'], PASSWORD_BCRYPT),
+                ':rol_id' => $input['rol_id']
+            ]);
             echo json_encode(['message' => 'Usuario actualizado con éxito']);
             break;
 
-
         case 'DELETE':
-            // Eliminar usuario
-            $id = $_GET['id'];
-            $stmt = $conn->prepare("DELETE FROM usuarios WHERE id = ?");
-            $stmt->execute([$id]);
-            echo json_encode(['message' => 'Usuario eliminado con éxito']);
+            if (isset($_GET['id'])) {
+                $id = intval($_GET['id']);
+                $stmt = $conn->prepare("UPDATE usuarios SET estado = 0 WHERE id = :id");
+                $stmt->execute([':id' => $id]);
+                echo json_encode(["mensaje" => "Usuario desactivado con éxito"]);
+            } else {
+                http_response_code(400);
+                echo json_encode(["error" => "ID de usuario no proporcionado"]);
+            }
             break;
 
         default:
-            http_response_code(405); // Method Not Allowed
+            http_response_code(405);
             echo json_encode(['error' => 'Método no permitido']);
             break;
     }
 } catch (PDOException $e) {
-    http_response_code(500); // Internal Server Error
-    echo json_encode(['error' => 'Error en la base de datos: ' . $e->getMessage()]);
+    http_response_code(500);
+    echo json_encode(['error' => 'Error del servidor: ' . $e->getMessage()]);
 }

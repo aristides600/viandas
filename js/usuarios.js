@@ -11,7 +11,6 @@ const app = Vue.createApp({
                 usuario: '',
                 clave: '',
                 rol_id: '',
-                estado: 1
             },
             mostrarForm: false
         };
@@ -19,7 +18,7 @@ const app = Vue.createApp({
     mounted() {
         this.obtenerUsuarios();
         this.obtenerRoles();  // Asegúrate de llamar a este método
-        chequeo_permiso('usuarios');
+        // chequeo_permiso('usuarios');
     },
     methods: {
         obtenerUsuarios() {

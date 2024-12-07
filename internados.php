@@ -13,7 +13,7 @@
 <body>
     <?php include 'header.php'; ?>
     <div id="app" class="container mt-4">
-        <h2>Gestión de Internaciones</h2>
+        <h2>Internaciones</h2>
 
         <!-- Filtros de estado -->
         <div>
