@@ -39,6 +39,26 @@ const app = Vue.createApp({
                 };
             }
         }
+        // async consumoDiario() {
+        //     console.log('Comida seleccionada:', this.comidaSeleccionada); // Verifica el valor aquí
+        //     if (!this.comidaSeleccionada) {
+        //         this.mensaje = { texto: 'Por favor, selecciona una comida.', clase: 'alert-danger' };
+        //         return;
+        //     }
+        
+        //     try {
+        //         const response = await axios.post('api/consumos_diarios.php', {
+        //             comida_id: this.comidaSeleccionada
+        //         });
+        //         // Resto del código...
+        //     } catch (error) {
+        //         console.error('Error:', error);
+        //         this.mensaje = {
+        //             texto: 'Hubo un error al procesar la solicitud.',
+        //             clase: 'alert-danger'
+        //         };
+        //     }
+        // }
     }
 });
 

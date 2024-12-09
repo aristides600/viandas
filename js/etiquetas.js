@@ -6,17 +6,21 @@ const app = Vue.createApp({
         };
     },
     computed: {
-        // Método computado para filtrar pacientes por DNI o Apellido
         pacientesFiltrados() {
+            if (!Array.isArray(this.pacientes)) {
+                console.error('Datos de pacientes no son un array');
+                return [];
+            }
             return this.pacientes.filter(paciente => {
                 const apellido = paciente.apellido_paciente.toLowerCase();
                 const dni = paciente.dni ? paciente.dni.toString() : '';
                 const filtroLowerCase = this.filtro.toLowerCase();
-                
+
                 return apellido.includes(filtroLowerCase) || dni.includes(filtroLowerCase);
             });
         }
     },
+
     mounted() {
         this.obtenerPacientes();
     },

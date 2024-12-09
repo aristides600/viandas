@@ -53,7 +53,6 @@
             </tbody>
         </table>
 
-
         <div v-if="pacientesFiltrados.length === 0">
             <p>No se encontraron resultados para la búsqueda.</p>
         </div>

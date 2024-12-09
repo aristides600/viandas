@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if ($existeConsumo == 0) {
                     $insertSql = "INSERT INTO consumos_diarios (internacion_id, paciente_id, dieta_id, fecha_consumo, comida_id, usuario_id, estado) 
-                                  VALUES (:internacion_id, :paciente_id, :dieta_id, CURRENT_DATE, :comida_id, :usuario_id, 1)";
+                                  VALUES (:internacion_id, :paciente_id, :dieta_id, NOW(), :comida_id, :usuario_id, 1)";
                     $stmtInsert = $conn->prepare($insertSql);
                     $stmtInsert->execute([
                         ':internacion_id' => $internacion_id,

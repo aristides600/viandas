@@ -174,7 +174,7 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                     <ul class="navbar-nav">
                         <li class="nav-item"><a class="nav-link" href="pacientes.php">Pacientes</a></li>
                         <li class="nav-item"><a class="nav-link" href="internados.php">Internados</a></li>
-                        
+
                         <li class="nav-item"><a class="nav-link" href="pacientes_dietas.php">Dietas</a></li>
                         <li class="nav-item"><a class="nav-link" href="etiquetas.php">Etiquetas</a></li>
                         <li class="nav-item"><a class="nav-link" href="reportes.php">Reportes</a></li>
@@ -183,14 +183,15 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                     <!-- Información de usuario -->
                     <div class="user-info ms-auto d-flex align-items-center">
                         <span><?php echo $nombre . ' ' . $apellido; ?></span>
-                        
+
                         <form action="logout.php" method="post" class="d-inline">
                             <button class="logout-button ms-2">
                                 <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
                             </button>
                         </form>
-                        <button class="change-password-button">
-                            <i class="bi bi-key"></i>
+                        <!-- Botón de cambiar contraseña -->
+                        <button class="change-password-button ms-3" type="button" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                            <i class="bi bi-key-fill"></i>
                         </button>
                     </div>
                 </div>
@@ -227,7 +228,42 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                         <a href="etiquetas.php" class="btn btn-primary">Ir a Etiquetas</a>
                     </div>
                 </div>
-                
+
+            </div>
+            <!-- Modal para cambiar contraseña -->
+            <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h5 class="modal-title" id="changePasswordModalLabel">Cambiar Contraseña de: <?php
+                                                                                                            echo htmlspecialchars($nombre . ' ' . htmlspecialchars($apellido));
+                                                                                                            ?></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="changePasswordForm">
+                                <div class="mb-3">
+                                    <label for="currentPassword" class="form-label">Contraseña Actual</label>
+                                    <input type="password" class="form-control" id="currentPassword" v-model="currentPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newPassword" class="form-label">Nueva Contraseña</label>
+                                    <input type="password" class="form-control" id="newPassword" v-model="newPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirmPassword" class="form-label">Confirmar Nueva Contraseña</label>
+                                    <input type="password" class="form-control" id="confirmPassword" v-model="confirmPassword" required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" @click="changePassword">Guardar Cambios</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
 
@@ -238,6 +274,9 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>
+    <script src="./cdn/sweetalert2@10.js"></script>
+    <script src="./js/index.js"></script>
 </body>
 
 </html>
