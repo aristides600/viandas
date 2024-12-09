@@ -49,18 +49,22 @@
                         <td>
                             <!-- Botón de editar -->
                             <button class="btn btn-info btn-sm" @click="editarDieta(dieta.id)">
-                                <i class="bi bi-pencil"></i> 
+                                <i class="bi bi-pencil"></i>
                             </button>
 
                             <!-- Botón de eliminar -->
                             <button class="btn btn-danger btn-sm" @click="eliminarDieta(dieta.id)">
-                                <i class="bi bi-trash"></i> 
+                                <i class="bi bi-trash"></i>
                             </button>
 
                             <!-- Botón de ver dietas -->
                             <button class="btn btn-secondary btn-sm" @click="verDietas(dieta.internacion_id)">
-                                <i class="bi bi-eye"></i> Dietas
+                                <i class="bi bi-eye"></i>
                             </button>
+                            <button class="btn btn-secondary btn-sm" @click="imprimirEtiqueta(dieta.internacion_id)">
+                                <i class="bi bi-printer"></i> 
+                            </button>
+
 
                         </td>
                     </tr>

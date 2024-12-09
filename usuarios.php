@@ -17,7 +17,7 @@
     <?php include 'header.php'; ?>
 
     <div id="app" class="container mt-5">
-        <h1>Gestión de Usuarios</h1>
+        <h2>Gestión de Usuarios</h2>
         <button class="btn btn-primary mb-3" @click="mostrarFormulario()">Crear Usuario</button>
 
         <!-- Formulario de Usuario -->

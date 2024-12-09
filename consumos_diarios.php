@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="./css/estilos.css">
 </head>
 <body>
+<?php include 'header.php'; ?>
+
     <div id="app" class="container mt-5">
         <h1 class="text-center">Seleccionar Comida</h1>
         <div class="row justify-content-center">
