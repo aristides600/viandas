@@ -8,7 +8,7 @@ $input = json_decode(file_get_contents("php://input"), true);
 try {
     switch ($method) {
         case 'GET':
-            $stmt = $conn->prepare("SELECT u.id, u.dni, u.apellido, u.nombre, u.usuario, u.rol_id, r.nombre as rol 
+            $stmt = $conn->prepare("SELECT u.id, u.dni, u.apellido, u.nombre, u.usuario, u.clave, u.rol_id, r.nombre as rol 
                                     FROM usuarios u 
                                     JOIN roles r ON u.rol_id = r.id 
                                     WHERE u.estado = 1");
