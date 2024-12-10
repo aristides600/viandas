@@ -17,6 +17,10 @@
             <!-- Campo de búsqueda por DNI o Apellido -->
             <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido">
             <h2>Dietas de Internados</h2>
+            <button @click="imprimirTodasEtiquetas" class="btn btn-primary">
+                Imprimir Todas las Etiquetas
+            </button>
+
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -62,7 +66,7 @@
                                 <i class="bi bi-eye"></i>
                             </button>
                             <button class="btn btn-secondary btn-sm" @click="imprimirEtiqueta(dieta.internacion_id)">
-                                <i class="bi bi-printer"></i> 
+                                <i class="bi bi-printer"></i>
                             </button>
 
 

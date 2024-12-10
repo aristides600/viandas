@@ -43,7 +43,7 @@
             <div class="mb-3">
                 <label for="dieta_id" class="form-label">Tipo de Dieta</label>
                 <select class="form-select" v-model="dietaInternacion.dieta_id" required>
-                    <option v-for="dieta in dietas" :value="dieta.id">{{ dieta.nombre }}</option>
+                    <option v-for="dieta in dietas" :value="dieta.id">{{ dieta.codigo }} -  {{ dieta.nombre }}</option>
                 </select>
             </div>
 

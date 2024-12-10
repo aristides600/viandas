@@ -53,7 +53,7 @@
       <div class="mb-3">
         <label for="dieta_id" class="form-label">Dieta</label>
         <select v-model="pacienteDieta.dieta_id" class="form-control" id="dieta_id" required>
-          <option v-for="dieta in dietas" :key="dieta.id" :value="dieta.id" :title="dieta.nombre">{{ dieta.nombre }}</option>
+          <option v-for="dieta in dietas" :key="dieta.id" :value="dieta.id" :title="dieta.nombre">{{ dieta.codigo }} -  {{ dieta.nombre }}</option>
         </select>
       </div>
       <!-- <div class="mb-3">
