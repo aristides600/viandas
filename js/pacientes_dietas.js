@@ -228,77 +228,81 @@ const app = Vue.createApp({
                 Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
                 return;
             }
-
+        
             // Crear un nuevo documento PDF con el tamaño adecuado
             const doc = new jsPDF({
                 unit: 'mm',  // Unidades en milímetros
                 format: [63, 44],  // Tamaño de página: 63mm x 44mm
                 orientation: 'l'  // Landscape
             });
-
+        
             this.dietas.forEach((dieta, index) => {
                 const comida = this.comidas.find(c => c.id === this.comidaSeleccionada);
                 const nombreComida = comida ? comida.nombre : 'No seleccionada';
+        
                 // Establecer el color del texto
                 doc.setTextColor(0, 0, 0);
-
+        
                 // Ajustar la distancia entre líneas
                 const lineHeight = 6;  // Puedes modificar este valor para aumentar o reducir el espacio entre las líneas
                 let currentY = 6;  // Posición inicial para la primera línea
-                doc.text(`Comida: ${nombreComida}`, 1, currentY);
+                doc.text(` ${nombreComida}`, 1, currentY);
                 currentY += lineHeight;  // Incrementar la posición Y para la siguiente línea
-
+        
                 // Agregar el contenido de cada dieta
                 doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
-                currentY += lineHeight;  // Incrementar la posición Y para la siguiente línea
-
+                currentY += lineHeight;
+        
                 doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
                 currentY += lineHeight;
-
+        
                 doc.text(`Dieta: ${dieta.nombre_dieta}`, 1, currentY);
                 currentY += lineHeight;
-
+        
                 doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
                 currentY += lineHeight;
-
+        
                 doc.text(`Acompañante: ${dieta.acompaniante === 1 ? 'SI' : dieta.acompaniante === 0 ? 'NO' : 'Ninguna'}`, 1, currentY);
                 currentY += lineHeight;
-
+        
                 // Si la dieta tiene acompañante, agregar una nueva página con los datos de la dieta general para el acompañante
                 if (dieta.acompaniante === 1) {
-                    // Crear una nueva página para los detalles de la dieta general para el acompañante
-                    doc.addPage([63, 44], 'l');
-                    doc.text('Dieta Gral. Acompañante', 1, 6);  // Título "Dieta General"
-                    currentY = 12;  // Ajustar posición Y para los siguientes datos de la dieta general
-                    
-                    doc.text(`Comida: ${nombreComida}`, 1, currentY);
+                    doc.addPage([63, 44], 'l'); // Crear una nueva página para los detalles de la dieta general para el acompañante
+                    currentY = 6; // Reiniciar la posición Y para la nueva página
+        
+                    // Agregar el contenido de la dieta para el acompañante
+                    doc.text(`${nombreComida}`, 1, currentY);
                     currentY += lineHeight;
-
+        
+                    doc.text('Acompañante', 1, currentY); // Título "Acompañante"
+                    currentY += lineHeight;
+        
                     // Agregar los mismos datos de la dieta, pero sin el campo "Acompañante"
                     doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
                     currentY += lineHeight;
-
+        
                     doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
                     currentY += lineHeight;
-
-                    doc.text(`Dieta: ${dieta.nombre_dieta}`, 1, currentY);
+        
+                    doc.text(`Dieta General`, 1, currentY); // Título "Dieta General"
                     currentY += lineHeight;
-
+        
                     doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
                     currentY += lineHeight;
-
+        
                     // Aquí no se imprime el campo "Acompañante"
                 }
-
+        
                 // Agregar una nueva página para cada etiqueta excepto la última
                 if (index < this.dietas.length - 1) {
                     doc.addPage([63, 44], 'l');
                 }
             });
-
+        
             // Mostrar la vista previa del PDF con todas las etiquetas
             window.open(doc.output('bloburl'), '_blank');  // Abre la vista previa en una nueva ventana
         },
+        
        
         generarPDF() {
             const logoPath = 'img/logo.png';
