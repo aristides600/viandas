@@ -22,18 +22,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Consulta para obtener pacientes_dietas
-        $sql = "SELECT DISTINCT internacion_id, paciente_id, dieta_id FROM pacientes_dietas WHERE estado = 1";
+        $sql = "SELECT pd.internacion_id, pd.paciente_id, pd.dieta_id, pd.acompaniante, i.sector_id
+                FROM pacientes_dietas pd
+                JOIN internaciones i ON pd.internacion_id = i.id
+                WHERE pd.estado = 1";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $pacientesDietas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $registrados = 0;
+
         $errores = [];
 
         foreach ($pacientesDietas as $consumo) {
             $internacion_id = $consumo['internacion_id'];
             $paciente_id = $consumo['paciente_id'];
             $dieta_id = $consumo['dieta_id'];
+            $acompaniante = $consumo['acompaniante'];
+            $sector_id = $consumo['sector_id']; // Obtener sector_id de la consulta
 
             // Verificar si ya existe un consumo para la comida seleccionada
             $verificarSql = "SELECT dieta_id FROM consumos_diarios WHERE internacion_id = :internacion_id AND fecha_consumo = CURRENT_DATE AND comida_id = :comida_id";
@@ -53,20 +59,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmtUpdate->execute([
                         ':dieta_id' => $dieta_id,
                         ':internacion_id' => $internacion_id,
-                        ':comida_id' => $comida_id
+                        ':comida_id' => $comida_id,
                     ]);
                 }
             } else {
                 // Insertar nuevo registro si no existe
-                $insertSql = "INSERT INTO consumos_diarios (internacion_id, paciente_id, dieta_id, fecha_consumo, comida_id, usuario_id, estado) 
-                              VALUES (:internacion_id, :paciente_id, :dieta_id, NOW(), :comida_id, :usuario_id, 1)";
+                $insertSql = "INSERT INTO consumos_diarios (internacion_id, paciente_id, dieta_id, fecha_consumo, comida_id, cantidad, acompaniante, usuario_id, estado, sector_id) 
+              VALUES (:internacion_id, :paciente_id, :dieta_id, NOW(), :comida_id, 1, :acompaniante, :usuario_id, 1, :sector_id)";
                 $stmtInsert = $conn->prepare($insertSql);
                 $stmtInsert->execute([
                     ':internacion_id' => $internacion_id,
                     ':paciente_id' => $paciente_id,
                     ':dieta_id' => $dieta_id,
                     ':comida_id' => $comida_id,
-                    ':usuario_id' => $usuario_id
+                    ':acompaniante' => $acompaniante,
+                    ':usuario_id' => $usuario_id,
+                    ':sector_id' => $sector_id // Agregar sector_id en la inserción
                 ]);
                 $registrados++;
             }
@@ -81,5 +89,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['status' => 'error', 'message' => 'Error al registrar consumos diarios.']);
     }
 }
-
-?>
