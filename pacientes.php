@@ -55,9 +55,9 @@
                             <i class="bi bi-pencil"></i>
                         </button>
                         <!-- Botón de eliminar -->
-                        <button class="btn btn-danger btn-sm" @click="eliminarPaciente(paciente.id)" title="Eliminar paciente">
+                        <!-- <button class="btn btn-danger btn-sm" @click="eliminarPaciente(paciente.id)" title="Eliminar paciente">
                             <i class="bi bi-trash"></i>
-                        </button>
+                        </button> -->
                     </td>
                 </tr>
             </tbody>

@@ -43,25 +43,7 @@ const app = Vue.createApp({
                     this.mensaje = { texto: 'Error al cargar las comidas.', clase: 'alert-danger' };
                 });
         },
-        // async consumoDiario() {
-        //     try {
-        //         const response = await axios.post('api/consumos_diarios.php', {
-        //             comida_id: this.comidaSeleccionada
-        //         });
-        //         const data = response.data;
 
-        //         this.mensaje = {
-        //             texto: data.message,
-        //             clase: data.status === 'success' ? 'alert-success' : 'alert-danger'
-        //         };
-        //     } catch (error) {
-        //         console.error('Error:', error);
-        //         this.mensaje = {
-        //             texto: 'Hubo un error al procesar la solicitud.',
-        //             clase: 'alert-danger'
-        //         };
-        //     }
-        // },
         abrirModalComida() {
             // Mostrar el modal
             const modal = new bootstrap.Modal(document.getElementById('modalComida'));
@@ -94,47 +76,7 @@ const app = Vue.createApp({
             }
         },
 
-        // Función dummy para imprimir todas las etiquetas (impleméntalo según sea necesario)
-        imprimirTodasEtiquetas() {
-            console.log('Imprimir todas las etiquetas');
-        },
-        imprimirTodasEtiquetas() {
-            if (this.dietas.length === 0) {
-                Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
-                return;
-            }
 
-            const doc = new jsPDF({
-                unit: 'mm',
-                format: [63, 44],
-                orientation: 'l'
-            });
-
-            this.dietas.forEach((dieta, index) => {
-                doc.setTextColor(0, 0, 0);
-                let currentY = 6;
-
-                doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
-                currentY += 6;
-
-                doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
-                currentY += 6;
-
-                doc.text(`Dieta: ${dieta.nombre_dieta}`, 1, currentY);
-                currentY += 6;
-
-                doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
-                currentY += 6;
-
-                doc.text(`Acompañante: ${dieta.acompaniante === 1 ? 'SI' : 'NO'}`, 1, currentY);
-
-                if (index < this.dietas.length - 1) {
-                    doc.addPage([63, 44], 'l');
-                }
-            });
-
-            window.open(doc.output('bloburl'), '_blank');
-        },
         editarDieta(id) {
             window.location.href = "editar_dieta.php?id=" + id;
         },
@@ -158,8 +100,6 @@ const app = Vue.createApp({
 
             return `${dia}/${mes}/${anio}`;
         },
-
-
         async eliminarDieta(id) {
             try {
                 const confirmacion = await Swal.fire({
@@ -212,6 +152,77 @@ const app = Vue.createApp({
             window.open(doc.output('bloburl'), '_blank');  // Abre una nueva ventana con la vista previa
         },
 
+        // imprimirTodasEtiquetas() {
+        //     if (this.dietas.length === 0) {
+        //         Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
+        //         return;
+        //     }
+
+        //     // Crear un nuevo documento PDF con el tamaño adecuado
+        //     const doc = new jsPDF({
+        //         unit: 'mm',  // Unidades en milímetros
+        //         format: [63, 44],  // Tamaño de página: 63mm x 44mm
+        //         orientation: 'l'  // Landscape
+        //     });
+
+        //     this.dietas.forEach((dieta, index) => {
+        //         // Establecer el color del texto
+        //         doc.setTextColor(0, 0, 0);
+
+        //         // Ajustar la distancia entre líneas
+        //         const lineHeight = 6;  // Puedes modificar este valor para aumentar o reducir el espacio entre las líneas
+        //         let currentY = 6;  // Posición inicial para la primera línea
+
+        //         // Agregar el contenido de cada dieta
+        //         doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
+        //         currentY += lineHeight;  // Incrementar la posición Y para la siguiente línea
+
+        //         doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Dieta: ${dieta.nombre_dieta}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Acompañante: ${dieta.acompaniante === 1 ? 'SI' : dieta.acompaniante === 0 ? 'NO' : 'Ninguna'}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         // Si la dieta tiene acompañante, agregar una nueva página con los datos de la dieta general para el acompañante
+        //         if (dieta.acompaniante === 1) {
+        //             // Crear una nueva página para los detalles de la dieta general para el acompañante
+        //             doc.addPage([63, 44], 'l');
+        //             doc.text('Dieta Gral. Acompañante', 1, 6);  // Título "Dieta General"
+        //             currentY = 12;  // Ajustar posición Y para los siguientes datos de la dieta general
+
+        //             // Agregar los mismos datos de la dieta, pero sin el campo "Acompañante"
+        //             doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
+        //             currentY += lineHeight;
+
+        //             doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
+        //             currentY += lineHeight;
+
+        //             doc.text(`Dieta: ${dieta.nombre_dieta}`, 1, currentY);
+        //             currentY += lineHeight;
+
+        //             doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
+        //             currentY += lineHeight;
+
+        //             // Aquí no se imprime el campo "Acompañante"
+        //         }
+
+        //         // Agregar una nueva página para cada etiqueta excepto la última
+        //         if (index < this.dietas.length - 1) {
+        //             doc.addPage([63, 44], 'l');
+        //         }
+        //     });
+
+        //     // Mostrar la vista previa del PDF con todas las etiquetas
+        //     window.open(doc.output('bloburl'), '_blank');  // Abre la vista previa en una nueva ventana
+        // },
+
+
         imprimirTodasEtiquetas() {
             if (this.dietas.length === 0) {
                 Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
@@ -226,12 +237,16 @@ const app = Vue.createApp({
             });
 
             this.dietas.forEach((dieta, index) => {
+                const comida = this.comidas.find(c => c.id === this.comidaSeleccionada);
+                const nombreComida = comida ? comida.nombre : 'No seleccionada';
                 // Establecer el color del texto
                 doc.setTextColor(0, 0, 0);
 
                 // Ajustar la distancia entre líneas
                 const lineHeight = 6;  // Puedes modificar este valor para aumentar o reducir el espacio entre las líneas
                 let currentY = 6;  // Posición inicial para la primera línea
+                doc.text(`Comida: ${nombreComida}`, 1, currentY);
+                currentY += lineHeight;  // Incrementar la posición Y para la siguiente línea
 
                 // Agregar el contenido de cada dieta
                 doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
@@ -255,6 +270,9 @@ const app = Vue.createApp({
                     doc.addPage([63, 44], 'l');
                     doc.text('Dieta Gral. Acompañante', 1, 6);  // Título "Dieta General"
                     currentY = 12;  // Ajustar posición Y para los siguientes datos de la dieta general
+                    
+                    doc.text(`Comida: ${nombreComida}`, 1, currentY);
+                    currentY += lineHeight;
 
                     // Agregar los mismos datos de la dieta, pero sin el campo "Acompañante"
                     doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
@@ -281,8 +299,7 @@ const app = Vue.createApp({
             // Mostrar la vista previa del PDF con todas las etiquetas
             window.open(doc.output('bloburl'), '_blank');  // Abre la vista previa en una nueva ventana
         },
-
-
+       
         generarPDF() {
             const logoPath = 'img/logo.png';
             const img = new Image();

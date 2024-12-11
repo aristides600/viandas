@@ -46,9 +46,9 @@
                             <button class="btn btn-info btn-sm" @click="editarDieta(dieta.id)">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button class="btn btn-danger btn-sm" @click="eliminarDieta(dieta.id)">
+                            <!-- <button class="btn btn-danger btn-sm" @click="eliminarDieta(dieta.id)">
                                 <i class="bi bi-trash"></i>
-                            </button>
+                            </button> -->
                             <button class="btn btn-secondary btn-sm" @click="verDietas(dieta.internacion_id)">
                                 <i class="bi bi-eye"></i>
                             </button>
