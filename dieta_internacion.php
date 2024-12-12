@@ -58,7 +58,7 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="observacion" class="form-label">Cama - Observaciónes</label>
+                <label for="observacion" class="form-label">Observaciónes</label>
                 <textarea class="form-control" v-model="dietaInternacion.observacion" required></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Guardar Dieta</button>

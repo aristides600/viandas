@@ -22,11 +22,13 @@
                 <thead>
                     <tr>
                         <th>Sector</th>
+                        <th>Cama</th>
                         <th>Apellido</th>
                         <th>Nombre</th>
                         <th>Edad</th>
                         <th>Código</th>
                         <th>Nombre Dieta</th>
+                        <th>Dignostico</th>
                         <th>Observación</th>
                         <th>Fecha Asignada</th>
                         <th>Acciones</th>
@@ -35,11 +37,13 @@
                 <tbody>
                     <tr v-for="dieta in pacientesFiltrados" :key="dieta.id">
                         <td>{{ dieta.nombre_sector || '-' }}</td>
+                        <td>{{ dieta.cama || '-' }}</td>
                         <td>{{ dieta.apellido_paciente || '-' }}</td>
                         <td>{{ dieta.nombre_paciente || '-' }}</td>
                         <td>{{ dieta.edad || '-' }}</td>
                         <td>{{ dieta.codigo_dieta || '-' }}</td>
                         <td>{{ dieta.nombre_dieta || '-' }}</td>
+                        <td>{{ dieta.diagnostico || '-' }}</td>
                         <td>{{ dieta.observacion || '-' }}</td>
                         <td>{{ formatearFecha(dieta.fecha_consumo) || '-' }}</td>
                         <td>

@@ -13,6 +13,7 @@ $query = "
     SELECT 
         i.id,
         i.diagnostico,
+        i.cama,
         i.fecha_ingreso,
         i.fecha_egreso,
         i.sector_id,

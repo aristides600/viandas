@@ -10,6 +10,7 @@ const app = Vue.createApp({
             internacion: {
                 id: null,  // Asegúrate de que el ID esté presente en la internación
                 diagnostico: '',
+                cama: '',
                 fecha_ingreso: '',
                 fecha_egreso: null,
                 sector_id: null
@@ -42,6 +43,7 @@ const app = Vue.createApp({
                     this.internacion = {
                         id: datos.id,  // Asignar el ID de la internación
                         diagnostico: datos.diagnostico,
+                        cama: datos.cama,
                         fecha_ingreso: datos.fecha_ingreso,
                         fecha_egreso: datos.fecha_egreso,
                         sector_id: datos.sector_id
@@ -73,6 +75,7 @@ const app = Vue.createApp({
             const data = {
                 id: this.internacion.id, // Asegúrate de que el ID esté correctamente asignado
                 sector_id: this.internacion.sector_id,
+                cama: this.internacion.cama,
                 diagnostico: this.internacion.diagnostico
             };
             console.log(data)

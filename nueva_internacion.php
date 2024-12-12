@@ -63,7 +63,7 @@
                     <button class="btn btn-secondary" @click="limpiarPaciente">Limpiar Selección</button>
                 </div>
             </div>
-            
+
             <div class="mb-3">
                 <label for="sector_id" class="form-label">Seleccionar Sector</label>
                 <select class="form-control" v-model="nuevaInternacion.sector_id" required>
@@ -71,6 +71,10 @@
                         {{ sector.nombre }}
                     </option>
                 </select>
+            </div>
+            <div class="mb-3">
+                <label for="cama" class="form-label">Cama</label>
+                <input type="integer" class="form-control" v-model="nuevaInternacion.cama" maxlength="3" required>
             </div>
 
             <div class="mb-3">

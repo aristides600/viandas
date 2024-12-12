@@ -12,6 +12,7 @@ createApp({
             nuevaInternacion: {
                 paciente_id: '',
                 sector_id: '',
+                cama: '',
                 diagnostico: ''
             },
             documento: {
@@ -65,7 +66,7 @@ createApp({
             const nuevaInternacionConPaciente = { ...this.nuevaInternacion, paciente_id: this.documento.paciente_id };
             axios.post('api/internados.php', nuevaInternacionConPaciente)
                 .then(response => {
-                    this.nuevaInternacion = { paciente_id: '', profesional_id: '', sector_id: '', diagnostico: '' };  // Resetea el formulario
+                    this.nuevaInternacion = { paciente_id: '', profesional_id: '', sector_id: '', cama: '', diagnostico: '' };  // Resetea el formulario
                     Swal.fire('¡Éxito!', 'Internación agregada correctamente.', 'success')
                         .then(() => {
                             location.reload();  // Recarga la página

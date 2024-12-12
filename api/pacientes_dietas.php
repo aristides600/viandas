@@ -24,35 +24,39 @@ try {
     switch ($method) {
         case 'GET': // Obtener dietas
             $sql = "SELECT
-                        pd.id,
-                        pd.paciente_id,
-                        pd.dieta_id,
-                        d.codigo AS codigo_dieta,
-                        d.nombre AS nombre_dieta,
-                        postres.nombre AS nombre_postre,
-                        pd.usuario_id,
-                        pd.internacion_id,
-                        pd.fecha_consumo,
-                        pd.observacion,
-                        pd.acompaniante,
-                        pd.estado,
-                        pd.postre_id,
-                        i.sector_id,
-                        p.nombre AS nombre_paciente,
-                        p.apellido AS apellido_paciente,
-                        s.nombre AS nombre_sector,
-                        DATEDIFF(CURDATE(), p.fecha_nacimiento) DIV 365 AS edad
-                    FROM pacientes_dietas pd
-                    JOIN pacientes p ON p.id = pd.paciente_id
-                    JOIN internaciones i ON i.id = pd.internacion_id
-                    JOIN sectores s ON s.id = i.sector_id
-                    JOIN dietas d ON d.id = pd.dieta_id
-                    JOIN postres ON postres.id = pd.dieta_id
-                    WHERE pd.estado = 1";
+            pd.id,
+            pd.paciente_id,
+            pd.dieta_id,
+            d.codigo AS codigo_dieta,
+            d.nombre AS nombre_dieta,
+            postres.nombre AS nombre_postre,
+            pd.usuario_id,
+            pd.internacion_id,
+            pd.fecha_consumo,
+            pd.observacion,
+            pd.acompaniante,
+            pd.estado,
+            pd.postre_id,
+            i.sector_id,
+            i.cama,
+            i.diagnostico,
+            p.nombre AS nombre_paciente,
+            p.apellido AS apellido_paciente,
+            s.nombre AS nombre_sector,
+            DATEDIFF(CURDATE(), p.fecha_nacimiento) DIV 365 AS edad
+        FROM pacientes_dietas pd
+        JOIN pacientes p ON p.id = pd.paciente_id
+        JOIN internaciones i ON i.id = pd.internacion_id
+        JOIN sectores s ON s.id = i.sector_id
+        JOIN dietas d ON d.id = pd.dieta_id
+        JOIN postres ON postres.id = pd.dieta_id
+        WHERE pd.estado = 1
+        ORDER BY i.sector_id ASC, i.cama ASC"; // Ordenar por sector y cama de forma ascendente
 
             $stmt = $conn->prepare($sql);
             $stmt->execute();
             echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+
             break;
 
         case 'POST': // Crear una nueva dieta

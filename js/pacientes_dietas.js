@@ -151,7 +151,7 @@ const app = Vue.createApp({
             // Mostrar la vista previa del PDF sin descargarlo
             window.open(doc.output('bloburl'), '_blank');  // Abre una nueva ventana con la vista previa
         },
-        
+
         imprimirTodasEtiquetas() {
             if (this.dietas.length === 0) {
                 Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
@@ -188,6 +188,9 @@ const app = Vue.createApp({
                 doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
                 currentY += lineHeight;
 
+                doc.text(`Cama: ${dieta.cama}`, 1, currentY);
+                currentY += lineHeight;
+
                 doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
                 currentY += lineHeight;
 
@@ -219,6 +222,9 @@ const app = Vue.createApp({
                     doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
                     currentY += lineHeight;
 
+                    doc.text(`Cama: ${dieta.cama}`, 1, currentY);
+                    currentY += lineHeight;
+
                     doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
                     currentY += lineHeight;
 
@@ -241,6 +247,100 @@ const app = Vue.createApp({
             window.open(doc.output('bloburl'), '_blank');  // Abre la vista previa en una nueva ventana
         },
 
+        // generarPDF() {
+        //     const logoPath = 'img/logo.png';
+        //     const img = new Image();
+        //     img.src = logoPath;
+
+        //     img.onload = () => {
+        //         const doc = new jsPDF();
+
+        //         // Tamaño y posición del logo
+        //         const logoWidth = 20; // Ancho del logo
+        //         const logoHeight = 15; // Alto del logo (ajustado proporcionalmente)
+        //         const logoX = 10; // Posición X del logo
+        //         const logoY = 10; // Posición Y del logo (parte superior)
+
+        //         // Agregar el logo al PDF
+        //         doc.addImage(img, 'PNG', logoX, logoY, logoWidth, logoHeight);
+
+        //         // Fecha y hora actuales
+        //         const currentDate = new Date();
+        //         const formattedDate = currentDate.toLocaleDateString();
+        //         const formattedTime = currentDate.toLocaleTimeString();
+        //         const dateTimeText = `${formattedDate} ${formattedTime}`;
+
+        //         // Posición de la fecha y hora a la misma altura que el logo
+        //         const pageWidth = doc.internal.pageSize.width;
+        //         const dateTimeX = pageWidth - doc.getTextWidth(dateTimeText) - 10; // A 10 mm del borde derecho
+        //         const dateTimeY = logoY + logoHeight / 2 + 2; // Alineado verticalmente con el logo
+        //         doc.setFontSize(10);
+        //         doc.text(dateTimeText, dateTimeX, logoY + logoHeight / 2);
+
+        //         // Título general
+        //         const title = "Listado de dietas por sector";
+        //         doc.setFontSize(14);
+
+        //         // Centrar el título horizontalmente en la hoja y alinearlo con el logo y fecha/hora
+        //         const textWidth = doc.getTextWidth(title);
+        //         const titleX = (pageWidth - textWidth) / 2; // Centrando el texto
+        //         const titleY = logoY + logoHeight / 2; // Mismo Y que logo y fecha/hora
+
+        //         // Agregar el título al PDF
+        //         doc.text(title, titleX, titleY);
+
+        //         let y = logoY + logoHeight + 10; // Posición inicial debajo del logo, fecha/hora y título
+
+        //         // Agrupar los pacientes por sector
+        //         const pacientesPorSector = this.pacientesFiltrados.reduce((acc, dieta) => {
+        //             if (!acc[dieta.nombre_sector]) {
+        //                 acc[dieta.nombre_sector] = [];
+        //             }
+        //             acc[dieta.nombre_sector].push(dieta);
+        //             return acc;
+        //         }, {});
+
+        //         for (const [sector, pacientes] of Object.entries(pacientesPorSector)) {
+        //             // Agregar el título del sector centrado
+        //             doc.setFontSize(12);
+        //             const sectorTextWidth = doc.getTextWidth(sector);
+        //             const sectorX = (pageWidth - sectorTextWidth) / 2;
+        //             doc.text(sector, sectorX, y);
+        //             y += 5;
+
+        //             // Agregar la tabla con los pacientes del sector
+        //             doc.autoTable({
+        //                 startY: y,
+        //                 head: [['Apellido', 'Nombre', 'Edad', 'Dieta', 'Observación', 'Fecha Asignación']],
+        //                 body: pacientes.map(dieta => [
+        //                     dieta.apellido_paciente,
+        //                     dieta.nombre_paciente,
+        //                     dieta.edad,
+        //                     dieta.nombre_dieta,
+        //                     dieta.observacion,
+        //                     formatFechaConsumo(dieta.fecha_consumo)
+        //                 ])
+        //             });
+
+        //             // Actualizar la posición Y para evitar solapamiento con la siguiente tabla
+        //             y = doc.lastAutoTable.finalY + 10;
+        //         }
+
+        //         // Mostrar la vista previa del PDF sin descargarlo
+        //         window.open(doc.output('bloburl'), '_blank'); // Abre una nueva ventana con la vista previa
+        //     };
+
+        //     img.onerror = () => {
+        //         console.error("No se pudo cargar el logo desde la ruta proporcionada.");
+        //     };
+        //     function formatFechaConsumo(fecha) {
+        //         const date = new Date(fecha);
+        //         const day = String(date.getDate()).padStart(2, '0');
+        //         const month = String(date.getMonth() + 1).padStart(2, '0');
+        //         const year = date.getFullYear();
+        //         return `${day}/${month}/${year}`;
+        //     }
+        // }
         generarPDF() {
             const logoPath = 'img/logo.png';
             const img = new Image();
@@ -250,10 +350,10 @@ const app = Vue.createApp({
                 const doc = new jsPDF();
 
                 // Tamaño y posición del logo
-                const logoWidth = 20; // Ancho del logo
-                const logoHeight = 15; // Alto del logo (ajustado proporcionalmente)
-                const logoX = 10; // Posición X del logo
-                const logoY = 10; // Posición Y del logo (parte superior)
+                const logoWidth = 20;
+                const logoHeight = 15;
+                const logoX = 10;
+                const logoY = 10;
 
                 // Agregar el logo al PDF
                 doc.addImage(img, 'PNG', logoX, logoY, logoWidth, logoHeight);
@@ -264,26 +364,24 @@ const app = Vue.createApp({
                 const formattedTime = currentDate.toLocaleTimeString();
                 const dateTimeText = `${formattedDate} ${formattedTime}`;
 
-                // Posición de la fecha y hora a la misma altura que el logo
+                // Posición de la fecha y hora
                 const pageWidth = doc.internal.pageSize.width;
-                const dateTimeX = pageWidth - doc.getTextWidth(dateTimeText) - 10; // A 10 mm del borde derecho
-                const dateTimeY = logoY + logoHeight / 2 + 2; // Alineado verticalmente con el logo
+                const dateTimeX = pageWidth - doc.getTextWidth(dateTimeText) - 10;
+                const dateTimeY = logoY + logoHeight / 2 + 2;
                 doc.setFontSize(10);
                 doc.text(dateTimeText, dateTimeX, logoY + logoHeight / 2);
 
                 // Título general
                 const title = "Listado de dietas por sector";
                 doc.setFontSize(14);
-
-                // Centrar el título horizontalmente en la hoja y alinearlo con el logo y fecha/hora
                 const textWidth = doc.getTextWidth(title);
-                const titleX = (pageWidth - textWidth) / 2; // Centrando el texto
-                const titleY = logoY + logoHeight / 2; // Mismo Y que logo y fecha/hora
+                const titleX = (pageWidth - textWidth) / 2;
+                const titleY = logoY + logoHeight / 2; // Título en su posición original
 
                 // Agregar el título al PDF
                 doc.text(title, titleX, titleY);
 
-                let y = logoY + logoHeight + 10; // Posición inicial debajo del logo, fecha/hora y título
+                let y = logoY + logoHeight + 5; // Posición inicial ajustada para elementos 0.5 cm más arriba
 
                 // Agrupar los pacientes por sector
                 const pacientesPorSector = this.pacientesFiltrados.reduce((acc, dieta) => {
@@ -300,41 +398,46 @@ const app = Vue.createApp({
                     const sectorTextWidth = doc.getTextWidth(sector);
                     const sectorX = (pageWidth - sectorTextWidth) / 2;
                     doc.text(sector, sectorX, y);
-                    y += 5;
+                    y += 3; // Más pegado a la tabla
 
                     // Agregar la tabla con los pacientes del sector
                     doc.autoTable({
                         startY: y,
-                        head: [['Apellido', 'Nombre', 'Edad', 'Dieta', 'Observación', 'Fecha Asignación']],
+                        head: [['Cama', 'Apellido', 'Nombre', 'Edad', 'Dieta', 'Diagnostico', 'Observación']],
                         body: pacientes.map(dieta => [
+                            dieta.cama,
                             dieta.apellido_paciente,
                             dieta.nombre_paciente,
                             dieta.edad,
                             dieta.nombre_dieta,
+                            dieta.diagnostico,
                             dieta.observacion,
-                            formatFechaConsumo(dieta.fecha_consumo)
+                            // formatFechaConsumo(dieta.fecha_consumo)
                         ])
                     });
 
                     // Actualizar la posición Y para evitar solapamiento con la siguiente tabla
-                    y = doc.lastAutoTable.finalY + 10;
+                    y = doc.lastAutoTable.finalY + 5; // Reduce el espacio entre tablas
                 }
 
                 // Mostrar la vista previa del PDF sin descargarlo
-                window.open(doc.output('bloburl'), '_blank'); // Abre una nueva ventana con la vista previa
+                window.open(doc.output('bloburl'), '_blank');
             };
 
             img.onerror = () => {
                 console.error("No se pudo cargar el logo desde la ruta proporcionada.");
             };
-            function formatFechaConsumo(fecha) {
-                const date = new Date(fecha);
-                const day = String(date.getDate()).padStart(2, '0');
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const year = date.getFullYear();
-                return `${day}/${month}/${year}`;
-            }
+
+            // function formatFechaConsumo(fecha) {
+            //     const date = new Date(fecha);
+            //     const day = String(date.getDate()).padStart(2, '0');
+            //     const month = String(date.getMonth() + 1).padStart(2, '0');
+            //     const year = date.getFullYear();
+            //     return `${day}/${month}/${year}`;
+            // }
         }
+
+
     }
 });
 

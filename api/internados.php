@@ -26,6 +26,7 @@ try {
                 $sql = "SELECT i.id, i.paciente_id, i.fecha_ingreso, 
                                i.fecha_egreso, 
                                i.diagnostico,
+                               i.cama,
                                p.dni, 
                                p.apellido,
                                p.nombre,
@@ -81,6 +82,7 @@ try {
 
             $paciente_id = $input['paciente_id'];
             $sector_id = $input['sector_id'];
+            $cama = trim($input['cama']);
             $diagnostico = strtoupper($input['diagnostico']); // Convertir a mayúsculas
             $usuario_id = $_SESSION['user_id'];
             $estado = 1; // Estado de internación (1 = activo)
@@ -97,10 +99,10 @@ try {
             } else {
                 try {
                     // Insertar nueva internación
-                    $sql = "INSERT INTO internaciones (paciente_id, fecha_ingreso, sector_id, usuario_id, diagnostico, estado)
-                                VALUES (?, NOW(), ?, ?, ?, ?)";
+                    $sql = "INSERT INTO internaciones (paciente_id, fecha_ingreso, sector_id, cama, usuario_id, diagnostico, estado)
+                                VALUES (?, NOW(), ?, ?, ?, ?, ?)";
                     $stmt = $conn->prepare($sql);
-                    $stmt->execute([$paciente_id, $sector_id, $usuario_id, $diagnostico, $estado]);
+                    $stmt->execute([$paciente_id, $sector_id, $cama, $usuario_id, $diagnostico, $estado]);
 
                     if ($stmt->rowCount() > 0) {
                         echo json_encode(["message" => "Internación agregada con éxito"]);
@@ -124,7 +126,7 @@ try {
                 $id = $input['id'] ?? null;
                 $sector_id = $input['sector_id'] ?? null;
                 $diagnostico = isset($input['diagnostico']) ? strtoupper($input['diagnostico']) : null; // Convertir a mayúsculas
-
+                $cama = trim($input['cama'] ?? null);
                 // Verificar que todos los datos necesarios estén presentes
                 if (!$id || !$sector_id || !$diagnostico) {
                     http_response_code(400);
@@ -133,11 +135,13 @@ try {
                 }
 
                 // Preparar y ejecutar la consulta para actualizar la internación
-                $sql = "UPDATE internaciones SET sector_id = :sector_id, diagnostico = :diagnostico WHERE id = :id";
+                $sql = "UPDATE internaciones SET sector_id = :sector_id, cama = :cama, diagnostico = :diagnostico WHERE id = :id";
                 $stmt = $conn->prepare($sql);
 
                 // Enlazar los parámetros de la consulta para evitar inyecciones SQL
                 $stmt->bindParam(':sector_id', $sector_id, PDO::PARAM_INT);
+                $stmt->bindParam(':cama', $cama, PDO::PARAM_INT);
+
                 $stmt->bindParam(':diagnostico', $diagnostico, PDO::PARAM_STR);
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
