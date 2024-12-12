@@ -5,6 +5,7 @@ const app = Vue.createApp({
             fechaHasta: '',  // Fecha de fin del informe
             reporte: [],     // Datos del informe
             subtotales: [],  // Subtotales por sector
+            dietasTotales: [], // Totales por dieta
             totalGeneral: 0, // Total general de dietas
             dietaChart: null // Nueva propiedad para el gráfico
         };
@@ -29,10 +30,10 @@ const app = Vue.createApp({
                 });
         },
         calcularSubtotales() {
+            // Subtotales por sector
             this.subtotales = [];
             const sectores = {};
 
-            // Calcular subtotales por sector
             this.reporte.forEach(dieta => {
                 if (!sectores[dieta.sector]) {
                     sectores[dieta.sector] = 0;
@@ -43,6 +44,21 @@ const app = Vue.createApp({
             for (const sector in sectores) {
                 this.subtotales.push({ sector, total: sectores[sector] });
             }
+
+            // Totales por dieta
+            this.dietasTotales = [];
+            const dietas = {};
+
+            this.reporte.forEach(dieta => {
+                if (!dietas[dieta.dieta]) {
+                    dietas[dieta.dieta] = 0;
+                }
+                dietas[dieta.dieta] += dieta.cantidad;
+            });
+
+            for (const dieta in dietas) {
+                this.dietasTotales.push({ dieta, total: dietas[dieta] });
+            }
         },
         generarGrafico() {
             // Limpiar el gráfico existente
@@ -51,8 +67,8 @@ const app = Vue.createApp({
             }
 
             // Obtener datos para el gráfico
-            const labels = this.reporte.map(dieta => dieta.dieta);
-            const data = this.reporte.map(dieta => dieta.cantidad);
+            const labels = this.dietasTotales.map(d => d.dieta);
+            const data = this.dietasTotales.map(d => d.total);
 
             const ctx = document.getElementById('dietaChart').getContext('2d');
 
@@ -81,25 +97,25 @@ const app = Vue.createApp({
         generarPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-        
+
             // Cargar la imagen
             const logoPath = '/vianda/img/logo.png'; // Asegúrate de que esta ruta sea correcta
             const img = new Image();
             img.src = logoPath;
-            
+
             img.onload = () => {
                 doc.addImage(img, 'PNG', 10, 10, 30, 30); // Posición (x, y) y tamaño (ancho, alto)
-        
+
                 // Título
                 doc.setFontSize(22);
                 doc.text('Informe de Internaciones', doc.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
-        
+
                 // Espacio después del título
                 doc.setFontSize(12);
                 doc.text('Fecha Desde: ' + this.fechaDesde, 10, 40);
                 doc.text('Fecha Hasta: ' + this.fechaHasta, 10, 50);
                 doc.text('Total General: ' + this.totalGeneral + ' dietas', 10, 60);
-        
+
                 // Tabla
                 const tableData = this.reporte.map(dieta => [dieta.sector, dieta.dieta, dieta.cantidad]);
                 doc.autoTable({

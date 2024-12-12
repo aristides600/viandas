@@ -23,14 +23,12 @@ const app = Vue.createApp({
         },
         guardarPaciente() {
             const datos = { ...this.paciente };
-        
+
             axios.post('api/pacientes.php', datos)
                 .then(response => {
                     Swal.fire('Éxito', response.data.message, 'success')
                         .then(() => {
-                            if (response.data.success) {
-                                location.reload(); // Recargar la página
-                            }
+                            location.reload();  // Recarga la página
                         });
                 })
                 .catch(error => {
@@ -38,8 +36,8 @@ const app = Vue.createApp({
                     console.error('Error al guardar paciente:', error);
                 });
         },
-        
-        
+
+
     },
     mounted() {
         this.obtenerSexos();

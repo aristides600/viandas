@@ -151,159 +151,96 @@ const app = Vue.createApp({
             // Mostrar la vista previa del PDF sin descargarlo
             window.open(doc.output('bloburl'), '_blank');  // Abre una nueva ventana con la vista previa
         },
-
-        // imprimirTodasEtiquetas() {
-        //     if (this.dietas.length === 0) {
-        //         Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
-        //         return;
-        //     }
-
-        //     // Crear un nuevo documento PDF con el tamaño adecuado
-        //     const doc = new jsPDF({
-        //         unit: 'mm',  // Unidades en milímetros
-        //         format: [63, 44],  // Tamaño de página: 63mm x 44mm
-        //         orientation: 'l'  // Landscape
-        //     });
-
-        //     this.dietas.forEach((dieta, index) => {
-        //         // Establecer el color del texto
-        //         doc.setTextColor(0, 0, 0);
-
-        //         // Ajustar la distancia entre líneas
-        //         const lineHeight = 6;  // Puedes modificar este valor para aumentar o reducir el espacio entre las líneas
-        //         let currentY = 6;  // Posición inicial para la primera línea
-
-        //         // Agregar el contenido de cada dieta
-        //         doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
-        //         currentY += lineHeight;  // Incrementar la posición Y para la siguiente línea
-
-        //         doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
-        //         currentY += lineHeight;
-
-        //         doc.text(`Dieta: ${dieta.nombre_dieta}`, 1, currentY);
-        //         currentY += lineHeight;
-
-        //         doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
-        //         currentY += lineHeight;
-
-        //         doc.text(`Acompañante: ${dieta.acompaniante === 1 ? 'SI' : dieta.acompaniante === 0 ? 'NO' : 'Ninguna'}`, 1, currentY);
-        //         currentY += lineHeight;
-
-        //         // Si la dieta tiene acompañante, agregar una nueva página con los datos de la dieta general para el acompañante
-        //         if (dieta.acompaniante === 1) {
-        //             // Crear una nueva página para los detalles de la dieta general para el acompañante
-        //             doc.addPage([63, 44], 'l');
-        //             doc.text('Dieta Gral. Acompañante', 1, 6);  // Título "Dieta General"
-        //             currentY = 12;  // Ajustar posición Y para los siguientes datos de la dieta general
-
-        //             // Agregar los mismos datos de la dieta, pero sin el campo "Acompañante"
-        //             doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
-        //             currentY += lineHeight;
-
-        //             doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
-        //             currentY += lineHeight;
-
-        //             doc.text(`Dieta: ${dieta.nombre_dieta}`, 1, currentY);
-        //             currentY += lineHeight;
-
-        //             doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
-        //             currentY += lineHeight;
-
-        //             // Aquí no se imprime el campo "Acompañante"
-        //         }
-
-        //         // Agregar una nueva página para cada etiqueta excepto la última
-        //         if (index < this.dietas.length - 1) {
-        //             doc.addPage([63, 44], 'l');
-        //         }
-        //     });
-
-        //     // Mostrar la vista previa del PDF con todas las etiquetas
-        //     window.open(doc.output('bloburl'), '_blank');  // Abre la vista previa en una nueva ventana
-        // },
-
-
+        
         imprimirTodasEtiquetas() {
             if (this.dietas.length === 0) {
                 Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
                 return;
             }
-        
+
             // Crear un nuevo documento PDF con el tamaño adecuado
             const doc = new jsPDF({
                 unit: 'mm',  // Unidades en milímetros
                 format: [63, 44],  // Tamaño de página: 63mm x 44mm
                 orientation: 'l'  // Landscape
             });
-        
+
             this.dietas.forEach((dieta, index) => {
                 const comida = this.comidas.find(c => c.id === this.comidaSeleccionada);
                 const nombreComida = comida ? comida.nombre : 'No seleccionada';
-        
+
                 // Establecer el color del texto
                 doc.setTextColor(0, 0, 0);
-        
+
                 // Ajustar la distancia entre líneas
                 const lineHeight = 6;  // Puedes modificar este valor para aumentar o reducir el espacio entre las líneas
                 let currentY = 6;  // Posición inicial para la primera línea
-                doc.text(` ${nombreComida}`, 1, currentY);
+
+                // Centrar el texto de nombreComida
+                const pageWidth = 63;  // Ancho de la página en milímetros
+                const textWidth = doc.getTextWidth(nombreComida);  // Ancho del texto
+                const centeredX = (pageWidth - textWidth) / 2;  // Calcular la posición X centrada
+
+                doc.text(nombreComida, centeredX, currentY); // Texto centrado
                 currentY += lineHeight;  // Incrementar la posición Y para la siguiente línea
-        
+
                 // Agregar el contenido de cada dieta
                 doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
                 currentY += lineHeight;
-        
+
                 doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
                 currentY += lineHeight;
-        
+
                 doc.text(`Dieta: ${dieta.nombre_dieta}`, 1, currentY);
                 currentY += lineHeight;
-        
+
+                doc.text(`Postre: ${dieta.nombre_postre}`, 1, currentY);
+                currentY += lineHeight;
+
                 doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
                 currentY += lineHeight;
-        
+
                 doc.text(`Acompañante: ${dieta.acompaniante === 1 ? 'SI' : dieta.acompaniante === 0 ? 'NO' : 'Ninguna'}`, 1, currentY);
                 currentY += lineHeight;
-        
+
                 // Si la dieta tiene acompañante, agregar una nueva página con los datos de la dieta general para el acompañante
                 if (dieta.acompaniante === 1) {
                     doc.addPage([63, 44], 'l'); // Crear una nueva página para los detalles de la dieta general para el acompañante
                     currentY = 6; // Reiniciar la posición Y para la nueva página
-        
+
                     // Agregar el contenido de la dieta para el acompañante
-                    doc.text(`${nombreComida}`, 1, currentY);
+                    doc.text(nombreComida, centeredX, currentY); // Texto centrado
                     currentY += lineHeight;
-        
+
                     doc.text('Acompañante', 1, currentY); // Título "Acompañante"
                     currentY += lineHeight;
-        
+
                     // Agregar los mismos datos de la dieta, pero sin el campo "Acompañante"
                     doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
                     currentY += lineHeight;
-        
+
                     doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
                     currentY += lineHeight;
-        
+
                     doc.text(`Dieta General`, 1, currentY); // Título "Dieta General"
                     currentY += lineHeight;
-        
+
                     doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
                     currentY += lineHeight;
-        
+
                     // Aquí no se imprime el campo "Acompañante"
                 }
-        
+
                 // Agregar una nueva página para cada etiqueta excepto la última
                 if (index < this.dietas.length - 1) {
                     doc.addPage([63, 44], 'l');
                 }
             });
-        
+
             // Mostrar la vista previa del PDF con todas las etiquetas
             window.open(doc.output('bloburl'), '_blank');  // Abre la vista previa en una nueva ventana
         },
-        
-       
+
         generarPDF() {
             const logoPath = 'img/logo.png';
             const img = new Image();
@@ -316,25 +253,37 @@ const app = Vue.createApp({
                 const logoWidth = 20; // Ancho del logo
                 const logoHeight = 15; // Alto del logo (ajustado proporcionalmente)
                 const logoX = 10; // Posición X del logo
-                const logoY = 10; // Posición Y del logo
+                const logoY = 10; // Posición Y del logo (parte superior)
 
                 // Agregar el logo al PDF
                 doc.addImage(img, 'PNG', logoX, logoY, logoWidth, logoHeight);
+
+                // Fecha y hora actuales
+                const currentDate = new Date();
+                const formattedDate = currentDate.toLocaleDateString();
+                const formattedTime = currentDate.toLocaleTimeString();
+                const dateTimeText = `${formattedDate} ${formattedTime}`;
+
+                // Posición de la fecha y hora a la misma altura que el logo
+                const pageWidth = doc.internal.pageSize.width;
+                const dateTimeX = pageWidth - doc.getTextWidth(dateTimeText) - 10; // A 10 mm del borde derecho
+                const dateTimeY = logoY + logoHeight / 2 + 2; // Alineado verticalmente con el logo
+                doc.setFontSize(10);
+                doc.text(dateTimeText, dateTimeX, logoY + logoHeight / 2);
 
                 // Título general
                 const title = "Listado de dietas por sector";
                 doc.setFontSize(14);
 
-                // Posición del título (centrado horizontalmente respecto al logo)
-                const pageWidth = doc.internal.pageSize.width;
+                // Centrar el título horizontalmente en la hoja y alinearlo con el logo y fecha/hora
                 const textWidth = doc.getTextWidth(title);
-                const titleX = logoX + logoWidth + (pageWidth - logoX - logoWidth - textWidth) / 2; // Título a la derecha del logo
-                const titleY = logoY + logoHeight / 2 + 4; // Centrado verticalmente respecto al logo
+                const titleX = (pageWidth - textWidth) / 2; // Centrando el texto
+                const titleY = logoY + logoHeight / 2; // Mismo Y que logo y fecha/hora
 
                 // Agregar el título al PDF
                 doc.text(title, titleX, titleY);
 
-                let y = logoY + logoHeight + 10; // Posición inicial debajo del logo y título
+                let y = logoY + logoHeight + 10; // Posición inicial debajo del logo, fecha/hora y título
 
                 // Agrupar los pacientes por sector
                 const pacientesPorSector = this.pacientesFiltrados.reduce((acc, dieta) => {
@@ -356,14 +305,14 @@ const app = Vue.createApp({
                     // Agregar la tabla con los pacientes del sector
                     doc.autoTable({
                         startY: y,
-                        head: [['Apellido', 'Nombre', 'Edad', 'Dieta', 'Observación', 'Fecha Consumo']],
+                        head: [['Apellido', 'Nombre', 'Edad', 'Dieta', 'Observación', 'Fecha Asignación']],
                         body: pacientes.map(dieta => [
                             dieta.apellido_paciente,
                             dieta.nombre_paciente,
                             dieta.edad,
                             dieta.nombre_dieta,
                             dieta.observacion,
-                            dieta.fecha_consumo
+                            formatFechaConsumo(dieta.fecha_consumo)
                         ])
                     });
 
@@ -378,8 +327,14 @@ const app = Vue.createApp({
             img.onerror = () => {
                 console.error("No se pudo cargar el logo desde la ruta proporcionada.");
             };
+            function formatFechaConsumo(fecha) {
+                const date = new Date(fecha);
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            }
         }
-
     }
 });
 

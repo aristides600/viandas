@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +9,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/estilos.css">
 </head>
+
 <body>
     <?php include 'header.php'; ?>
 
     <div id="app" class="container mt-5">
-        <h1 class="mb-4">Informe de Internaciones</h1>
+        <h2 class="mb-4">Consumos de Dietas</h2>
 
         <!-- Filtros de fechas -->
         <div class="row mb-4">
@@ -52,6 +54,23 @@
             </tbody>
         </table>
 
+        <!-- Nueva Tabla con Dietas y Cantidades -->
+        <h5 class="mt-4">Dietas y Cantidades</h5>
+        <table>
+            <thead>
+                <tr>
+                    <th>Dieta</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="dieta in dietasTotales" :key="dieta.dieta">
+                    <td>{{ dieta.dieta }}</td>
+                    <td>{{ dieta.total }}</td>
+                </tr>
+            </tbody>
+        </table>
+
         <!-- Subtotales y Total general -->
         <h5 class="mt-4">Subtotales y Total General</h5>
         <div v-for="(subtotal, index) in subtotales" :key="index">
@@ -77,4 +96,5 @@
 
     <script src="./js/reportes.js"></script>
 </body>
+
 </html>

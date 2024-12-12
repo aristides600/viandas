@@ -29,6 +29,7 @@ try {
                         pd.dieta_id,
                         d.codigo AS codigo_dieta,
                         d.nombre AS nombre_dieta,
+                        postres.nombre AS nombre_postre,
                         pd.usuario_id,
                         pd.internacion_id,
                         pd.fecha_consumo,
@@ -46,6 +47,7 @@ try {
                     JOIN internaciones i ON i.id = pd.internacion_id
                     JOIN sectores s ON s.id = i.sector_id
                     JOIN dietas d ON d.id = pd.dieta_id
+                    JOIN postres ON postres.id = pd.dieta_id
                     WHERE pd.estado = 1";
 
             $stmt = $conn->prepare($sql);
