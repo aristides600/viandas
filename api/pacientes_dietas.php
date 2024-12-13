@@ -17,47 +17,51 @@ $usuario_id = $_SESSION['user_id'];
 // Obtener el método de la solicitud
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Obtener el ID de la dieta desde la URL si está disponible
-$dieta_id = isset($_GET['id']) ? intval($_GET['id']) : null;
+
 
 try {
     switch ($method) {
         case 'GET': // Obtener dietas
             $sql = "SELECT
-            pd.id,
-            pd.paciente_id,
-            pd.dieta_id,
-            d.codigo AS codigo_dieta,
-            d.nombre AS nombre_dieta,
-            postres.nombre AS nombre_postre,
-            pd.usuario_id,
-            pd.internacion_id,
-            pd.fecha_consumo,
-            pd.observacion,
-            pd.acompaniante,
-            pd.estado,
-            pd.postre_id,
-            i.sector_id,
-            i.cama,
-            i.diagnostico,
-            p.nombre AS nombre_paciente,
-            p.apellido AS apellido_paciente,
-            s.nombre AS nombre_sector,
-            DATEDIFF(CURDATE(), p.fecha_nacimiento) DIV 365 AS edad
-        FROM pacientes_dietas pd
-        JOIN pacientes p ON p.id = pd.paciente_id
-        JOIN internaciones i ON i.id = pd.internacion_id
-        JOIN sectores s ON s.id = i.sector_id
-        JOIN dietas d ON d.id = pd.dieta_id
-        JOIN postres ON postres.id = pd.dieta_id
-        WHERE pd.estado = 1
-        ORDER BY i.sector_id ASC, i.cama ASC"; // Ordenar por sector y cama de forma ascendente
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
-
+                        pd.id,
+                        pd.paciente_id,
+                        pd.dieta_id,
+                        d.codigo AS codigo_dieta,
+                        d.nombre AS nombre_dieta,
+                        postres.nombre AS nombre_postre,
+                        pd.usuario_id,
+                        pd.internacion_id,
+                        pd.fecha_consumo,
+                        pd.observacion,
+                        pd.acompaniante,
+                        pd.estado,
+                        pd.postre_id,
+                        i.sector_id,
+                        i.cama,
+                        i.diagnostico,
+                        p.nombre AS nombre_paciente,
+                        p.apellido AS apellido_paciente,
+                        s.nombre AS nombre_sector,
+                        DATEDIFF(CURDATE(), p.fecha_nacimiento) DIV 365 AS edad
+                    FROM pacientes_dietas pd
+                    JOIN pacientes p ON p.id = pd.paciente_id
+                    JOIN internaciones i ON i.id = pd.internacion_id
+                    JOIN sectores s ON s.id = i.sector_id
+                    JOIN dietas d ON d.id = pd.dieta_id
+                    LEFT JOIN postres ON postres.id = pd.postre_id
+                    WHERE pd.estado = 1
+                    ORDER BY i.sector_id ASC, i.cama ASC"; // Ordenar por sector y cama de forma ascendente
+        
+            try {
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                echo json_encode($result);
+            } catch (PDOException $e) {
+                echo json_encode(["error" => $e->getMessage()]);
+            }
             break;
+        
 
         case 'POST': // Crear una nueva dieta
             $data = json_decode(file_get_contents('php://input'), true);
@@ -87,9 +91,9 @@ try {
 
             // Insertar nueva dieta
             $sql = "INSERT INTO pacientes_dietas 
-                                (paciente_id, dieta_id, internacion_id, usuario_id, estado, observacion, acompaniante, postre_id) 
+                                (paciente_id, dieta_id, internacion_id, fecha_consumo, usuario_id, estado, observacion, acompaniante, postre_id) 
                             VALUES 
-                                (:paciente_id, :dieta_id, :internacion_id, :usuario_id, 1, :observacion, :acompaniante, :postre_id)";
+                                (:paciente_id, :dieta_id, :internacion_id, NOW(), :usuario_id, 1, :observacion, :acompaniante, :postre_id)";
             $stmt = $conn->prepare($sql);
             $stmt->execute([
                 ':paciente_id' => intval($data['paciente_id']),
@@ -105,6 +109,8 @@ try {
             break;
 
         case 'PUT': // Actualizar dieta existente
+            // Obtener el ID de la dieta desde la URL si está disponible
+            $dieta_id = isset($_GET['id']) ? intval($_GET['id']) : null;
             if (!$dieta_id) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Falta el ID de la dieta']);
@@ -125,6 +131,7 @@ try {
                             internacion_id = :internacion_id,
                             observacion = :observacion,
                             acompaniante = :acompaniante,
+                            fecha_consumo = NOW(),
                             postre_id = :postre_id
                         WHERE id = :id";
             $stmt = $conn->prepare($sql);

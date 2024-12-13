@@ -16,7 +16,18 @@
         <div class="container mt-5">
             <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido">
             <h2>Dietas de Internados</h2>
-            <button @click="abrirModalComida" class="btn btn-primary btn-sm">Imprimir Todas las Etiquetas</button>
+            <div class="d-flex align-items-center gap-2">
+                <button @click="abrirModalComida" class="btn btn-primary btn-sm d-flex align-items-center">
+                    <i class="bi bi-printer me-2"></i> Imprimir Todas las Etiquetas
+                </button>
+                <button class="btn btn-primary btn-sm d-flex align-items-center" @click="nutricionPDF">
+                    <i class="bi bi-printer me-2"></i> Nutricionista PDF
+                </button>
+                <button class="btn btn-primary btn-sm d-flex align-items-center" @click="camareroPDF">
+                    <i class="bi bi-printer me-2"></i> Camarero PDF
+                </button>
+            </div>
+
 
             <table class="table table-bordered">
                 <thead>
@@ -86,8 +97,6 @@
                 </div>
             </div>
 
-
-            <button class="btn btn-primary mt-3" @click="generarPDF">Generar PDF</button>
         </div>
         <div v-if="pacientesFiltrados.length === 0">
             <p>No se encontraron resultados para la búsqueda.</p>

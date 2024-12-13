@@ -341,7 +341,7 @@ const app = Vue.createApp({
         //         return `${day}/${month}/${year}`;
         //     }
         // }
-        generarPDF() {
+        nutricionPDF() {
             const logoPath = 'img/logo.png';
             const img = new Image();
             img.src = logoPath;
@@ -428,13 +428,93 @@ const app = Vue.createApp({
                 console.error("No se pudo cargar el logo desde la ruta proporcionada.");
             };
 
-            // function formatFechaConsumo(fecha) {
-            //     const date = new Date(fecha);
-            //     const day = String(date.getDate()).padStart(2, '0');
-            //     const month = String(date.getMonth() + 1).padStart(2, '0');
-            //     const year = date.getFullYear();
-            //     return `${day}/${month}/${year}`;
-            // }
+        },
+        camareroPDF() {
+            const logoPath = 'img/logo.png';
+            const img = new Image();
+            img.src = logoPath;
+
+            img.onload = () => {
+                const doc = new jsPDF();
+
+                // Tamaño y posición del logo
+                const logoWidth = 20;
+                const logoHeight = 15;
+                const logoX = 10;
+                const logoY = 10;
+
+                // Agregar el logo al PDF
+                doc.addImage(img, 'PNG', logoX, logoY, logoWidth, logoHeight);
+
+                // Fecha y hora actuales
+                const currentDate = new Date();
+                const formattedDate = currentDate.toLocaleDateString();
+                const formattedTime = currentDate.toLocaleTimeString();
+                const dateTimeText = `${formattedDate} ${formattedTime}`;
+
+                // Posición de la fecha y hora
+                const pageWidth = doc.internal.pageSize.width;
+                const dateTimeX = pageWidth - doc.getTextWidth(dateTimeText) - 10;
+                const dateTimeY = logoY + logoHeight / 2 + 2;
+                doc.setFontSize(10);
+                doc.text(dateTimeText, dateTimeX, logoY + logoHeight / 2);
+
+                // Título general
+                const title = "Listado de dietas por sector";
+                doc.setFontSize(14);
+                const textWidth = doc.getTextWidth(title);
+                const titleX = (pageWidth - textWidth) / 2;
+                const titleY = logoY + logoHeight / 2; // Título en su posición original
+
+                // Agregar el título al PDF
+                doc.text(title, titleX, titleY);
+
+                let y = logoY + logoHeight + 5; // Posición inicial ajustada para elementos 0.5 cm más arriba
+
+                // Agrupar los pacientes por sector
+                const pacientesPorSector = this.pacientesFiltrados.reduce((acc, dieta) => {
+                    if (!acc[dieta.nombre_sector]) {
+                        acc[dieta.nombre_sector] = [];
+                    }
+                    acc[dieta.nombre_sector].push(dieta);
+                    return acc;
+                }, {});
+
+                for (const [sector, pacientes] of Object.entries(pacientesPorSector)) {
+                    // Agregar el título del sector centrado
+                    doc.setFontSize(12);
+                    const sectorTextWidth = doc.getTextWidth(sector);
+                    const sectorX = (pageWidth - sectorTextWidth) / 2;
+                    doc.text(sector, sectorX, y);
+                    y += 3; // Más pegado a la tabla
+
+                    // Agregar la tabla con los pacientes del sector
+                    doc.autoTable({
+                        startY: y,
+                        head: [['Cama', 'Apellido', 'Nombre', 'Edad', 'Dieta', 'Observación']],
+                        body: pacientes.map(dieta => [
+                            dieta.cama,
+                            dieta.apellido_paciente,
+                            dieta.nombre_paciente,
+                            dieta.edad,
+                            dieta.nombre_dieta,
+                            dieta.observacion,
+                            // formatFechaConsumo(dieta.fecha_consumo)
+                        ])
+                    });
+
+                    // Actualizar la posición Y para evitar solapamiento con la siguiente tabla
+                    y = doc.lastAutoTable.finalY + 5; // Reduce el espacio entre tablas
+                }
+
+                // Mostrar la vista previa del PDF sin descargarlo
+                window.open(doc.output('bloburl'), '_blank');
+            };
+
+            img.onerror = () => {
+                console.error("No se pudo cargar el logo desde la ruta proporcionada.");
+            };
+
         }
 
 
