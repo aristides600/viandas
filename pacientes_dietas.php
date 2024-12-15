@@ -70,6 +70,10 @@
                             <!-- <button class="btn btn-secondary btn-sm" @click="imprimirEtiqueta(dieta.internacion_id)">
                                 <i class="bi bi-printer"></i>
                             </button> -->
+                            <button class="btn btn-secondary btn-sm d-flex align-items-center" @click="seleccionarComida(dieta.internacion_id)">
+                                <i class="bi bi-printer me-2"></i>
+                            </button>
+
                         </td>
                     </tr>
                 </tbody>
