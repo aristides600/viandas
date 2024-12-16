@@ -176,7 +176,7 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                         <li class="nav-item"><a class="nav-link" href="internados.php">Internados</a></li>
 
                         <li class="nav-item"><a class="nav-link" href="pacientes_dietas.php">Dietas</a></li>
-                        <!-- <li class="nav-item"><a class="nav-link" href="etiquetas.php">Etiquetas</a></li> -->
+                        <li class="nav-item"><a class="nav-link" href="totales.php">Consumo Actual</a></li>
                         <li class="nav-item"><a class="nav-link" href="reportes.php">Reportes</a></li>
                         <li class="nav-item"><a class="nav-link" href="usuarios.php">Usuarios</a></li>
                     </ul>

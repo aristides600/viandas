@@ -29,6 +29,8 @@ try {
                         d.codigo AS codigo_dieta,
                         d.nombre AS nombre_dieta,
                         postres.nombre AS nombre_postre,
+                        u.apellido AS apellido_usuario,
+                        u.nombre AS nombre_usuario,
                         pd.usuario_id,
                         pd.internacion_id,
                         pd.fecha_consumo,
@@ -46,6 +48,7 @@ try {
                     FROM pacientes_dietas pd
                     JOIN pacientes p ON p.id = pd.paciente_id
                     JOIN internaciones i ON i.id = pd.internacion_id
+                    JOIN usuarios u ON u.id = pd.usuario_id
                     JOIN sectores s ON s.id = i.sector_id
                     JOIN dietas d ON d.id = pd.dieta_id
                     LEFT JOIN postres ON postres.id = pd.postre_id
@@ -88,6 +91,8 @@ try {
             $observacion = strtoupper(htmlspecialchars(trim($data['observacion'] ?? '')));
             $acompaniante = isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0;
             $postre_id = !empty($data['postre_id']) ? intval($data['postre_id']) : null;
+            // $dieta_id = !empty($data['dieta_id']) ? intval($data['dieta_id']) : null;
+
 
             // Insertar nueva dieta
             $sql = "INSERT INTO pacientes_dietas 

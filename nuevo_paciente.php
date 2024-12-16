@@ -19,7 +19,7 @@
             <div class="mb-3">
                 <label for="dni" class="form-label">DNI</label>
                 <input
-                    type="integer"
+                    type="number"
                     id="dni"
                     v-model="paciente.dni"
                     class="form-control"

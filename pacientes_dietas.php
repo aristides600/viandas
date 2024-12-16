@@ -14,7 +14,7 @@
     <?php include 'header.php'; ?>
     <div id="app">
         <div class="container mt-5">
-            <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido">
+            <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido o Sector">
             <h2>Dietas de Internados</h2>
             <div class="d-flex align-items-center gap-2">
                 <button @click="abrirModalComida" class="btn btn-primary btn-sm d-flex align-items-center">
@@ -41,6 +41,7 @@
                         <th>Nombre Dieta</th>
                         <th>Dignostico</th>
                         <th>Observación</th>
+                        <th>Profesional</th>
                         <th>Fecha Asignada</th>
                         <th>Acciones</th>
                     </tr>
@@ -56,23 +57,24 @@
                         <td>{{ dieta.nombre_dieta || '-' }}</td>
                         <td>{{ dieta.diagnostico || '-' }}</td>
                         <td>{{ dieta.observacion || '-' }}</td>
+                        <td>{{ dieta.apellido_usuario }} {{ dieta.nombre_usuario }}</td>
+
                         <td>{{ formatearFecha(dieta.fecha_consumo) || '-' }}</td>
-                        <td>
-                            <button class="btn btn-info btn-sm" @click="editarDieta(dieta.id)">
+
+                        <td class="d-flex">
+                            <button class="btn btn-info btn-sm me-2" @click="editarDieta(dieta.id)">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <!-- <button class="btn btn-danger btn-sm" @click="eliminarDieta(dieta.id)">
-                                <i class="bi bi-trash"></i>
-                            </button> -->
-                            <button class="btn btn-secondary btn-sm" @click="verDietas(dieta.internacion_id)">
+                            
+                            <button class="btn btn-sm btn-outline-success" @click="verDietas(dieta.internacion_id)">
                                 <i class="bi bi-eye"></i>
                             </button>
-                            <!-- <button class="btn btn-secondary btn-sm" @click="imprimirEtiqueta(dieta.internacion_id)">
-                                <i class="bi bi-printer"></i>
-                            </button> -->
-                            <button class="btn btn-secondary btn-sm d-flex align-items-center" @click="seleccionarComida(dieta.internacion_id)">
+                           
+                            <!-- <button class="btn btn-secondary btn-sm d-flex align-items-center me-2" @click="seleccionarComida(dieta.internacion_id)">
                                 <i class="bi bi-printer me-2"></i>
-                            </button>
+                            </button> -->
+
+
 
                         </td>
                     </tr>

@@ -65,7 +65,7 @@
       </div>
       <div class="mb-3">
         <label for="cama" class="form-label">Cama</label>
-        <input type="integer" class="form-control" v-model="internacion.cama" maxlength="3" required>
+        <input type="number" class="form-control" v-model="internacion.cama" maxlength="3" required>
       </div>
 
       <!-- Campo de texto para el Diagnóstico -->

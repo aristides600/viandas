@@ -72,7 +72,7 @@
 
                         <!-- Mostrar botón Detalles solo si está cerrada -->
                         <button v-if="filtroEstado === 'cerrada'" class="btn btn-primary btn-sm" @click="detallesInternacion(internacion.id)">
-                            <i class="bi bi-eye"></i> Detalles
+                            <i class="bi bi-eye"></i>
                         </button>
                     </td>
                 </tr>

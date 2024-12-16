@@ -17,7 +17,7 @@
         <form @submit.prevent="editarPaciente">
             <div class="mb-3">
                 <label for="dni" class="form-label">DNI</label>
-                <input type="text" id="dni" v-model="paciente.dni" class="form-control" required>
+                <input type="number" id="dni" v-model="paciente.dni" class="form-control" required>
             </div>
             <div class="mb-3">
                 <label for="apellido" class="form-label">Apellidos</label>
