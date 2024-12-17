@@ -38,11 +38,11 @@
             <thead>
                 <tr>
                     <th>D.N.I.</th>
-                    <th>Apellidos</th>
-                    <th>Nombres</th>
+                    <th>Paciente</th>
+                    <!-- <th>Nombres</th> -->
                     <th>Sector</th>
-                    <th>Fecha de Ingreso</th>
-                    <th>Fecha de Alta</th>
+                    <th>Ingreso</th>
+                    <th>Alta</th>
                     <th>Diagnóstico</th>
                     <th>Observación</th>
                     <th>Acciones</th>
@@ -51,30 +51,36 @@
             <tbody>
                 <tr v-for="(internacion, index) in internaciones" :key="internacion.id + '-' + index">
                     <td>{{ internacion.dni }}</td>
-                    <td>{{ internacion.apellido }}</td>
-                    <td>{{ internacion.nombre }}</td>
+                    <td>{{ internacion.apellido }}, {{ internacion.nombre }}</td>
+                    <!-- <td>{{ internacion.nombre }}</td> -->
                     <td>{{ internacion.sector_nombre }}</td>
                     <td>{{ formatearFecha(internacion.fecha_ingreso) }}</td>
                     <td>{{ formatearFecha(internacion.fecha_egreso ? internacion.fecha_egreso : '-') }}</td>
                     <td>{{ internacion.diagnostico }}</td>
                     <td>{{ internacion.observacion }}</td>
                     <td>
-                        <!-- Mostrar botones solo si no está cerrada -->
-                        <button v-if="filtroEstado !== 'cerrada'" class="btn btn-warning btn-sm" @click="dietaInternacion(internacion.id)">
-                            <i class="bi bi-plus"></i> Dieta
-                        </button>
-                        <button v-if="filtroEstado !== 'cerrada'" class="btn btn-info btn-sm" @click="editarInternacion(internacion.id)">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                        <button v-if="filtroEstado !== 'cerrada'" class="btn btn-success btn-sm" @click="altaInternacion(internacion.id)">
-                            <i class="bi bi-box-arrow-up"></i> Alta
-                        </button>
+                        <!-- Grupo de botones -->
+                        <div class="d-flex gap-1">
+                            <!-- Mostrar botones solo si no está cerrada -->
+                            <template v-if="filtroEstado !== 'cerrada'">
+                                <button class="btn btn-warning btn-sm" @click="dietaInternacion(internacion.id)">
+                                    <i class="bi bi-plus"></i> Dieta
+                                </button>
+                                <button class="btn btn-info btn-sm" @click="editarInternacion(internacion.id)">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-success btn-sm" @click="altaInternacion(internacion.id)">
+                                    <i class="bi bi-box-arrow-up"></i> Alta
+                                </button>
+                            </template>
 
-                        <!-- Mostrar botón Detalles solo si está cerrada -->
-                        <button v-if="filtroEstado === 'cerrada'" class="btn btn-primary btn-sm" @click="detallesInternacion(internacion.id)">
-                            <i class="bi bi-eye"></i>
-                        </button>
+                            <!-- Mostrar botón Detalles solo si está cerrada -->
+                            <button v-if="filtroEstado === 'cerrada'" class="btn btn-primary btn-sm" @click="detallesInternacion(internacion.id)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
                     </td>
+
                 </tr>
             </tbody>
 

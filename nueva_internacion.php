@@ -36,8 +36,8 @@
                     <thead>
                         <tr>
                             <th>DNI</th>
-                            <th>Nombre</th>
                             <th>Apellido</th>
+                            <th>Nombre</th>
                             <th>Fecha de Nacimiento</th>
                             <th>Acciones</th>
                         </tr>
@@ -45,8 +45,8 @@
                     <tbody>
                         <tr v-for="paciente in pacientes" :key="paciente.id">
                             <td>{{ paciente.dni }}</td>
-                            <td>{{ paciente.nombre }}</td>
                             <td>{{ paciente.apellido }}</td>
+                            <td>{{ paciente.nombre }}</td>
                             <td>{{ paciente.fecha_nacimiento }}</td>
                             <td>
                                 <button type="button" class="btn btn-primary" @click="seleccionarPaciente(paciente)">Seleccionar</button>
@@ -58,7 +58,7 @@
 
             <div v-if="pacienteSeleccionado" class="card mt-3">
                 <div class="card-body">
-                    <h5 class="card-title">{{ pacienteSeleccionado.nombre }} {{ pacienteSeleccionado.apellido }}</h5>
+                    <h5 class="card-title">{{ pacienteSeleccionado.apellido }}, {{ pacienteSeleccionado.nombre }}</h5>
                     <p class="card-text">DNI: {{ pacienteSeleccionado.dni }}</p>
                     <button class="btn btn-secondary" @click="limpiarPaciente">Limpiar Selección</button>
                 </div>
@@ -72,10 +72,21 @@
                     </option>
                 </select>
             </div>
-            <div class="mb-3">
+            <!-- <div class="mb-3">
                 <label for="cama" class="form-label">Cama</label>
                 <input type="number" class="form-control" v-model="nuevaInternacion.cama" maxlength="3" required>
+            </div> -->
+            <div class="mb-3">
+                <label for="cama" class="form-label">Cama</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    v-model="nuevaInternacion.cama"
+                    maxlength="3"
+                    required
+                    @input="nuevaInternacion.cama = nuevaInternacion.cama.replace(/[^0-9]/g, '').slice(0, 3)">
             </div>
+
 
             <div class="mb-3">
                 <label for="diagnostico" class="form-label">Diagnóstico</label>

@@ -19,15 +19,14 @@
             <div class="mb-3">
                 <label for="dni" class="form-label">DNI</label>
                 <input
-                    type="number"
-                    id="dni"
-                    v-model="paciente.dni"
+                    type="text"
                     class="form-control"
+                    v-model="paciente.dni"
+                    maxlength="8"
                     required
-                    maxlength="8">
+                    @input="paciente.dni = paciente.dni.replace(/[^0-9]/g, '').slice(0, 8)">
             </div>
-
-            <div class="mb-3">
+            <div class=" mb-3">
                 <label for="apellido" class="form-label">Apellidos</label>
                 <input type="text" id="apellido" v-model="paciente.apellido" class="form-control" required>
             </div>
