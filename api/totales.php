@@ -1,122 +1,151 @@
 <?php
 header('Content-Type: application/json');
+
+// Conexión a la base de datos
 require_once 'db.php';
 
+$fecha = date('Y-m-d');
+
+// Consulta SQL para el primer grupo de sectores (ID 1, 2, 3) - Almuerzo
+$sqlGrupo1Almuerzo = "
+    SELECT 
+        s.nombre AS sector,
+        SUM(CASE WHEN c.postre_id = 1 THEN c.cantidad ELSE 0 END) AS total_flan,
+        SUM(CASE WHEN c.postre_id = 2 THEN c.cantidad ELSE 0 END) AS total_gelatina,
+        SUM(CASE WHEN d.codigo = 'D13' THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
+        SUM(CASE WHEN d.codigo != 'D13' THEN c.cantidad ELSE 0 END) AS total_otras_dietas
+    FROM consumos_diarios c
+    JOIN sectores s ON c.sector_id = s.id
+    JOIN dietas d ON c.dieta_id = d.id
+    WHERE c.fecha_consumo = :fecha_consumo AND c.sector_id IN (1, 2, 3) AND c.comida_id = 1
+    GROUP BY c.sector_id
+";
+
+// Consulta SQL para el primer grupo de sectores (ID 1, 2, 3) - Cena
+$sqlGrupo1Cena = "
+    SELECT 
+        s.nombre AS sector,
+        SUM(CASE WHEN c.postre_id = 1 THEN c.cantidad ELSE 0 END) AS total_flan,
+        SUM(CASE WHEN c.postre_id = 2 THEN c.cantidad ELSE 0 END) AS total_gelatina,
+        SUM(CASE WHEN d.codigo = 'D13' THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
+        SUM(CASE WHEN d.codigo != 'D13' THEN c.cantidad ELSE 0 END) AS total_otras_dietas
+    FROM consumos_diarios c
+    JOIN sectores s ON c.sector_id = s.id
+    JOIN dietas d ON c.dieta_id = d.id
+    WHERE c.fecha_consumo = :fecha_consumo AND c.sector_id IN (1, 2, 3) AND c.comida_id = 2
+    GROUP BY c.sector_id
+";
+
+// Consulta SQL para el segundo grupo de sectores (ID 4 - 9) - Almuerzo
+$sqlGrupo2Almuerzo = "
+    SELECT 
+        s.nombre AS sector,
+        SUM(CASE WHEN c.postre_id = 1 THEN c.cantidad ELSE 0 END) AS total_flan,
+        SUM(CASE WHEN c.postre_id = 2 THEN c.cantidad ELSE 0 END) AS total_gelatina,
+        SUM(CASE WHEN d.codigo = 'D13' THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
+        SUM(CASE WHEN d.codigo != 'D13' THEN c.cantidad ELSE 0 END) AS total_otras_dietas
+    FROM consumos_diarios c
+    JOIN sectores s ON c.sector_id = s.id
+    JOIN dietas d ON c.dieta_id = d.id
+    WHERE c.fecha_consumo = :fecha_consumo AND c.sector_id BETWEEN 4 AND 9 AND c.comida_id = 1
+    GROUP BY c.sector_id
+";
+
+// Consulta SQL para el segundo grupo de sectores (ID 4 - 9) - Cena
+$sqlGrupo2Cena = "
+    SELECT 
+        s.nombre AS sector,
+        SUM(CASE WHEN c.postre_id = 1 THEN c.cantidad ELSE 0 END) AS total_flan,
+        SUM(CASE WHEN c.postre_id = 2 THEN c.cantidad ELSE 0 END) AS total_gelatina,
+        SUM(CASE WHEN d.codigo = 'D13' THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
+        SUM(CASE WHEN d.codigo != 'D13' THEN c.cantidad ELSE 0 END) AS total_otras_dietas
+    FROM consumos_diarios c
+    JOIN sectores s ON c.sector_id = s.id
+    JOIN dietas d ON c.dieta_id = d.id
+    WHERE c.fecha_consumo = :fecha_consumo AND c.sector_id BETWEEN 4 AND 9 AND c.comida_id = 2
+    GROUP BY c.sector_id
+";
+
+// Consulta SQL para los totales generales - Almuerzo
+$sqlTotalesAlmuerzo = "
+    SELECT 
+        SUM(CASE WHEN c.postre_id = 1 THEN c.cantidad ELSE 0 END) AS total_flan,
+        SUM(CASE WHEN c.postre_id = 2 THEN c.cantidad ELSE 0 END) AS total_gelatina,
+        SUM(CASE WHEN d.codigo = 'D13' THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
+        SUM(CASE WHEN d.codigo != 'D13' THEN c.cantidad ELSE 0 END) AS total_otras_dietas
+    FROM consumos_diarios c
+    JOIN dietas d ON c.dieta_id = d.id
+    WHERE c.fecha_consumo = :fecha_consumo AND c.comida_id = 1
+";
+
+// Consulta SQL para los totales generales - Cena
+$sqlTotalesCena = "
+    SELECT 
+        SUM(CASE WHEN c.postre_id = 1 THEN c.cantidad ELSE 0 END) AS total_flan,
+        SUM(CASE WHEN c.postre_id = 2 THEN c.cantidad ELSE 0 END) AS total_gelatina,
+        SUM(CASE WHEN d.codigo = 'D13' THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
+        SUM(CASE WHEN d.codigo != 'D13' THEN c.cantidad ELSE 0 END) AS total_otras_dietas
+    FROM consumos_diarios c
+    JOIN dietas d ON c.dieta_id = d.id
+    WHERE c.fecha_consumo = :fecha_consumo AND c.comida_id = 2
+";
+
 try {
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Ejecutar las consultas para almuerzo y cena
+    // Grupo 1 Almuerzo
+    $consultaGrupo1Almuerzo = $conn->prepare($sqlGrupo1Almuerzo);
+    $consultaGrupo1Almuerzo->bindParam(':fecha_consumo', $fecha, PDO::PARAM_STR);
+    $consultaGrupo1Almuerzo->execute();
+    $datosGrupo1Almuerzo = $consultaGrupo1Almuerzo->fetchAll(PDO::FETCH_ASSOC);
 
-    // Obtener los sectores
-    $consultaSectores = "SELECT id, nombre FROM sectores";
-    $stmtSectores = $conn->prepare($consultaSectores);
-    $stmtSectores->execute();
-    $sectores = $stmtSectores->fetchAll(PDO::FETCH_ASSOC);
+    // Grupo 1 Cena
+    $consultaGrupo1Cena = $conn->prepare($sqlGrupo1Cena);
+    $consultaGrupo1Cena->bindParam(':fecha_consumo', $fecha, PDO::PARAM_STR);
+    $consultaGrupo1Cena->execute();
+    $datosGrupo1Cena = $consultaGrupo1Cena->fetchAll(PDO::FETCH_ASSOC);
 
-    // Preparar el arreglo de resultados
-    $resultados = [];
+    // Grupo 2 Almuerzo
+    $consultaGrupo2Almuerzo = $conn->prepare($sqlGrupo2Almuerzo);
+    $consultaGrupo2Almuerzo->bindParam(':fecha_consumo', $fecha, PDO::PARAM_STR);
+    $consultaGrupo2Almuerzo->execute();
+    $datosGrupo2Almuerzo = $consultaGrupo2Almuerzo->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach ($sectores as $sector) {
-        // Totales de almuerzo por sector
-        $consultaTotalesAlmuerzo = "
-            SELECT 
-                d.nombre AS dieta,
-                SUM(cd.cantidad) AS total
-            FROM consumos_diarios cd
-            JOIN dietas d ON cd.dieta_id = d.id
-            WHERE cd.comida_id = 1 AND cd.fecha_consumo = CURDATE() AND cd.sector_id = :sector_id
-            GROUP BY cd.dieta_id";
-        $stmtTotalesAlmuerzo = $conn->prepare($consultaTotalesAlmuerzo);
-        $stmtTotalesAlmuerzo->bindParam(':sector_id', $sector['id']);
-        $stmtTotalesAlmuerzo->execute();
-        $totalesAlmuerzo = $stmtTotalesAlmuerzo->fetchAll(PDO::FETCH_ASSOC);
+    // Grupo 2 Cena
+    $consultaGrupo2Cena = $conn->prepare($sqlGrupo2Cena);
+    $consultaGrupo2Cena->bindParam(':fecha_consumo', $fecha, PDO::PARAM_STR);
+    $consultaGrupo2Cena->execute();
+    $datosGrupo2Cena = $consultaGrupo2Cena->fetchAll(PDO::FETCH_ASSOC);
 
-        // Totales de cena por sector
-        $consultaTotalesCena = "
-            SELECT 
-                d.nombre AS dieta,
-                SUM(cd.cantidad) AS total
-            FROM consumos_diarios cd
-            JOIN dietas d ON cd.dieta_id = d.id
-            WHERE cd.comida_id = 2 AND cd.fecha_consumo = CURDATE() AND cd.sector_id = :sector_id
-            GROUP BY cd.dieta_id";
-        $stmtTotalesCena = $conn->prepare($consultaTotalesCena);
-        $stmtTotalesCena->bindParam(':sector_id', $sector['id']);
-        $stmtTotalesCena->execute();
-        $totalesCena = $stmtTotalesCena->fetchAll(PDO::FETCH_ASSOC);
+    // Ejecutar las consultas de los totales generales
+    $consultaTotalesAlmuerzo = $conn->prepare($sqlTotalesAlmuerzo);
+    $consultaTotalesAlmuerzo->bindParam(':fecha_consumo', $fecha, PDO::PARAM_STR);
+    $consultaTotalesAlmuerzo->execute();
+    $totalesAlmuerzo = $consultaTotalesAlmuerzo->fetch(PDO::FETCH_ASSOC);
 
-        // Totales generales de almuerzo
-        $consultaGeneralAlmuerzo = "
-            SELECT 
-                SUM(cd.cantidad) AS total_general
-            FROM consumos_diarios cd
-            WHERE cd.comida_id = 1 AND cd.fecha_consumo = CURDATE() AND cd.sector_id = :sector_id";
-        $stmtGeneralAlmuerzo = $conn->prepare($consultaGeneralAlmuerzo);
-        $stmtGeneralAlmuerzo->bindParam(':sector_id', $sector['id']);
-        $stmtGeneralAlmuerzo->execute();
-        $generalAlmuerzo = $stmtGeneralAlmuerzo->fetch(PDO::FETCH_ASSOC)['total_general'];
+    $consultaTotalesCena = $conn->prepare($sqlTotalesCena);
+    $consultaTotalesCena->bindParam(':fecha_consumo', $fecha, PDO::PARAM_STR);
+    $consultaTotalesCena->execute();
+    $totalesCena = $consultaTotalesCena->fetch(PDO::FETCH_ASSOC);
 
-        // Totales generales de cena
-        $consultaGeneralCena = "
-            SELECT 
-                SUM(cd.cantidad) AS total_general
-            FROM consumos_diarios cd
-            WHERE cd.comida_id = 2 AND cd.fecha_consumo = CURDATE() AND cd.sector_id = :sector_id";
-        $stmtGeneralCena = $conn->prepare($consultaGeneralCena);
-        $stmtGeneralCena->bindParam(':sector_id', $sector['id']);
-        $stmtGeneralCena->execute();
-        $generalCena = $stmtGeneralCena->fetch(PDO::FETCH_ASSOC)['total_general'];
+    // Crear la respuesta con los datos de cada grupo y los totales generales
+    $respuesta = [
+        'por_sector' => [
+            'almuerzo' => [
+                'grupo_1' => $datosGrupo1Almuerzo,
+                'grupo_2' => $datosGrupo2Almuerzo,
+                'totales' => $totalesAlmuerzo // Totales generales de almuerzo
+            ],
+            'cena' => [
+                'grupo_1' => $datosGrupo1Cena,
+                'grupo_2' => $datosGrupo2Cena,
+                'totales' => $totalesCena // Totales generales de cena
+            ]
+        ]
+    ];
 
-        // Número de dietas por comida en la fecha actual
-        $consultaCantidadDietas = "
-            SELECT 
-                cd.comida_id,
-                COUNT(DISTINCT cd.dieta_id) AS cantidad_dietas
-            FROM consumos_diarios cd
-            WHERE cd.fecha_consumo = CURDATE() AND cd.sector_id = :sector_id
-            GROUP BY cd.comida_id";
-        $stmtCantidadDietas = $conn->prepare($consultaCantidadDietas);
-        $stmtCantidadDietas->bindParam(':sector_id', $sector['id']);
-        $stmtCantidadDietas->execute();
-        $cantidadDietas = $stmtCantidadDietas->fetchAll(PDO::FETCH_ASSOC);
-
-        // Procesar los resultados de cantidad de dietas por comida
-        $dietasPorComida = [];
-        foreach ($cantidadDietas as $item) {
-            $comida = $item['comida_id'] == 1 ? 'almuerzo' : 'cena';
-            $dietasPorComida[$comida] = $item['cantidad_dietas'];
-        }
-
-        // Añadir los resultados del sector al arreglo final
-        $resultados[] = [
-            'sector' => $sector['nombre'],
-            'totales_almuerzo' => $totalesAlmuerzo,
-            'totales_cena' => $totalesCena,
-            'general_almuerzo' => $generalAlmuerzo,
-            'general_cena' => $generalCena,
-            'dietas_por_comida' => $dietasPorComida
-        ];
-    }
-
-    // Totales generales por dieta y tipo de comida
-    $consultaTotalesGenerales = "
-        SELECT 
-            d.nombre AS dieta,
-            cd.comida_id,
-            SUM(cd.cantidad) AS total
-        FROM consumos_diarios cd
-        JOIN dietas d ON cd.dieta_id = d.id
-        WHERE cd.fecha_consumo = CURDATE()
-        GROUP BY d.nombre, cd.comida_id";
-    $stmtTotalesGenerales = $conn->prepare($consultaTotalesGenerales);
-    $stmtTotalesGenerales->execute();
-    $totalesGenerales = $stmtTotalesGenerales->fetchAll(PDO::FETCH_ASSOC);
-
-    // Añadir los totales generales al arreglo final
-    $resultados['totales_generales'] = $totalesGenerales;
-
-    // Respuesta en formato JSON
-    echo json_encode($resultados);
-
+    echo json_encode($respuesta);
 } catch (PDOException $e) {
-    echo json_encode(['error' => $e->getMessage()]);
+    error_log("Error en la consulta: " . $e->getMessage());
+    echo json_encode(['error' => 'Error en la consulta.']);
 }
 ?>
