@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte de Dietas</title>
+    <title>Dietas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/estilos.css">
@@ -14,8 +14,9 @@
     <?php include 'header.php'; ?>
     <div id="app">
         <div class="container mt-5">
-            <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido o Sector">
             <h2>Dietas de Internados</h2>
+
+            <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido o Sector">
             <div class="d-flex align-items-center gap-2">
                 <button @click="abrirModalComida" class="btn btn-primary btn-sm d-flex align-items-center">
                     <i class="bi bi-printer me-2"></i> Imprimir Todas las Etiquetas
@@ -34,15 +35,16 @@
                     <tr>
                         <th>Sector</th>
                         <th>Cama</th>
-                        <th>Apellido</th>
-                        <th>Nombre</th>
+                        <th>DNI</th>
+                        <th>Paciente</th>
+                        <!-- <th>Nombre</th> -->
                         <th>Edad</th>
                         <th>Código</th>
-                        <th>Nombre Dieta</th>
+                        <th>Dieta</th>
                         <th>Dignostico</th>
                         <th>Observación</th>
                         <th>Profesional</th>
-                        <th>Fecha Asignada</th>
+                        <th>Asignación</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -50,8 +52,9 @@
                     <tr v-for="dieta in pacientesFiltrados" :key="dieta.id">
                         <td>{{ dieta.nombre_sector || '-' }}</td>
                         <td>{{ dieta.cama || '-' }}</td>
-                        <td>{{ dieta.apellido_paciente || '-' }}</td>
-                        <td>{{ dieta.nombre_paciente || '-' }}</td>
+                        <td>{{ dieta.dni || '-' }}</td>
+                        <td>{{ dieta.apellido_paciente}}, {{ dieta.nombre_paciente}}</td>
+                        <!-- <td>{{ dieta.nombre_paciente || '-' }}</td> -->
                         <td>{{ dieta.edad || '-' }}</td>
                         <td>{{ dieta.codigo_dieta || '-' }}</td>
                         <td>{{ dieta.nombre_dieta || '-' }}</td>
@@ -65,11 +68,11 @@
                             <button class="btn btn-info btn-sm me-2" @click="editarDieta(dieta.id)">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            
+
                             <button class="btn btn-sm btn-outline-success" @click="verDietas(dieta.internacion_id)">
                                 <i class="bi bi-eye"></i>
                             </button>
-                           
+
                             <!-- <button class="btn btn-secondary btn-sm d-flex align-items-center me-2" @click="seleccionarComida(dieta.internacion_id)">
                                 <i class="bi bi-printer me-2"></i>
                             </button> -->

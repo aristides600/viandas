@@ -41,6 +41,7 @@ try {
                         i.sector_id,
                         i.cama,
                         i.diagnostico,
+                        p.dni,
                         p.nombre AS nombre_paciente,
                         p.apellido AS apellido_paciente,
                         s.nombre AS nombre_sector,
