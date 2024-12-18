@@ -64,25 +64,7 @@ createApp({
         dietaInternacion(id) {
             window.location.href = "dieta_internacion.php?id=" + id;
         },
-        // altaInternacion(id) {
-        //     fetch('api/alta_internacion.php', {
-        //         method: 'PUT',
-        //         headers: { 'Content-Type': 'application/json' },
-        //         body: JSON.stringify({ id: id })
-        //     })
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         if (data.success) {
-        //             Swal.fire('Éxito', data.success, 'success');
-        //         } else {
-        //             Swal.fire('Error', data.error || 'Ocurrió un error', 'error');
-        //         }
-        //     })
-        //     .catch(error => {
-        //         Swal.fire('Error', 'Error de conexión', 'error');
-        //         console.error('Error:', error);
-        //     });
-        // }
+       
         altaInternacion(id) {
             fetch('api/alta_internacion.php', {
                 method: 'PUT',

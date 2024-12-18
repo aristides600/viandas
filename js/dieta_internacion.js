@@ -1,17 +1,21 @@
 const app = Vue.createApp({
     data() {
         return {
-            paciente: null,
-            internacion: null,
+            paciente: {}, // Cambiar de null a un objeto vacío
+            internacion: {},
             dietas: [],
             postres: [],
+            colaciones: [],
+            suplementos: [],
             dietaInternacion: {
                 paciente_id: '',
                 dieta_id: '',
                 internacion_id: '',
                 observacion: '',
                 acompaniante: false,
-                postre_id: null,
+                postre_id: '',
+                colacion_id: '',
+                suplemento_id: ''
             },
         };
     },
@@ -22,6 +26,10 @@ const app = Vue.createApp({
             this.obtenerInternacion(id);
             this.obtenerDietas();
             this.obtenerPostres();
+            this.obtenerColaciones();
+            this.obtenerSuplementos();
+
+
         }
     },
     methods: {
@@ -57,11 +65,11 @@ const app = Vue.createApp({
             const mes = (date.getMonth() + 1).toString().padStart(2, '0'); // Los meses son base 0
             const anio = date.getFullYear();
 
-            const horas = date.getHours().toString().padStart(2, '0');
-            const minutos = date.getMinutes().toString().padStart(2, '0');
-            const segundos = date.getSeconds().toString().padStart(2, '0');
+            // const horas = date.getHours().toString().padStart(2, '0');
+            // const minutos = date.getMinutes().toString().padStart(2, '0');
+            // const segundos = date.getSeconds().toString().padStart(2, '0');
 
-            return `${dia}/${mes}/${anio} ${horas}:${minutos}:${segundos}`;
+            return `${dia}/${mes}/${anio}`;
         },
         obtenerDietas() {
             axios.get('api/dietas.php')
@@ -81,6 +89,24 @@ const app = Vue.createApp({
                     Swal.fire('Error', 'No se pudieron cargar los postres.', 'error');
                 });
         },
+        obtenerColaciones() {
+            axios.get('api/colaciones.php')
+                .then(response => {
+                    this.colaciones = response.data;
+                })
+                .catch(() => {
+                    Swal.fire('Error', 'No se pudieron cargar los colaciones.', 'error');
+                });
+        },
+        obtenerSuplementos() {
+            axios.get('api/suplementos.php')
+                .then(response => {
+                    this.suplementos = response.data;
+                })
+                .catch(() => {
+                    Swal.fire('Error', 'No se pudieron cargar los suplementos.', 'error');
+                });
+        },
         guardarDieta() {
             if (!this.dietaInternacion.paciente_id || !this.dietaInternacion.dieta_id || !this.dietaInternacion.internacion_id) {
                 Swal.fire('Error', 'Todos los campos obligatorios deben completarse.', 'error');
@@ -91,6 +117,7 @@ const app = Vue.createApp({
             this.dietaInternacion.paciente_id = parseInt(this.dietaInternacion.paciente_id);
             this.dietaInternacion.dieta_id = parseInt(this.dietaInternacion.dieta_id);
             this.dietaInternacion.internacion_id = parseInt(this.dietaInternacion.internacion_id);
+            console.log(this.dietaInternacion)
 
             // Enviar datos al servidor
             axios.post('api/pacientes_dietas.php', this.dietaInternacion)

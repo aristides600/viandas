@@ -29,6 +29,8 @@ try {
                         d.codigo AS codigo_dieta,
                         d.nombre AS nombre_dieta,
                         postres.nombre AS nombre_postre,
+                        co.nombre AS nombre_colacion,
+                        su.nombre AS nombre_suplemento,
                         u.apellido AS apellido_usuario,
                         u.nombre AS nombre_usuario,
                         pd.usuario_id,
@@ -53,9 +55,11 @@ try {
                     JOIN sectores s ON s.id = i.sector_id
                     JOIN dietas d ON d.id = pd.dieta_id
                     LEFT JOIN postres ON postres.id = pd.postre_id
+                    LEFT JOIN colaciones co ON co.id = pd.colacion_id
+                    LEFT JOIN suplementos su ON su.id = pd.suplemento_id
                     WHERE pd.estado = 1
                     ORDER BY i.sector_id ASC, i.cama ASC"; // Ordenar por sector y cama de forma ascendente
-        
+
             try {
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
@@ -65,7 +69,7 @@ try {
                 echo json_encode(["error" => $e->getMessage()]);
             }
             break;
-        
+
 
         case 'POST': // Crear una nueva dieta
             $data = json_decode(file_get_contents('php://input'), true);
@@ -92,14 +96,21 @@ try {
             $observacion = strtoupper(htmlspecialchars(trim($data['observacion'] ?? '')));
             $acompaniante = isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0;
             $postre_id = !empty($data['postre_id']) ? intval($data['postre_id']) : null;
-            // $dieta_id = !empty($data['dieta_id']) ? intval($data['dieta_id']) : null;
+            $colacion_id = !empty($data['colacion_id']) ? intval($data['colacion_id']) : null;
+            $suplemento_id = !empty($data['suplemento_id']) ? intval($data['suplemento_id']) : null;
 
+            // Verificar si usuario_id está definido, puedes obtenerlo de la sesión o algún método de autenticación
+            if (!isset($usuario_id)) {
+                http_response_code(400);
+                echo json_encode(['error' => 'No se pudo determinar el usuario que realiza la acción']);
+                exit();
+            }
 
             // Insertar nueva dieta
             $sql = "INSERT INTO pacientes_dietas 
-                                (paciente_id, dieta_id, internacion_id, fecha_consumo, usuario_id, estado, observacion, acompaniante, postre_id) 
-                            VALUES 
-                                (:paciente_id, :dieta_id, :internacion_id, NOW(), :usuario_id, 1, :observacion, :acompaniante, :postre_id)";
+                                    (paciente_id, dieta_id, internacion_id, fecha_consumo, usuario_id, estado, observacion, acompaniante, postre_id, colacion_id, suplemento_id) 
+                                VALUES 
+                                    (:paciente_id, :dieta_id, :internacion_id, NOW(), :usuario_id, 1, :observacion, :acompaniante, :postre_id, :colacion_id, :suplemento_id)";
             $stmt = $conn->prepare($sql);
             $stmt->execute([
                 ':paciente_id' => intval($data['paciente_id']),
@@ -109,10 +120,13 @@ try {
                 ':observacion' => $observacion,
                 ':acompaniante' => $acompaniante,
                 ':postre_id' => $postre_id,
+                ':colacion_id' => $colacion_id,
+                ':suplemento_id' => $suplemento_id,
             ]);
 
             echo json_encode(['mensaje' => 'Dieta creada correctamente']);
             break;
+
 
         case 'PUT': // Actualizar dieta existente
             // Obtener el ID de la dieta desde la URL si está disponible
@@ -129,6 +143,10 @@ try {
             $observacion = strtoupper(htmlspecialchars(trim($data['observacion'] ?? '')));
             $acompaniante = isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0;
             $postre_id = !empty($data['postre_id']) ? intval($data['postre_id']) : null;
+            $postre_id = !empty($data['colacion_id']) ? intval($data['colacion_id']) : null;
+            $postre_id = !empty($data['suplemento_id']) ? intval($data['suplemento_id']) : null;
+
+
 
             $sql = "UPDATE pacientes_dietas 
                         SET 
@@ -138,7 +156,10 @@ try {
                             observacion = :observacion,
                             acompaniante = :acompaniante,
                             fecha_consumo = NOW(),
-                            postre_id = :postre_id
+                            postre_id = :postre_id,
+                            colacion_id = :colacion_id,
+                            suplemento_id = :suplemento_id
+
                         WHERE id = :id";
             $stmt = $conn->prepare($sql);
             $stmt->execute([
@@ -148,6 +169,8 @@ try {
                 ':observacion' => $observacion,
                 ':acompaniante' => $acompaniante,
                 ':postre_id' => $postre_id,
+                ':colacion_id' => $colacion_id,
+                ':suplemento_id' => $suplemento_id,
                 ':id' => $dieta_id,
             ]);
 

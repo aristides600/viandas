@@ -12,11 +12,13 @@
 
 <body>
     <?php include 'header.php'; ?>
-    <div id="app" class="container mt-4">
+    <div id="app" class="container mt-2">
         <h2>Internaciones</h2>
 
-        <!-- Filtros de estado -->
-        <div>
+        <div class="d-flex align-items-center">
+            <button class="btn btn-sm btn-primary me-5" @click="nuevaInternacion">
+                <i class="bi bi-plus"></i> Nueva Internación
+            </button>
             <label class="me-3">
                 <input type="radio" v-model="filtroEstado" value="pendiente"> Internados
             </label>
@@ -25,11 +27,7 @@
             </label>
         </div>
 
-        <div class="mt-3">
-            <button class="btn btn-sm btn-primary me-2" @click="nuevaInternacion">
-                <i class="bi bi-plus"></i> Nueva Internación
-            </button>
-        </div>
+
 
         <!-- Buscador -->
         <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido">

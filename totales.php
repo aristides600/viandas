@@ -7,16 +7,22 @@
     <title>Reporte de Consumos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue@3.2.0/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="./css/estilos.css">
+
+
+
 
     <style>
         /* Estilos para almuerzo y cena */
         .almuerzo {
-            background-color: #d4edda; /* Verde claro */
+            background-color: #d4edda;
+            /* Verde claro */
             border: 1px solid #c3e6cb;
         }
 
         .cena {
-            background-color: #cce5ff; /* Azul claro */
+            background-color: #cce5ff;
+            /* Azul claro */
             border: 1px solid #b8daff;
         }
 
@@ -27,12 +33,15 @@
         .table-striped tbody tr:nth-child(even) {
             background-color: #ffffff;
         }
+
+       
     </style>
+    <?php include 'header.php'; ?>
+
 </head>
 
 <body>
-
-    <div id="app" class="container mt-5">
+<div id="app" class="container mt-1">
         <h5 class="text-center">Dietas - {{ fechaActual }}</h5>
         <div class="row">
 
@@ -116,6 +125,7 @@
         </div>
 
     </div>
+    <?php include 'footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>

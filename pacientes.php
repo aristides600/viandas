@@ -14,7 +14,7 @@
     <!-- Inclusión del encabezado -->
     <?php include 'header.php'; ?>
 
-    <div id="app" class="container mt-5">
+    <div id="app" class="container mt-2">
     <h2>Gestión de Pacientes</h2>
 
 

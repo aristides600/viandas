@@ -13,7 +13,7 @@
 <body>
 
     <?php include 'header.php'; ?>
-    <div id="app" class="container mt-5">
+    <div id="app" class="container mt-2">
         <h2>Nuevo Paciente</h2>
         <form @submit.prevent="guardarPaciente">
             <div class="mb-3">

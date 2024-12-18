@@ -12,7 +12,7 @@
 
 <body>
   <?php include 'header.php'; ?>
-  <div id="app" class="container mt-5">
+  <div id="app" class="container mt-2">
     <h2>Editar Dieta</h2>
     <form @submit.prevent="editarDieta">
       <div class="row">
@@ -24,7 +24,7 @@
             </div>
             <div class="card-body">
               <p class="card-text">
-                <strong>Nombre:</strong> {{ paciente.nombre }} {{ paciente.apellido }}<br>
+                <strong>Paciente:</strong> {{ paciente.apellido }}, {{ paciente.nombre }}<br>
                 <strong>DNI:</strong> {{ paciente.dni }}<br>
                 <strong>Fecha de Nacimiento:</strong> {{ paciente.fecha_nacimiento }}<br>
               </p>
@@ -48,18 +48,15 @@
           </div>
         </div>
       </div>
-
-      <!-- Campos del formulario -->
       <div class="mb-3">
         <label for="dieta_id" class="form-label">Dieta</label>
-        <select v-model="pacienteDieta.dieta_id" class="form-control" id="dieta_id" required>
-          <option v-for="dieta in dietas" :key="dieta.id" :value="dieta.id" :title="dieta.nombre">{{ dieta.codigo }} -  {{ dieta.nombre }}</option>
+        <select v-model="pacienteDieta.dieta_id" class="form-select" id="dieta_id" required>
+          <option disabled value="">Seleccionar una dieta</option>
+          <option v-for="dieta in dietas" :key="dieta.id" :value="dieta.id" :title="dieta.nombre">
+            {{ dieta.codigo }} - {{ dieta.nombre }}
+          </option>
         </select>
       </div>
-      <!-- <div class="mb-3">
-        <label for="fecha_consumo" class="form-label">Fecha de Consumo</label>
-        <input type="date" v-model="pacienteDieta.fecha_consumo" class="form-control" id="fecha_consumo" required>
-      </div> -->
       <div class="mb-3">
         <label for="acompaniante" class="form-label">¿Acompañante?</label>
         <input
@@ -68,16 +65,42 @@
           id="acompaniante"
           aria-label="Marcar si hay acompañante">
       </div>
+
+      <div class="mb-3">
+        <label for="postre_id" class="form-label">Postre</label>
+        <select v-model="pacienteDieta.postre_id" class="form-select" id="postre_id">
+          <option disabled value="">Seleccionar un postre</option>
+          <option v-for="postre in postres" :key="postre.id" :value="postre.id">
+            {{ postre.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="colacion_id" class="form-label">Colación</label>
+        <select v-model="pacienteDieta.colacion_id" class="form-select" id="colacion_id">
+          <option disabled value="">Seleccionar una colación</option>
+          <option v-for="colacion in colaciones" :key="colacion.id" :value="colacion.id">
+            {{ colacion.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="suplemento_id" class="form-label">Suplemento</label>
+        <select v-model="pacienteDieta.suplemento_id" class="form-select" id="suplemento_id">
+          <option disabled value="">Seleccionar un suplemento</option>
+          <option v-for="suplemento in suplementos" :key="suplemento.id" :value="suplemento.id">
+            {{ suplemento.nombre }}
+          </option>
+        </select>
+      </div>
+
       <div class="mb-3">
         <label for="observacion" class="form-label">Observación</label>
         <textarea v-model="pacienteDieta.observacion" class="form-control" id="observacion" rows="3"></textarea>
       </div>
-      <div class="mb-3">
-        <label for="postre_id" class="form-label">Postre</label>
-        <select v-model="pacienteDieta.postre_id" class="form-control" id="postre_id">
-          <option v-for="postre in postres" :key="postre.id" :value="postre.id">{{ postre.nombre }}</option>
-        </select>
-      </div>
+
       <button type="submit" class="btn btn-primary">Guardar Cambios</button>
     </form>
   </div>

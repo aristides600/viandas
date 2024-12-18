@@ -176,7 +176,7 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                         <li class="nav-item"><a class="nav-link" href="internados.php">Internados</a></li>
 
                         <li class="nav-item"><a class="nav-link" href="pacientes_dietas.php">Dietas</a></li>
-                        <li class="nav-item"><a class="nav-link" href="totales.php">Consumo Actual</a></li>
+                        <li class="nav-item"><a class="nav-link" href="totales.php">Pizarron</a></li>
                         <li class="nav-item"><a class="nav-link" href="reportes.php">Reportes</a></li>
                         <li class="nav-item"><a class="nav-link" href="usuarios.php">Usuarios</a></li>
                     </ul>
@@ -222,12 +222,12 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                         <a href="pacientes_dietas.php" class="btn btn-primary">Ir a Dietas</a>
                     </div>
                 </div>
-                <!-- <div class="card">
-                    <div class="card-header"><i class="bi bi-tag"></i> Etiquetas</div>
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-tag"></i> Pizarron</div>
                     <div class="card-body">
-                        <a href="etiquetas.php" class="btn btn-primary">Ir a Etiquetas</a>
+                        <a href="totales.php" class="btn btn-primary">Ir a Pizarron</a>
                     </div>
-                </div> -->
+                </div>
 
             </div>
             <!-- Modal para cambiar contraseña -->

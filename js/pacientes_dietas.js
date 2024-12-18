@@ -51,12 +51,24 @@ const app = Vue.createApp({
                     this.mensaje = { texto: 'Error al cargar las comidas.', clase: 'alert-danger' };
                 });
         },
-        seleccionarComida(internacionId) {
+        // seleccionarComida(internacionId) {
+        //     // Guarda el ID de internación del paciente seleccionado (si es necesario)
+        //     this.internacionSeleccionada = internacionId;
+
+        //     // Abre el modal para seleccionar la comida
+        //     this.abrirModalComida();
+        // },
+        seleccionarUnaComida(internacionId) {
             // Guarda el ID de internación del paciente seleccionado (si es necesario)
             this.internacionSeleccionada = internacionId;
 
             // Abre el modal para seleccionar la comida
-            this.abrirModalComida();
+            this.abrirModalUnaComida();
+        },
+        abrirModalUnaComida() {
+            // Mostrar el modal
+            const modal = new bootstrap.Modal(document.getElementById('modalUnaComida'));
+            modal.show();
         },
 
         abrirModalComida() {
@@ -64,7 +76,7 @@ const app = Vue.createApp({
             const modal = new bootstrap.Modal(document.getElementById('modalComida'));
             modal.show();
         },
-        async procesarConsumo() {
+        async procesarTodoConsumo() {
             if (!this.comidaSeleccionada) {
                 Swal.fire('Error', 'Por favor, seleccione una comida.', 'error');
                 return;
@@ -90,7 +102,7 @@ const app = Vue.createApp({
                 Swal.fire('Error', 'Hubo un error al procesar la solicitud.', 'error');
             }
         },
-        async procesarUnConsumo(internacion_id) {
+        async procesarUnConsumo() {
             if (!this.comidaSeleccionada) {
                 Swal.fire('Error', 'Por favor, seleccione una comida.', 'error');
                 return;
@@ -98,17 +110,19 @@ const app = Vue.createApp({
 
             try {
                 // Enviar el ID de la comida seleccionada y el internacion_id al backend
+                console.log(this.internacionSeleccionada);
                 const response = await axios.post('api/consumo_individual.php', {
                     comida_id: this.comidaSeleccionada,
-                    internacion_id: internacion_id
+                    internacion_id: this.internacionSeleccionada
                 });
 
                 const data = response.data;
+                console.log(data);
 
                 if (data.status === 'success') {
                     Swal.fire('Éxito', data.message, 'success');
                     // Ejecutar la lógica para imprimir una etiqueta
-                    this.imprimirUnaEtiqueta(internacion_id);
+                    this.imprimirUnaEtiqueta(this.internacionSeleccionada);
                 } else {
                     Swal.fire('Error', data.message, 'error');
                 }

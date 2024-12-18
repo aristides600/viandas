@@ -13,7 +13,7 @@
 <body>
     <?php include 'header.php'; ?>
 
-    <div id="app" class="container mt-5">
+    <div id="app" class="container mt-2">
         <h2 class="mb-4">Consumos de Dietas</h2>
 
         <!-- Filtros de fechas -->

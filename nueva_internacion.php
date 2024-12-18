@@ -13,7 +13,7 @@
 <body>
 
     <?php include 'header.php'; ?>
-    <div id="app" class="container mt-4">
+    <div id="app" class="container mt-2">
         <h2>Nueva Internación</h2>
 
         <!-- Formulario para agregar una nueva internación -->
@@ -72,10 +72,7 @@
                     </option>
                 </select>
             </div>
-            <!-- <div class="mb-3">
-                <label for="cama" class="form-label">Cama</label>
-                <input type="number" class="form-control" v-model="nuevaInternacion.cama" maxlength="3" required>
-            </div> -->
+            
             <div class="mb-3">
                 <label for="cama" class="form-label">Cama</label>
                 <input

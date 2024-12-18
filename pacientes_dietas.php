@@ -13,7 +13,8 @@
 <body>
     <?php include 'header.php'; ?>
     <div id="app">
-        <div class="container mt-5">
+        <div class="container mt-2">
+
             <h2>Dietas de Internados</h2>
 
             <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido o Sector">
@@ -73,9 +74,9 @@
                                 <i class="bi bi-eye"></i>
                             </button>
 
-                            <!-- <button class="btn btn-secondary btn-sm d-flex align-items-center me-2" @click="seleccionarComida(dieta.internacion_id)">
+                            <button class="btn btn-secondary btn-sm d-flex align-items-center me-2" @click="seleccionarUnaComida(dieta.internacion_id)">
                                 <i class="bi bi-printer me-2"></i>
-                            </button> -->
+                            </button>
 
 
 
@@ -100,7 +101,30 @@
                                 </option>
                             </select>
                             <!-- Botón para procesar el consumo -->
-                            <button @click="procesarConsumo" class="btn btn-primary w-100 mt-2">Confirmar</button>
+                            <button @click="procesarTodoConsumo" class="btn btn-primary w-100 mt-2">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- una comida -->
+
+            <div class="modal fade" id="modalUnaComida" tabindex="-1" aria-labelledby="modalComidaLabel" aria-hidden="true" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalComidaLabel">Seleccionar Comida</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Qué tipo de comida deseas seleccionar?</p>
+                            <!-- Dropdown para seleccionar la comida -->
+                            <select v-model="comidaSeleccionada" class="form-select" aria-label="Seleccionar Comida">
+                                <option v-for="comida in comidas" :key="comida.id" :value="comida.id">
+                                    {{ comida.nombre }}
+                                </option>
+                            </select>
+                            <!-- Botón para procesar el consumo -->
+                            <button @click="procesarUnConsumo" class="btn btn-primary w-100 mt-2">Confirmar</button>
                         </div>
                     </div>
                 </div>

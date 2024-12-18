@@ -12,10 +12,28 @@
 
 <body>
     <?php include 'header.php'; ?>
-    <div id="app" class="container mt-5">
+    <div id="app" class="container mt-2">
         <h2>Asignar Dieta</h2>
 
         <!-- Tarjeta de datos del paciente -->
+        <!-- <div class="row mb-4">
+            <div v-if="paciente && internacion" class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Datos del Paciente</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <strong>Paciente:</strong> {{ paciente.apellido }}, {{ paciente.nombre }}<br>
+                            <strong>DNI:</strong> {{ paciente.dni }}<br>
+                            <strong>Diagnóstico:</strong> {{ internacion.diagnostico }}<br>
+                            <strong>Fecha de Ingreso:</strong> {{ formatoFecha(internacion.fecha_ingreso) }}<br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <!-- Tarjetas de Datos del Paciente e Internación -->
         <div class="row mb-4">
             <!-- Tarjeta de Datos del Paciente -->
             <div v-if="paciente && internacion" class="col-md-6">
@@ -25,25 +43,37 @@
                     </div>
                     <div class="card-body">
                         <p class="card-text">
-                            <strong>Nombre:</strong> {{ paciente.nombre }} {{ paciente.apellido }}<br>
+                            <strong>Paciente:</strong> {{ paciente.apellido }}, {{ paciente.nombre }}<br>
                             <strong>DNI:</strong> {{ paciente.dni }}<br>
                             <strong>Fecha de Nacimiento:</strong> {{ formatoFecha(paciente.fecha_nacimiento) }}<br>
-                            <strong>Diagnóstico:</strong> {{ internacion.diagnostico }}<br>
-                            <strong>Fecha de Ingreso:</strong> {{ formatoFecha(internacion.fecha_ingreso) }}<br>
-                            <strong>Fecha de Egreso:</strong> {{ formatoFecha(internacion.fecha_egreso || '-') }}
                         </p>
                     </div>
                 </div>
             </div>
 
+            <!-- Tarjeta de Datos de la Internación -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="card-title mb-0">Datos de la Internación</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <strong>Diagnóstico:</strong> {{ internacion.diagnostico }}<br>
+                            <strong>Fecha de Ingreso:</strong> {{ formatoFecha(internacion.fecha_ingreso) }}<br>
+                            <strong>Fecha de Egreso:</strong> {{ internacion.fecha_egreso || 'Sin egreso registrado' }}<br>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
-
         <!-- Cambiar Dieta -->
         <form @submit.prevent="guardarDieta">
             <div class="mb-3">
                 <label for="dieta_id" class="form-label">Tipo de Dieta</label>
                 <select class="form-select" v-model="dietaInternacion.dieta_id" required>
-                    <option v-for="dieta in dietas" :value="dieta.id">{{ dieta.codigo }} -  {{ dieta.nombre }}</option>
+                <option disabled value="">Seleccionar una dieta</option>
+                    <option v-for="dieta in dietas" :value="dieta.id">{{ dieta.codigo }} - {{ dieta.nombre }}</option>
                 </select>
             </div>
 
@@ -54,9 +84,25 @@
             <div class="mb-3">
                 <label for="postre_id" class="form-label">Postre</label>
                 <select class="form-select" v-model="dietaInternacion.postre_id">
+                    <option disabled value="">Seleccionar un postre</option>
                     <option v-for="postre in postres" :value="postre.id">{{ postre.nombre }}</option>
                 </select>
             </div>
+            <div class="mb-3">
+                <label for="colacion_id" class="form-label">Colación</label>
+                <select class="form-select" v-model="dietaInternacion.colacion_id">
+                    <option disabled value="">Seleccionar una colación</option>
+                    <option v-for="colacion in colaciones" :value="colacion.id">{{ colacion.nombre }}</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="suplemento_id" class="form-label">Suplemento</label>
+                <select class="form-select" v-model="dietaInternacion.suplemento_id">
+                    <option disabled value="">Seleccionar un suplemento</option>
+                    <option v-for="suplemento in suplementos" :value="suplemento.id">{{ suplemento.nombre }}</option>
+                </select>
+            </div>
+
             <div class="mb-3">
                 <label for="observacion" class="form-label">Observaciónes</label>
                 <textarea class="form-control" v-model="dietaInternacion.observacion" required></textarea>

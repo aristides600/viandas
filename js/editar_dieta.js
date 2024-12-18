@@ -19,9 +19,15 @@ const app = Vue.createApp({
                 acompaniante: null, // Valor inicial
                 observacion: '',
                 postre_id: null,
+                colacion_id: null,
+                suplemento_id: null,
             },
             dietas: [],
-            postres: []
+            postres: [],
+            colaciones: [],
+            suplementos: []
+
+
         };
     },
     mounted() {
@@ -32,6 +38,9 @@ const app = Vue.createApp({
         }
         this.cargarDietas();
         this.cargarPostres();
+        this.obtenerColaciones();
+        this.obtenerSuplementos();
+
         this.pacienteDieta.acompaniante = !!this.pacienteDieta.acompaniante;
     },
     methods: {
@@ -63,7 +72,10 @@ const app = Vue.createApp({
                         // acompaniante: datos.acompaniante,
                         acompaniante: datos.acompaniante === 1, // Conversión a booleano
                         observacion: datos.observacion,
-                        postre_id: datos.postre_id
+                        postre_id: datos.postre_id,
+                        colacion_id: datos.colacion_id,
+                        suplemento_id: datos.suplemento_id
+
                     };
                 })
                 .catch(error => {
@@ -90,6 +102,24 @@ const app = Vue.createApp({
                 })
                 .catch(() => {
                     Swal.fire('Error', 'No se pudieron cargar los postres.', 'error');
+                });
+        },
+        obtenerColaciones() {
+            axios.get('api/colaciones.php')
+                .then(response => {
+                    this.colaciones = response.data;
+                })
+                .catch(() => {
+                    Swal.fire('Error', 'No se pudieron cargar los colaciones.', 'error');
+                });
+        },
+        obtenerSuplementos() {
+            axios.get('api/suplementos.php')
+                .then(response => {
+                    this.suplementos = response.data;
+                })
+                .catch(() => {
+                    Swal.fire('Error', 'No se pudieron cargar los suplementos.', 'error');
                 });
         },
         editarDieta() {

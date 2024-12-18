@@ -12,6 +12,8 @@ try {
             pd.acompaniante,
             pd.observacion,
             pd.postre_id,
+            pd.colacion_id,
+            pd.suplemento_id,
             p.nombre AS nombre_paciente,
             p.apellido AS apellido_paciente,
             p.dni AS dni_paciente,
@@ -43,4 +45,3 @@ try {
     http_response_code(500);
     echo json_encode(['message' => 'Error en el servidor: ' . $e->getMessage()]);
 }
-?>
