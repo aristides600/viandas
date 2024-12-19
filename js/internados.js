@@ -10,6 +10,7 @@ createApp({
     },
     mounted() {
         this.cargarInternaciones();
+        this.inicializarTooltips();
     },
     watch: {
         filtro() {
@@ -86,7 +87,13 @@ createApp({
                     Swal.fire('Error', 'Error de conexión', 'error');
                     console.error('Error:', error);
                 });
-        }
+        },
+        inicializarTooltips() {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        },
 
     }
 }).mount('#app');

@@ -20,7 +20,14 @@
             <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido o Sector">
             <div class="d-flex align-items-center gap-2">
                 <button @click="abrirModalComida" class="btn btn-primary btn-sm d-flex align-items-center">
-                    <i class="bi bi-printer me-2"></i> Imprimir Todas las Etiquetas
+                    <i class="bi bi-printer me-2"></i> Todas las Etiquetas
+                </button>
+                <button @click="imprimirColaciones" class="btn btn-primary btn-sm d-flex align-items-center">
+                    <i class="bi bi-printer me-2"></i> Colaciones
+                </button>
+
+                <button @click="imprimirSuplementos" class="btn btn-primary btn-sm d-flex align-items-center">
+                    <i class="bi bi-printer me-2"></i> suplementos
                 </button>
                 <button class="btn btn-primary btn-sm d-flex align-items-center" @click="nutricionPDF">
                     <i class="bi bi-printer me-2"></i> Nutricionista PDF
@@ -66,7 +73,7 @@
                         <td>{{ formatearFecha(dieta.fecha_consumo) || '-' }}</td>
 
                         <td class="d-flex">
-                            <button class="btn btn-info btn-sm me-2" @click="editarDieta(dieta.id)">
+                            <button class="btn btn-info btn-sm" @click="editarDieta(dieta.id)">
                                 <i class="bi bi-pencil"></i>
                             </button>
 
@@ -74,13 +81,11 @@
                                 <i class="bi bi-eye"></i>
                             </button>
 
-                            <button class="btn btn-secondary btn-sm d-flex align-items-center me-2" @click="seleccionarUnaComida(dieta.internacion_id)">
-                                <i class="bi bi-printer me-2"></i>
+                            <button class="btn btn-secondary btn-sm d-flex align-items-center" @click="seleccionarUnaComida(dieta.internacion_id)">
+                                <i class="bi bi-printer"></i>
                             </button>
-
-
-
                         </td>
+
                     </tr>
                 </tbody>
             </table>
@@ -106,7 +111,7 @@
                     </div>
                 </div>
             </div>
-        <!-- una comida -->
+            <!-- una comida -->
 
             <div class="modal fade" id="modalUnaComida" tabindex="-1" aria-labelledby="modalComidaLabel" aria-hidden="true" role="dialog">
                 <div class="modal-dialog">

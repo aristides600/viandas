@@ -61,8 +61,7 @@ try {
 
             // Agregar condición de búsqueda si hay un término de búsqueda
             if ($searchTerm) {
-                $sql .= " HAVING (p.dni LIKE :search OR p.apellido LIKE :search)";
-            }
+                $sql .= " HAVING (p.dni LIKE :search OR p.apellido LIKE :search OR p.nombre LIKE :search OR sector_nombre LIKE :search)";            }
 
             $stmt = $conn->prepare($sql);
 

@@ -30,7 +30,7 @@
 
 
         <!-- Buscador -->
-        <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido">
+        <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido o Sector">
 
         <table class="table table-striped">
             <thead>
@@ -61,15 +61,30 @@
                         <div class="d-flex gap-1">
                             <!-- Mostrar botones solo si no está cerrada -->
                             <template v-if="filtroEstado !== 'cerrada'">
-                                <button class="btn btn-warning btn-sm" @click="dietaInternacion(internacion.id)">
-                                    <i class="bi bi-plus"></i> Dieta
+                                <button class="btn btn-warning btn-sm"
+                                    @click="dietaInternacion(internacion.id)"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    title="Agregar dieta">
+                                    <i class="bi bi-plus"></i>
                                 </button>
-                                <button class="btn btn-info btn-sm" @click="editarInternacion(internacion.id)">
+                                <button class="btn btn-info btn-sm"
+                                    @click="editarInternacion(internacion.id)"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    title="Editar internación">
                                     <i class="bi bi-pencil"></i>
                                 </button>
-                                <button class="btn btn-success btn-sm" @click="altaInternacion(internacion.id)">
-                                    <i class="bi bi-box-arrow-up"></i> Alta
+                                <button class="btn btn-success btn-sm"
+                                    @click="altaInternacion(internacion.id)"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    title="Dar de alta">
+                                    <i class="bi bi-box-arrow-up"></i>
                                 </button>
+
+
+
                             </template>
 
                             <!-- Mostrar botón Detalles solo si está cerrada -->

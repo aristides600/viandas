@@ -28,9 +28,9 @@ try {
                         pd.dieta_id,
                         d.codigo AS codigo_dieta,
                         d.nombre AS nombre_dieta,
+                        c1.nombre AS nombre_colacion,
+                        s1.nombre AS nombre_suplemento,
                         postres.nombre AS nombre_postre,
-                        co.nombre AS nombre_colacion,
-                        su.nombre AS nombre_suplemento,
                         u.apellido AS apellido_usuario,
                         u.nombre AS nombre_usuario,
                         pd.usuario_id,
@@ -55,8 +55,9 @@ try {
                     JOIN sectores s ON s.id = i.sector_id
                     JOIN dietas d ON d.id = pd.dieta_id
                     LEFT JOIN postres ON postres.id = pd.postre_id
-                    LEFT JOIN colaciones co ON co.id = pd.colacion_id
-                    LEFT JOIN suplementos su ON su.id = pd.suplemento_id
+                    LEFT JOIN colaciones c1 ON c1.id = pd.colacion_id
+                    LEFT JOIN suplementos s1 ON s1.id = pd.suplemento_id
+                   
                     WHERE pd.estado = 1
                     ORDER BY i.sector_id ASC, i.cama ASC"; // Ordenar por sector y cama de forma ascendente
 
