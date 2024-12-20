@@ -82,7 +82,7 @@ try {
             $paciente_id = $input['paciente_id'];
             $sector_id = $input['sector_id'];
             $cama = trim($input['cama']);
-            $diagnostico = strtoupper($input['diagnostico']); // Convertir a mayúsculas
+            $diagnostico = $input['diagnostico'];
             $usuario_id = $_SESSION['user_id'];
             $estado = 1; // Estado de internación (1 = activo)
 
@@ -124,7 +124,7 @@ try {
                 // Obtener los datos enviados
                 $id = $input['id'] ?? null;
                 $sector_id = $input['sector_id'] ?? null;
-                $diagnostico = isset($input['diagnostico']) ? strtoupper($input['diagnostico']) : null; // Convertir a mayúsculas
+                $diagnostico = isset($input['diagnostico']) ? $input['diagnostico'] : null;
                 $cama = trim($input['cama'] ?? null);
                 // Verificar que todos los datos necesarios estén presentes
                 if (!$id || !$sector_id || !$diagnostico) {

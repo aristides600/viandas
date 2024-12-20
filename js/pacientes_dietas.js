@@ -4,7 +4,7 @@ const app = Vue.createApp({
     data() {
         return {
             dietas: [],
-           
+
             filtro: '',
             comidaSeleccionada: null,
             comidas: [],
@@ -13,7 +13,7 @@ const app = Vue.createApp({
     },
     mounted() {
         this.cargarDietas();
-        
+
         this.obtenerComidas();
     },
     computed: {
@@ -40,7 +40,7 @@ const app = Vue.createApp({
                 Swal.fire('Error', 'No se pudieron cargar las dietas.', 'error');
             }
         },
-        
+
         obtenerComidas() {
             axios.get('api/comidas.php')
                 .then(response => {
@@ -51,7 +51,7 @@ const app = Vue.createApp({
                     this.mensaje = { texto: 'Error al cargar las comidas.', clase: 'alert-danger' };
                 });
         },
-       
+
         seleccionarUnaComida(internacionId) {
             // Guarda el ID de internación del paciente seleccionado (si es necesario)
             this.internacionSeleccionada = internacionId;
@@ -273,11 +273,15 @@ const app = Vue.createApp({
         //         orientation: 'l'  // Landscape
         //     });
 
+        //     // Establecer un tamaño de fuente más pequeño
+        //     doc.setFontSize(12); // Ajustar el tamaño de la fuente
+
         //     this.dietas.forEach((dieta, index) => {
-        //         // Skip dietas with id 2 (No printing for them)
+        //         // Omitir dietas con id = 1
         //         if (dieta.id === 1) {
         //             return;
         //         }
+        //         console.log(dieta);
 
         //         const comida = this.comidas.find(c => c.id === this.comidaSeleccionada);
         //         const nombreComida = comida ? comida.nombre : 'No seleccionada';
@@ -286,16 +290,16 @@ const app = Vue.createApp({
         //         doc.setTextColor(0, 0, 0);
 
         //         // Ajustar la distancia entre líneas
-        //         const lineHeight = 6;  // Puedes modificar este valor para aumentar o reducir el espacio entre las líneas
-        //         let currentY = 6;  // Posición inicial para la primera línea
+        //         const lineHeight = 5; // También puedes ajustar el espacio entre líneas
+        //         let currentY = 5;
 
         //         // Centrar el texto de nombreComida
-        //         const pageWidth = 63;  // Ancho de la página en milímetros
-        //         const textWidth = doc.getTextWidth(nombreComida);  // Ancho del texto
-        //         const centeredX = (pageWidth - textWidth) / 2;  // Calcular la posición X centrada
+        //         const pageWidth = 63;
+        //         const textWidth = doc.getTextWidth(nombreComida);
+        //         const centeredX = (pageWidth - textWidth) / 2;
 
-        //         doc.text(nombreComida, centeredX, currentY); // Texto centrado
-        //         currentY += lineHeight;  // Incrementar la posición Y para la siguiente línea
+        //         doc.text(nombreComida, centeredX, currentY);
+        //         currentY += lineHeight;
 
         //         // Agregar el contenido de cada dieta
         //         doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
@@ -304,13 +308,13 @@ const app = Vue.createApp({
         //         doc.text(`Cama: ${dieta.cama}`, 1, currentY);
         //         currentY += lineHeight;
 
-        //         doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
+        //         doc.text(`Pac.:${dieta.apellido_paciente}, ${dieta.nombre_paciente}`, 1, currentY);
         //         currentY += lineHeight;
 
-        //         doc.text(`Dieta: ${dieta.nombre_dieta}`, 1, currentY);
+        //         doc.text(`Dieta: ${dieta.codigo_dieta} - ${dieta.nombre_dieta}`, 1, currentY);
         //         currentY += lineHeight;
 
-        //         doc.text(`Postre: ${dieta.nombre_postre}`, 1, currentY);
+        //         doc.text(`Postre:${dieta.nombre_postre}`, 1, currentY);
         //         currentY += lineHeight;
 
         //         doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
@@ -319,45 +323,139 @@ const app = Vue.createApp({
         //         doc.text(`Acompañante: ${dieta.acompaniante === 1 ? 'SI' : dieta.acompaniante === 0 ? 'NO' : 'Ninguna'}`, 1, currentY);
         //         currentY += lineHeight;
 
-        //         // Si la dieta tiene acompañante, agregar una nueva página con los datos de la dieta general para el acompañante
         //         if (dieta.acompaniante === 1) {
-        //             doc.addPage([63, 44], 'l'); // Crear una nueva página para los detalles de la dieta general para el acompañante
-        //             currentY = 6; // Reiniciar la posición Y para la nueva página
+        //             doc.addPage([63, 44], 'l');
+        //             currentY = 5;
 
-        //             // Agregar el contenido de la dieta para el acompañante
-        //             doc.text(nombreComida, centeredX, currentY); // Texto centrado
+        //             doc.text(nombreComida, centeredX, currentY);
         //             currentY += lineHeight;
 
-        //             doc.text('Acompañante', 1, currentY); // Título "Acompañante"
+        //             doc.text('Acompañante', 1, currentY);
         //             currentY += lineHeight;
 
-        //             // Agregar los mismos datos de la dieta, pero sin el campo "Acompañante"
         //             doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
         //             currentY += lineHeight;
 
         //             doc.text(`Cama: ${dieta.cama}`, 1, currentY);
         //             currentY += lineHeight;
 
-        //             doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
+        //             doc.text(`Pac.:${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
         //             currentY += lineHeight;
 
-        //             doc.text(`Dieta General`, 1, currentY); // Título "Dieta General"
+        //             doc.text(`Dieta General`, 1, currentY);
         //             currentY += lineHeight;
 
         //             doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
         //             currentY += lineHeight;
-
-        //             // Aquí no se imprime el campo "Acompañante"
         //         }
 
-        //         // Agregar una nueva página para cada etiqueta excepto la última
         //         if (index < this.dietas.length - 1) {
         //             doc.addPage([63, 44], 'l');
         //         }
         //     });
 
-        //     // Mostrar la vista previa del PDF con todas las etiquetas
-        //     window.open(doc.output('bloburl'), '_blank');  // Abre la vista previa en una nueva ventana
+        //     window.open(doc.output('bloburl'), '_blank');
+        // },
+        // imprimirTodasEtiquetas() {
+        //     if (this.dietas.length === 0) {
+        //         Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
+        //         return;
+        //     }
+
+        //     // Crear un nuevo documento PDF con el tamaño adecuado
+        //     const doc = new jsPDF({
+        //         unit: 'mm', // Unidades en milímetros
+        //         format: [63, 44], // Tamaño de página: 63mm x 44mm
+        //         orientation: 'l' // Landscape
+        //     });
+
+        //     // Establecer un tamaño de fuente más pequeño
+        //     doc.setFontSize(12); // Ajustar el tamaño de la fuente
+
+        //     // Filtrar dietas válidas (donde dieta.id !== 1)
+        //     const dietasValidas = this.dietas.filter(dieta => dieta.dieta_id !== 1);
+
+        //     // Verificar si hay dietas válidas
+        //     if (dietasValidas.length === 0) {
+        //         Swal.fire('Error', 'No hay dietas válidas para imprimir.', 'error');
+        //         return;
+        //     }
+
+        //     dietasValidas.forEach((dieta, index) => {
+        //         const comida = this.comidas.find(c => c.id === this.comidaSeleccionada);
+        //         const nombreComida = comida ? comida.nombre : 'No seleccionada';
+
+        //         // Establecer el color del texto
+        //         doc.setTextColor(0, 0, 0);
+
+        //         // Ajustar la distancia entre líneas
+        //         const lineHeight = 5; // También puedes ajustar el espacio entre líneas
+        //         let currentY = 5;
+
+        //         // Centrar el texto de nombreComida
+        //         const pageWidth = 63;
+        //         const textWidth = doc.getTextWidth(nombreComida);
+        //         const centeredX = (pageWidth - textWidth) / 2;
+
+        //         doc.text(nombreComida, centeredX, currentY);
+        //         currentY += lineHeight;
+
+        //         // Agregar el contenido de cada dieta
+        //         doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Cama: ${dieta.cama}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Pac.:${dieta.apellido_paciente}, ${dieta.nombre_paciente}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Dieta: ${dieta.codigo_dieta} - ${dieta.nombre_dieta}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Postre:${dieta.nombre_postre}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Acompañante: ${dieta.acompaniante === 1 ? 'SI' : dieta.acompaniante === 0 ? 'NO' : 'Ninguna'}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         if (dieta.acompaniante === 1) {
+        //             doc.addPage([63, 44], 'l');
+        //             currentY = 5;
+
+        //             doc.text(nombreComida, centeredX, currentY);
+        //             currentY += lineHeight;
+
+        //             doc.text('Acompañante', 1, currentY);
+        //             currentY += lineHeight;
+
+        //             doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
+        //             currentY += lineHeight;
+
+        //             doc.text(`Cama: ${dieta.cama}`, 1, currentY);
+        //             currentY += lineHeight;
+
+        //             doc.text(`Pac.:${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
+        //             currentY += lineHeight;
+
+        //             doc.text(`Dieta General`, 1, currentY);
+        //             currentY += lineHeight;
+
+        //             doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
+        //             currentY += lineHeight;
+        //         }
+
+        //         // Agregar nueva página solo si no es la última dieta válida
+        //         if (index < dietasValidas.length - 1) {
+        //             doc.addPage([63, 44], 'l');
+        //         }
+        //     });
+
+        //     // Mostrar el PDF generado
+        //     window.open(doc.output('bloburl'), '_blank');
         // },
         imprimirTodasEtiquetas() {
             if (this.dietas.length === 0) {
@@ -365,33 +463,32 @@ const app = Vue.createApp({
                 return;
             }
         
-            // Crear un nuevo documento PDF con el tamaño adecuado
             const doc = new jsPDF({
-                unit: 'mm',  // Unidades en milímetros
-                format: [63, 44],  // Tamaño de página: 63mm x 44mm
-                orientation: 'l'  // Landscape
+                unit: 'mm',
+                format: [63, 44],
+                orientation: 'l',
             });
         
-            // Establecer un tamaño de fuente más pequeño
-            doc.setFontSize(12); // Ajustar el tamaño de la fuente
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'bold');
         
-            this.dietas.forEach((dieta, index) => {
-                // Omitir dietas con id = 1
-                if (dieta.id === 1) {
-                    return;
-                }
+            const dietasValidas = this.dietas.filter(dieta => dieta.dieta_id !== 1);
         
+            if (dietasValidas.length === 0) {
+                Swal.fire('Error', 'No hay dietas válidas para imprimir.', 'error');
+                return;
+            }
+        
+            dietasValidas.forEach((dieta, index) => {
                 const comida = this.comidas.find(c => c.id === this.comidaSeleccionada);
                 const nombreComida = comida ? comida.nombre : 'No seleccionada';
         
-                // Establecer el color del texto
                 doc.setTextColor(0, 0, 0);
         
-                // Ajustar la distancia entre líneas
-                const lineHeight = 5; // También puedes ajustar el espacio entre líneas
+                const lineHeight = 5;
                 let currentY = 5;
         
-                // Centrar el texto de nombreComida
+                // Centrar el nombre de la comida
                 const pageWidth = 63;
                 const textWidth = doc.getTextWidth(nombreComida);
                 const centeredX = (pageWidth - textWidth) / 2;
@@ -399,14 +496,13 @@ const app = Vue.createApp({
                 doc.text(nombreComida, centeredX, currentY);
                 currentY += lineHeight;
         
-                // Agregar el contenido de cada dieta
-                doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
+                // Imprimir Sector y Cama en la misma línea
+                const sectorYCama = `Sector: ${dieta.nombre_sector} Cama: ${dieta.cama}`;
+                doc.text(sectorYCama, 1, currentY);
                 currentY += lineHeight;
         
-                doc.text(`Cama: ${dieta.cama}`, 1, currentY);
-                currentY += lineHeight;
-        
-                doc.text(`Pac.:${dieta.apellido_paciente}, ${dieta.nombre_paciente}`, 1, currentY);
+                // Imprimir otros datos
+                doc.text(`${dieta.apellido_paciente}, ${dieta.nombre_paciente}`, 1, currentY);
                 currentY += lineHeight;
         
                 doc.text(`Dieta: ${dieta.codigo_dieta} - ${dieta.nombre_dieta}`, 1, currentY);
@@ -415,11 +511,20 @@ const app = Vue.createApp({
                 doc.text(`Postre:${dieta.nombre_postre}`, 1, currentY);
                 currentY += lineHeight;
         
-                doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
+                // Imprimir Acompañante después de Postre
+                const acompanianteText = dieta.acompaniante === 1 ? 'SI' : dieta.acompaniante === 0 ? 'NO' : 'Ninguna';
+                doc.text(`Acompañante.: ${acompanianteText}`, 1, currentY);
                 currentY += lineHeight;
         
-                doc.text(`Acompañante: ${dieta.acompaniante === 1 ? 'SI' : dieta.acompaniante === 0 ? 'NO' : 'Ninguna'}`, 1, currentY);
-                currentY += lineHeight;
+                // Dividir texto de observación en líneas si excede el ancho
+                doc.setFontSize(8);
+                const observacion = dieta.observacion || 'Ninguna';
+                const observacionLineas = doc.splitTextToSize(`Obs.: ${observacion}`, 61); // 61mm ancho disponible
+                observacionLineas.forEach(linea => {
+                    doc.text(linea, 1, currentY);
+                    currentY += lineHeight;
+                });
+                doc.setFontSize(11);
         
                 if (dieta.acompaniante === 1) {
                     doc.addPage([63, 44], 'l');
@@ -437,17 +542,22 @@ const app = Vue.createApp({
                     doc.text(`Cama: ${dieta.cama}`, 1, currentY);
                     currentY += lineHeight;
         
-                    doc.text(`Pac.:${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
+                    doc.text(`${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
                     currentY += lineHeight;
         
                     doc.text(`Dieta General`, 1, currentY);
                     currentY += lineHeight;
         
-                    doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
-                    currentY += lineHeight;
+                    doc.setFontSize(9);
+                    const observacionLineasAcompaniante = doc.splitTextToSize(`Obs.: ${observacion}`, 61);
+                    observacionLineasAcompaniante.forEach(linea => {
+                        doc.text(linea, 1, currentY);
+                        currentY += lineHeight;
+                    });
+                    doc.setFontSize(11);
                 }
         
-                if (index < this.dietas.length - 1) {
+                if (index < dietasValidas.length - 1) {
                     doc.addPage([63, 44], 'l');
                 }
             });
@@ -455,76 +565,232 @@ const app = Vue.createApp({
             window.open(doc.output('bloburl'), '_blank');
         },
         
-        
+  
+
+        // imprimirColaciones() {
+        //     if (this.dietas.length === 0) {
+        //         Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
+        //         return;
+        //     }
+
+        //     // Crear un nuevo documento PDF con el tamaño adecuado
+        //     const doc = new jsPDF({
+        //         unit: 'mm',  // Unidades en milímetros
+        //         format: [63, 44],  // Tamaño de página: 63mm x 44mm
+        //         orientation: 'l'  // Horizontal
+        //     });
+
+        //     // Establecer el tamaño de la fuente
+        //     doc.setFontSize(12);
+
+        //     let hasValidDietas = false; // Variable para verificar si hay dietas válidas
+
+        //     this.dietas.forEach((dieta, index) => {
+        //         // Omitir dietas con id_colacion = 1 o id_colacion igual a null
+        //         if (dieta.id_colacion === 1 || dieta.id_colacion === null) {
+        //             return;
+        //         }
+
+        //         hasValidDietas = true; // Hay al menos una dieta válida
+
+        //         // Ajustar la distancia entre líneas
+        //         const lineHeight = 6;  // Espacio entre las líneas
+        //         let currentY = 10;  // Posición inicial para el contenido (después del título)
+
+        //         // Centrar y agregar el título "COLACIÓN" en la parte superior de cada página
+        //         const pageWidth = 63;  // Ancho de la página en milímetros
+        //         const titleText = "COLACIÓN";
+        //         const titleWidth = doc.getTextWidth(titleText);
+        //         const centeredX = (pageWidth - titleWidth) / 2;
+
+        //         doc.text(titleText, centeredX, 5); // Título centrado en Y=5 mm
+
+        //         // Agregar los detalles de la dieta
+        //         doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Cama: ${dieta.cama}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Col.: ${dieta.nombre_colacion}`, 1, currentY);  // Imprimir si nombre_colacion no es null
+        //         currentY += lineHeight;
+
+        //         doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
+
+        //         // Si no es la última dieta válida, agregar una nueva página
+        //         if (index < this.dietas.length - 1) {
+        //             const hasMoreValidDietas = this.dietas.slice(index + 1).some(
+        //                 nextDieta => nextDieta.id_colacion !== 1 && nextDieta.id_colacion !== null
+        //             );
+
+        //             if (hasMoreValidDietas) {
+        //                 doc.addPage([63, 44], 'l'); // Crear una nueva página solo si hay más dietas válidas
+        //             }
+        //         }
+        //     });
+
+        //     // Solo mostrar la vista previa del PDF si hay dietas válidas
+        //     if (hasValidDietas) {
+        //         window.open(doc.output('bloburl'), '_blank');  // Abre la vista previa en una nueva ventana
+        //     } else {
+        //         Swal.fire('Error', 'No hay dietas válidas para imprimir.', 'error');
+        //     }
+        // },
         imprimirColaciones() {
             if (this.dietas.length === 0) {
                 Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
                 return;
             }
         
-            // Crear un nuevo documento PDF con el tamaño adecuado
             const doc = new jsPDF({
-                unit: 'mm',  // Unidades en milímetros
-                format: [63, 44],  // Tamaño de página: 63mm x 44mm
-                orientation: 'l'  // Horizontal
+                unit: 'mm',
+                format: [63, 44],
+                orientation: 'l',
             });
         
-            let isFirstPage = true; // Flag para controlar si es la primera página
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'bold');
+        
+            let hasValidDietas = false; // Variable para verificar si hay dietas válidas
         
             this.dietas.forEach((dieta, index) => {
-                // Omitir dietas con id 2 (No imprimirlas) y dietas con nombre_colacion igual a 0 o null
-                if (dieta.id === 1 || !dieta.nombre_colacion) {
+                // Omitir dietas con id_colacion = 1 o id_colacion igual a null
+                if (dieta.id_colacion === 1 || dieta.id_colacion === null) {
                     return;
                 }
         
-                const comida = this.comidas.find(c => c.id === this.comidaSeleccionada);
-                const nombreComida = comida ? comida.nombre : 'No seleccionada';
+                hasValidDietas = true; // Hay al menos una dieta válida
         
-                // Establecer el color del texto
-                doc.setTextColor(0, 0, 0);
+                const lineHeight = 6;  // Espacio entre las líneas
+                let currentY = 10;  // Posición inicial para el contenido (después del título)
         
-                // Ajustar la distancia entre líneas
-                const lineHeight = 6;  // Puedes modificar este valor para aumentar o reducir el espacio entre las líneas
-                let currentY = 6;  // Posición inicial para la primera línea
-        
-                // Centrar el texto de nombreComida (aunque no se imprimirá)
+                // Centrar y agregar el título "COLACIÓN" en la parte superior de cada página
                 const pageWidth = 63;  // Ancho de la página en milímetros
-                const textWidth = doc.getTextWidth(nombreComida);  // Ancho del texto
-                const centeredX = (pageWidth - textWidth) / 2;  // Calcular la posición X centrada
+                const titleText = "COLACIÓN";
+                const titleWidth = doc.getTextWidth(titleText);
+                const centeredX = (pageWidth - titleWidth) / 2;
         
-                // Agregar los detalles de la dieta (sin el tipo de comida)
-                doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
+                doc.text(titleText, centeredX, 5); // Título centrado en Y=5 mm
+        
+                // Establecer la fuente para todo el texto en Helvetica normal
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(11);
+        
+                // Imprimir "Sector" y "Cama" en el mismo renglón
+                const sectorYCama = `Sector: ${dieta.nombre_sector} Cama: ${dieta.cama}`;
+                doc.text(sectorYCama, 1, currentY);
                 currentY += lineHeight;
         
-                doc.text(`Cama: ${dieta.cama}`, 1, currentY);
+                // Agregar los otros detalles
+                doc.text(`${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
                 currentY += lineHeight;
         
-                doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
+                doc.text(`Col.: ${dieta.nombre_colacion}`, 1, currentY);  // Imprimir si nombre_colacion no es null
                 currentY += lineHeight;
         
-                doc.text(`Col.: ${dieta.nombre_colacion}`, 1, currentY);  // Imprimir solo si nombre_colacion no es null o 0
-                currentY += lineHeight;
+                // Establecer el tamaño de fuente para Observación (tamaño 9)
+                doc.setFontSize(9);
+                const observacion = dieta.observacion || 'Ninguna';
+                const observacionLineas = doc.splitTextToSize(`Obs.: ${observacion}`, 61); // 61mm ancho disponible
+                observacionLineas.forEach(linea => {
+                    doc.text(linea, 1, currentY);
+                    currentY += lineHeight;
+                });
         
-                // Eliminar impresión del campo "Postre"
-                // doc.text(`Postre: ${dieta.nombre_postre}`, 1, currentY);
-                // currentY += lineHeight;
+                // Restablecer el tamaño de fuente para el resto del texto
+                doc.setFontSize(11);
         
-                // Eliminar impresión del campo "Acompañante"
-                // doc.text(`Acompañante: ${dieta.acompaniante === 1 ? 'SI' : dieta.acompaniante === 0 ? 'NO' : 'Ninguna'}`, 1, currentY);
-                // currentY += lineHeight;
-        
-                doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
-                currentY += lineHeight;
-        
-                // Si no es la última dieta, agregar una nueva página
+                // Si no es la última dieta válida, agregar una nueva página
                 if (index < this.dietas.length - 1) {
-                    doc.addPage([63, 44], 'l'); // Crear una nueva página para la siguiente dieta
+                    doc.addPage([63, 44], 'l'); // Crear una nueva página solo si hay más dietas válidas
+                    currentY = 10; // Reiniciar la posición Y para la nueva página
                 }
             });
         
-            // Mostrar la vista previa del PDF con todas las etiquetas
-            window.open(doc.output('bloburl'), '_blank');  // Abre la vista previa en una nueva ventana
+            // Solo mostrar la vista previa del PDF si hay dietas válidas
+            if (hasValidDietas) {
+                window.open(doc.output('bloburl'), '_blank');  // Abre la vista previa en una nueva ventana
+            } else {
+                Swal.fire('Error', 'No hay dietas válidas para imprimir.', 'error');
+            }
         },
+        
+        // imprimirSuplementos() {
+        //     if (this.dietas.length === 0) {
+        //         Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
+        //         return;
+        //     }
+
+        //     // Crear un nuevo documento PDF con el tamaño adecuado
+        //     const doc = new jsPDF({
+        //         unit: 'mm',  // Unidades en milímetros
+        //         format: [63, 44],  // Tamaño de página: 63mm x 44mm
+        //         orientation: 'l'  // Horizontal
+        //     });
+
+        //     let hasValidDietas = false; // Bandera para verificar si hay dietas válidas
+
+        //     this.dietas.forEach((dieta, index) => {
+        //         // Omitir dietas con id_suplemento = 1 o id_suplemento igual a null
+        //         if (dieta.id_suplemento === 1 || dieta.id_suplemento === null) {
+        //             return;
+        //         }
+
+        //         hasValidDietas = true; // Hay al menos una dieta válida
+
+        //         // Ajustar la distancia entre líneas
+        //         const lineHeight = 6;  // Espacio entre líneas
+        //         let currentY = 12;  // Posición inicial para el contenido
+        //         const pageWidth = 63;  // Ancho de la página
+        //         const title = "SUPLEMENTO";
+
+        //         // Centrar el título
+        //         doc.setFontSize(12);
+        //         const titleWidth = doc.getTextWidth(title);
+        //         const centeredX = (pageWidth - titleWidth) / 2;
+
+        //         // Agregar título en la parte superior
+        //         doc.text(title, centeredX, 6);
+
+        //         // Agregar los detalles de la dieta
+        //         doc.setTextColor(0, 0, 0);
+        //         doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Cama: ${dieta.cama}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Sup.: ${dieta.nombre_suplemento}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
+
+        //         // Si no es la última dieta válida, agregar una nueva página
+        //         if (index < this.dietas.length - 1) {
+        //             // Buscar próximas dietas válidas
+        //             const hasMoreValidDietas = this.dietas.slice(index + 1).some(
+        //                 (nextDieta) => nextDieta.id_suplemento !== 1 && nextDieta.id_suplemento !== null
+        //             );
+
+        //             if (hasMoreValidDietas) {
+        //                 doc.addPage([63, 44], 'l'); // Crear una nueva página solo si hay más dietas válidas
+        //             }
+        //         }
+        //     });
+
+        //     // Solo mostrar el PDF si hay dietas válidas
+        //     if (hasValidDietas) {
+        //         window.open(doc.output('bloburl'), '_blank'); // Abre la vista previa en una nueva ventana
+        //     } else {
+        //         Swal.fire('Error', 'No hay dietas válidas para imprimir.', 'error');
+        //     }
+        // },
         imprimirSuplementos() {
             if (this.dietas.length === 0) {
                 Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
@@ -538,64 +804,81 @@ const app = Vue.createApp({
                 orientation: 'l'  // Horizontal
             });
         
-            let isFirstPage = true; // Flag para controlar si es la primera página
+            let hasValidDietas = false; // Bandera para verificar si hay dietas válidas
         
             this.dietas.forEach((dieta, index) => {
-                // Omitir dietas con id 2 (No imprimirlas) y dietas con nombre_colacion igual a 0 o null
-                if (dieta.id === 1 || !dieta.nombre_suplemento) {
+                // Omitir dietas con id_suplemento = 1 o id_suplemento igual a null
+                if (dieta.id_suplemento === 1 || dieta.id_suplemento === null) {
                     return;
                 }
         
-                const comida = this.comidas.find(c => c.id === this.comidaSeleccionada);
-                const nombreComida = comida ? comida.nombre : 'No seleccionada';
-        
-                // Establecer el color del texto
-                doc.setTextColor(0, 0, 0);
+                hasValidDietas = true; // Hay al menos una dieta válida
         
                 // Ajustar la distancia entre líneas
-                const lineHeight = 6;  // Puedes modificar este valor para aumentar o reducir el espacio entre las líneas
-                let currentY = 6;  // Posición inicial para la primera línea
+                const lineHeight = 6;  // Espacio entre líneas
+                let currentY = 12;  // Posición inicial para el contenido
+                const pageWidth = 63;  // Ancho de la página
+                const title = "SUPLEMENTO";
         
-                // Centrar el texto de nombreComida (aunque no se imprimirá)
-                const pageWidth = 63;  // Ancho de la página en milímetros
-                const textWidth = doc.getTextWidth(nombreComida);  // Ancho del texto
-                const centeredX = (pageWidth - textWidth) / 2;  // Calcular la posición X centrada
+                // Centrar el título
+                doc.setFontSize(12);
+                const titleWidth = doc.getTextWidth(title);
+                const centeredX = (pageWidth - titleWidth) / 2;
         
-                // Agregar los detalles de la dieta (sin el tipo de comida)
-                doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
+                // Agregar título en la parte superior
+                doc.text(title, centeredX, 6);
+        
+                // Establecer la fuente para todo el texto en Helvetica normal
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(11);
+        
+                // Imprimir "Sector" y "Cama" en el mismo renglón
+                const sectorYCama = `Sector: ${dieta.nombre_sector} Cama: ${dieta.cama}`;
+                doc.text(sectorYCama, 1, currentY);
                 currentY += lineHeight;
         
-                doc.text(`Cama: ${dieta.cama}`, 1, currentY);
+                // Agregar los detalles de la dieta
+                doc.text(`${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
                 currentY += lineHeight;
         
-                doc.text(`Pac.: ${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
+                doc.text(`Sup.: ${dieta.nombre_suplemento}`, 1, currentY);
                 currentY += lineHeight;
         
-                doc.text(`Sup.: ${dieta.nombre_suplemento}`, 1, currentY);  // Imprimir solo si nombre_colacion no es null o 0
-                currentY += lineHeight;
+                // Establecer el tamaño de fuente para Observación (tamaño 9)
+                doc.setFontSize(9);
+                const observacion = dieta.observacion || 'Ninguna';
+                const observacionLineas = doc.splitTextToSize(`Obs.: ${observacion}`, 61); // 61mm ancho disponible
+                observacionLineas.forEach(linea => {
+                    doc.text(linea, 1, currentY);
+                    currentY += lineHeight;
+                });
         
-                // Eliminar impresión del campo "Postre"
-                // doc.text(`Postre: ${dieta.nombre_postre}`, 1, currentY);
-                // currentY += lineHeight;
+                // Restablecer el tamaño de fuente para el resto del texto
+                doc.setFontSize(11);
         
-                // Eliminar impresión del campo "Acompañante"
-                // doc.text(`Acompañante: ${dieta.acompaniante === 1 ? 'SI' : dieta.acompaniante === 0 ? 'NO' : 'Ninguna'}`, 1, currentY);
-                // currentY += lineHeight;
-        
-                doc.text(`Obs.: ${dieta.observacion || 'Ninguna'}`, 1, currentY);
-                currentY += lineHeight;
-        
-                // Si no es la última dieta, agregar una nueva página
+                // Si no es la última dieta válida, agregar una nueva página
                 if (index < this.dietas.length - 1) {
-                    doc.addPage([63, 44], 'l'); // Crear una nueva página para la siguiente dieta
+                    // Buscar próximas dietas válidas
+                    const hasMoreValidDietas = this.dietas.slice(index + 1).some(
+                        (nextDieta) => nextDieta.id_suplemento !== 1 && nextDieta.id_suplemento !== null
+                    );
+        
+                    if (hasMoreValidDietas) {
+                        doc.addPage([63, 44], 'l'); // Crear una nueva página solo si hay más dietas válidas
+                    }
                 }
             });
         
-            // Mostrar la vista previa del PDF con todas las etiquetas
-            window.open(doc.output('bloburl'), '_blank');  // Abre la vista previa en una nueva ventana
+            // Solo mostrar el PDF si hay dietas válidas
+            if (hasValidDietas) {
+                window.open(doc.output('bloburl'), '_blank'); // Abre la vista previa en una nueva ventana
+            } else {
+                Swal.fire('Error', 'No hay dietas válidas para imprimir.', 'error');
+            }
         },
         
-        
+
+
         nutricionPDF() {
             const logoPath = 'img/logo.png';
             const img = new Image();

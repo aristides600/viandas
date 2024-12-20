@@ -40,7 +40,7 @@
                     <!-- <th>Nombres</th> -->
                     <th>Sector</th>
                     <th>Ingreso</th>
-                    <th>Alta</th>
+                    <!-- <th>Alta</th> -->
                     <th>Diagnóstico</th>
                     <th>Observación</th>
                     <th>Acciones</th>
@@ -53,7 +53,7 @@
                     <!-- <td>{{ internacion.nombre }}</td> -->
                     <td>{{ internacion.sector_nombre }}</td>
                     <td>{{ formatearFecha(internacion.fecha_ingreso) }}</td>
-                    <td>{{ formatearFecha(internacion.fecha_egreso ? internacion.fecha_egreso : '-') }}</td>
+                    <!-- <td>{{ formatearFecha(internacion.fecha_egreso ? internacion.fecha_egreso : '-') }}</td> -->
                     <td>{{ internacion.diagnostico }}</td>
                     <td>{{ internacion.observacion }}</td>
                     <td>

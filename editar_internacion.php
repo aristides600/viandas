@@ -24,7 +24,7 @@
             </div>
             <div class="card-body">
               <p class="card-text">
-                <strong>Nombre:</strong> {{ paciente.nombre }} {{ paciente.apellido }}<br>
+                <strong>Paciente:</strong> {{ paciente.apellido }}, {{ paciente.nombre }}<br>
                 <strong>DNI:</strong> {{ paciente.dni }}<br>
                 <strong>Fecha de Nacimiento:</strong> {{ paciente.fecha_nacimiento }}<br>
               </p>
@@ -63,10 +63,21 @@
           </option>
         </select>
       </div>
-      <div class="mb-3">
+      <!-- <div class="mb-3">
         <label for="cama" class="form-label">Cama</label>
         <input type="number" class="form-control" v-model="internacion.cama" maxlength="3" required>
+      </div> -->
+      <div class="mb-3">
+        <label for="cama" class="form-label">Cama</label>
+        <input
+          type="text"
+          class="form-control"
+          v-model="internacion.cama"
+          maxlength="3"
+          required
+          @input="internacion.cama = internacion.cama.replace(/[^0-9]/g, '').slice(0, 3)">
       </div>
+
 
       <!-- Campo de texto para el Diagnóstico -->
       <div class="mb-3">

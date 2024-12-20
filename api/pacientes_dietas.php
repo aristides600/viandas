@@ -28,7 +28,9 @@ try {
                         pd.dieta_id,
                         d.codigo AS codigo_dieta,
                         d.nombre AS nombre_dieta,
+                        c1.id AS id_colacion,
                         c1.nombre AS nombre_colacion,
+                        s1.id AS id_suplemento,
                         s1.nombre AS nombre_suplemento,
                         postres.nombre AS nombre_postre,
                         u.apellido AS apellido_usuario,
@@ -94,7 +96,7 @@ try {
             }
 
             // Convertir los valores a mayúsculas
-            $observacion = strtoupper(htmlspecialchars(trim($data['observacion'] ?? '')));
+            $observacion = htmlspecialchars(trim($data['observacion'] ?? ''));
             $acompaniante = isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0;
             $postre_id = !empty($data['postre_id']) ? intval($data['postre_id']) : null;
             $colacion_id = !empty($data['colacion_id']) ? intval($data['colacion_id']) : null;
@@ -140,8 +142,7 @@ try {
 
             $data = json_decode(file_get_contents('php://input'), true);
 
-            // Convertir los valores a mayúsculas
-            $observacion = strtoupper(htmlspecialchars(trim($data['observacion'] ?? '')));
+            $observacion = htmlspecialchars(trim($data['observacion'] ?? ''));
             $acompaniante = isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0;
             $postre_id = !empty($data['postre_id']) ? intval($data['postre_id']) : null;
             $postre_id = !empty($data['colacion_id']) ? intval($data['colacion_id']) : null;
