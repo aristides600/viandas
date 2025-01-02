@@ -15,25 +15,6 @@
     <div id="app" class="container mt-2">
         <h2>Asignar Dieta</h2>
 
-        <!-- Tarjeta de datos del paciente -->
-        <!-- <div class="row mb-4">
-            <div v-if="paciente && internacion" class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="card-title mb-0">Datos del Paciente</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">
-                            <strong>Paciente:</strong> {{ paciente.apellido }}, {{ paciente.nombre }}<br>
-                            <strong>DNI:</strong> {{ paciente.dni }}<br>
-                            <strong>Diagnóstico:</strong> {{ internacion.diagnostico }}<br>
-                            <strong>Fecha de Ingreso:</strong> {{ formatoFecha(internacion.fecha_ingreso) }}<br>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-        <!-- Tarjetas de Datos del Paciente e Internación -->
         <div class="row mb-4">
             <!-- Tarjeta de Datos del Paciente -->
             <div v-if="paciente && internacion" class="col-md-6">
@@ -72,7 +53,7 @@
             <div class="mb-3">
                 <label for="dieta_id" class="form-label">Tipo de Dieta</label>
                 <select class="form-select" v-model="dietaInternacion.dieta_id" required>
-                <option disabled value="">Seleccionar una dieta</option>
+                    <option disabled value="">Seleccionar una dieta</option>
                     <option v-for="dieta in dietas" :value="dieta.id">{{ dieta.codigo }} - {{ dieta.nombre }}</option>
                 </select>
             </div>
@@ -104,8 +85,12 @@
             </div>
 
             <div class="mb-3">
-                <label for="observacion" class="form-label">Observaciónes</label>
-                <textarea class="form-control" v-model="dietaInternacion.observacion" required></textarea>
+                <label for="observacion" class="form-label">Observación</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    v-model="dietaInternacion.observacion"
+                    maxlength="50">
             </div>
             <button type="submit" class="btn btn-primary">Guardar Dieta</button>
         </form>

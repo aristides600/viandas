@@ -63,10 +63,7 @@
           </option>
         </select>
       </div>
-      <!-- <div class="mb-3">
-        <label for="cama" class="form-label">Cama</label>
-        <input type="number" class="form-control" v-model="internacion.cama" maxlength="3" required>
-      </div> -->
+      
       <div class="mb-3">
         <label for="cama" class="form-label">Cama</label>
         <input
@@ -80,7 +77,7 @@
 
 
       <!-- Campo de texto para el Diagnóstico -->
-      <div class="mb-3">
+      <!-- <div class="mb-3">
         <label for="diagnostico" class="form-label">Diagnóstico</label>
         <textarea
           id="diagnostico"
@@ -88,7 +85,16 @@
           rows="4"
           v-model="internacion.diagnostico"
           required></textarea>
-      </div>
+      </div> -->
+      <div class="mb-3">
+                <label for="diagnostico" class="form-label">Diagnóstico</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    v-model="internacion.diagnostico"
+                    maxlength="100"
+                    required>
+            </div>
 
       <button type="submit" class="btn btn-primary">Guardar Cambios</button>
     </form>

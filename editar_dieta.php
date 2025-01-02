@@ -95,11 +95,25 @@
           </option>
         </select>
       </div>
+      <!-- <div class="mb-3">
+        <label for="diagnostico" class="form-label">Diagnóstico</label>
+        <input
+          type="text"
+          class="form-control"
+          v-model="pacienteDieta.diagnostico"
+          maxlength="50"
+          required>
+      </div> -->
 
       <div class="mb-3">
         <label for="observacion" class="form-label">Observación</label>
-        <textarea v-model="pacienteDieta.observacion" class="form-control" id="observacion" rows="3"></textarea>
+        <input
+          type="text"
+          class="form-control"
+          v-model="pacienteDieta.observacion"
+          maxlength="50">
       </div>
+
 
       <button type="submit" class="btn btn-primary">Guardar Cambios</button>
     </form>

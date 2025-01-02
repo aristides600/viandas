@@ -222,12 +222,16 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                         <a href="pacientes_dietas.php" class="btn btn-primary">Ir a Dietas</a>
                     </div>
                 </div>
+                
                 <div class="card">
-                    <div class="card-header"><i class="bi bi-tag"></i> Pizarron</div>
+                    <div class="card-header">
+                        <i class="bi bi-easel"></i> Pizarrón
+                    </div>
                     <div class="card-body">
-                        <a href="totales.php" class="btn btn-primary">Ir a Pizarron</a>
+                        <a href="totales.php" class="btn btn-primary">Ir a Pizarrón</a>
                     </div>
                 </div>
+
 
             </div>
             <!-- Modal para cambiar contraseña -->

@@ -22,13 +22,19 @@
                 <button @click="abrirModalComida" class="btn btn-primary btn-sm d-flex align-items-center">
                     <i class="bi bi-printer me-2"></i> Todas las Etiquetas
                 </button>
-                <button @click="imprimirColaciones" class="btn btn-primary btn-sm d-flex align-items-center">
+               
+                <button @click="procesarColacion" class="btn btn-primary btn-sm d-flex align-items-center">
                     <i class="bi bi-printer me-2"></i> Colaciones
                 </button>
 
-                <button @click="imprimirSuplementos" class="btn btn-primary btn-sm d-flex align-items-center">
+
+                <!-- <button @click="imprimirSuplementos" class="btn btn-primary btn-sm d-flex align-items-center">
                     <i class="bi bi-printer me-2"></i> suplementos
+                </button> -->
+                <button @click="procesarSuplemento" class="btn btn-primary btn-sm d-flex align-items-center">
+                    <i class="bi bi-printer me-2"></i> Suplementos
                 </button>
+
                 <button class="btn btn-primary btn-sm d-flex align-items-center" @click="nutricionPDF">
                     <i class="bi bi-printer me-2"></i> Nutricionista PDF
                 </button>
@@ -149,7 +155,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.15/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="./cdn/vue.global.js"></script>
+    <script src="./cdn/axios.min.js"></script>
+    <script src="./cdn/sweetalert2@11.js"></script>
+    <script src="./cdn/jspdf.umd.min.js"></script>
+    <script src="./cdn/jspdf.plugin.autotable.min.js"></script>
+    <script src="./cdn/popper.min.js"></script>
     <script src="./js/pacientes_dietas.js"></script>
 </body>
 

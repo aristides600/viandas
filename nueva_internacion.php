@@ -72,7 +72,7 @@
                     </option>
                 </select>
             </div>
-            
+
             <div class="mb-3">
                 <label for="cama" class="form-label">Cama</label>
                 <input
@@ -87,8 +87,13 @@
 
             <div class="mb-3">
                 <label for="diagnostico" class="form-label">Diagnóstico</label>
-                <input type="text" class="form-control" v-model="nuevaInternacion.diagnostico" required>
+                <input
+                    type="text"
+                    class="form-control"
+                    v-model="nuevaInternacion.diagnostico"
+                    maxlength="100">
             </div>
+
 
             <button type="submit" class="btn btn-primary">Agregar Internación</button>
         </form>
@@ -99,6 +104,12 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>
+    <script src="./cdn/vue.global.js"></script>
+    <script src="./cdn/axios.min.js"></script>
+    <script src="./cdn/sweetalert2@11.js"></script>
+    <script src="./cdn/jspdf.umd.min.js"></script>
+    <script src="./cdn/jspdf.plugin.autotable.min.js"></script>
+    <script src="./cdn/popper.min.js"></script>
     <script src="./js/nueva_internacion.js"></script>
 </body>
 
