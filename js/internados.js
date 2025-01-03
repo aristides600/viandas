@@ -66,28 +66,67 @@ createApp({
             window.location.href = "dieta_internacion.php?id=" + id;
         },
        
+        // altaInternacion(id) {
+        //     fetch('api/alta_internacion.php', {
+        //         method: 'PUT',
+        //         headers: { 'Content-Type': 'application/json' },
+        //         body: JSON.stringify({ id: id })
+        //     })
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             if (data.success) {
+        //                 Swal.fire('Éxito', data.success, 'success')
+        //                     .then(() => {
+        //                         location.reload();  // Recarga la página
+        //                     });
+        //             } else {
+        //                 Swal.fire('Error', data.error || 'Ocurrió un error', 'error');
+        //             }
+        //         })
+        //         .catch(error => {
+        //             Swal.fire('Error', 'Error de conexión', 'error');
+        //             console.error('Error:', error);
+        //         });
+        // },
         altaInternacion(id) {
-            fetch('api/alta_internacion.php', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire('Éxito', data.success, 'success')
-                            .then(() => {
-                                location.reload();  // Recarga la página
-                            });
-                    } else {
-                        Swal.fire('Error', data.error || 'Ocurrió un error', 'error');
-                    }
-                })
-                .catch(error => {
-                    Swal.fire('Error', 'Error de conexión', 'error');
-                    console.error('Error:', error);
-                });
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Esta acción no se puede deshacer.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, confirmar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Si se confirma la acción, se ejecuta la solicitud PUT
+                    fetch('api/alta_internacion.php', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: id })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire('Éxito', data.success, 'success')
+                                    .then(() => {
+                                        location.reload();  // Recarga la página
+                                    });
+                            } else {
+                                Swal.fire('Error', data.error || 'Ocurrió un error', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire('Error', 'Error de conexión', 'error');
+                            console.error('Error:', error);
+                        });
+                } else {
+                    // Si se cancela la acción
+                    Swal.fire('Cancelado', 'La acción ha sido cancelada', 'info');
+                }
+            });
         },
+        
         inicializarTooltips() {
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             tooltipTriggerList.forEach(function (tooltipTriggerEl) {
