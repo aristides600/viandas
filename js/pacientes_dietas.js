@@ -404,58 +404,136 @@ const app = Vue.createApp({
 
             window.open(doc.output('bloburl'), '_blank');
         },
+        // imprimirColaciones() {
+        //     if (this.dietas.length === 0) {
+        //         Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
+        //         return;
+        //     }
+
+        //     const doc = new jsPDF({
+        //         unit: 'mm',
+        //         format: [63, 44],
+        //         orientation: 'l',
+        //     });
+
+        //     doc.setFontSize(11);
+        //     doc.setFont('helvetica', 'bold');
+
+        //     let hasValidDietas = false; // Variable para verificar si hay dietas válidas
+
+        //     this.dietas.forEach((dieta, index) => {
+        //         // Omitir dietas con id_colacion = 1 o id_colacion igual a null
+        //         if (dieta.id_colacion === 1 || dieta.id_colacion === null) {
+        //             return;
+        //         }
+
+        //         hasValidDietas = true; // Hay al menos una dieta válida
+
+        //         const lineHeight = 6;  // Espacio entre las líneas
+        //         let currentY = 10;  // Posición inicial para el contenido (después del título)
+
+        //         // Centrar y agregar el título "COLACIÓN" en la parte superior de cada página
+        //         const pageWidth = 63;  // Ancho de la página en milímetros
+        //         const titleText = "COLACIÓN";
+        //         const titleWidth = doc.getTextWidth(titleText);
+        //         const centeredX = (pageWidth - titleWidth) / 2;
+
+        //         doc.text(titleText, centeredX, 5); // Título centrado en Y=5 mm
+
+        //         // Establecer la fuente para todo el texto en Helvetica normal
+        //         doc.setFont('helvetica', 'normal');
+        //         doc.setFontSize(11);
+
+        //         // Imprimir "Sector" y "Cama" en el mismo renglón
+        //         const sectorYCama = `Sector: ${dieta.nombre_sector} Cama: ${dieta.cama}`;
+        //         doc.text(sectorYCama, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         // Agregar los otros detalles
+        //         doc.text(`${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
+        //         currentY += lineHeight;
+
+        //         doc.text(`Col.: ${dieta.nombre_colacion}`, 1, currentY);  // Imprimir si nombre_colacion no es null
+        //         currentY += lineHeight;
+
+        //         // Establecer el tamaño de fuente para Observación (tamaño 9)
+        //         doc.setFontSize(9);
+        //         const observacion = dieta.observacion || 'Ninguna';
+        //         const observacionLineas = doc.splitTextToSize(`Obs.: ${observacion}`, 61); // 61mm ancho disponible
+        //         observacionLineas.forEach(linea => {
+        //             doc.text(linea, 1, currentY);
+        //             currentY += lineHeight;
+        //         });
+
+        //         // Restablecer el tamaño de fuente para el resto del texto
+        //         doc.setFontSize(11);
+
+        //         // Si no es la última dieta válida, agregar una nueva página
+        //         if (index < this.dietas.length - 1) {
+        //             doc.addPage([63, 44], 'l'); // Crear una nueva página solo si hay más dietas válidas
+        //             currentY = 10; // Reiniciar la posición Y para la nueva página
+        //         }
+        //     });
+
+        //     // Solo mostrar la vista previa del PDF si hay dietas válidas
+        //     if (hasValidDietas) {
+        //         window.open(doc.output('bloburl'), '_blank');  // Abre la vista previa en una nueva ventana
+        //     } else {
+        //         Swal.fire('Error', 'No hay dietas válidas para imprimir.', 'error');
+        //     }
+        // },
         imprimirColaciones() {
             if (this.dietas.length === 0) {
                 Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
                 return;
             }
-
+        
             const doc = new jsPDF({
                 unit: 'mm',
                 format: [63, 44],
                 orientation: 'l',
             });
-
+        
             doc.setFontSize(11);
             doc.setFont('helvetica', 'bold');
-
+        
             let hasValidDietas = false; // Variable para verificar si hay dietas válidas
-
-            this.dietas.forEach((dieta, index) => {
-                // Omitir dietas con id_colacion = 1 o id_colacion igual a null
-                if (dieta.id_colacion === 1 || dieta.id_colacion === null) {
-                    return;
-                }
-
+        
+            // Filtrar solo las dietas válidas
+            const dietasValidas = this.dietas.filter(
+                dieta => dieta.id_colacion !== 1 && dieta.id_colacion !== null
+            );
+        
+            dietasValidas.forEach((dieta, index) => {
                 hasValidDietas = true; // Hay al menos una dieta válida
-
+        
                 const lineHeight = 6;  // Espacio entre las líneas
                 let currentY = 10;  // Posición inicial para el contenido (después del título)
-
+        
                 // Centrar y agregar el título "COLACIÓN" en la parte superior de cada página
                 const pageWidth = 63;  // Ancho de la página en milímetros
                 const titleText = "COLACIÓN";
                 const titleWidth = doc.getTextWidth(titleText);
                 const centeredX = (pageWidth - titleWidth) / 2;
-
+        
                 doc.text(titleText, centeredX, 5); // Título centrado en Y=5 mm
-
+        
                 // Establecer la fuente para todo el texto en Helvetica normal
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(11);
-
+        
                 // Imprimir "Sector" y "Cama" en el mismo renglón
                 const sectorYCama = `Sector: ${dieta.nombre_sector} Cama: ${dieta.cama}`;
                 doc.text(sectorYCama, 1, currentY);
                 currentY += lineHeight;
-
+        
                 // Agregar los otros detalles
                 doc.text(`${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
                 currentY += lineHeight;
-
+        
                 doc.text(`Col.: ${dieta.nombre_colacion}`, 1, currentY);  // Imprimir si nombre_colacion no es null
                 currentY += lineHeight;
-
+        
                 // Establecer el tamaño de fuente para Observación (tamaño 9)
                 doc.setFontSize(9);
                 const observacion = dieta.observacion || 'Ninguna';
@@ -464,17 +542,17 @@ const app = Vue.createApp({
                     doc.text(linea, 1, currentY);
                     currentY += lineHeight;
                 });
-
+        
                 // Restablecer el tamaño de fuente para el resto del texto
                 doc.setFontSize(11);
-
-                // Si no es la última dieta válida, agregar una nueva página
-                if (index < this.dietas.length - 1) {
-                    doc.addPage([63, 44], 'l'); // Crear una nueva página solo si hay más dietas válidas
+        
+                // Agregar una nueva página solo si no es la última dieta válida
+                if (index < dietasValidas.length - 1) {
+                    doc.addPage([63, 44], 'l'); // Crear una nueva página
                     currentY = 10; // Reiniciar la posición Y para la nueva página
                 }
             });
-
+        
             // Solo mostrar la vista previa del PDF si hay dietas válidas
             if (hasValidDietas) {
                 window.open(doc.output('bloburl'), '_blank');  // Abre la vista previa en una nueva ventana
@@ -482,6 +560,7 @@ const app = Vue.createApp({
                 Swal.fire('Error', 'No hay dietas válidas para imprimir.', 'error');
             }
         },
+        
 
         imprimirSuplementos() {
             if (this.dietas.length === 0) {

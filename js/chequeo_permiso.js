@@ -1,4 +1,3 @@
-
 function chequeo_permiso(modulo) {
     return fetch('api/chequeo_permiso.php', {
         method: 'POST',
@@ -14,4 +13,3 @@ function chequeo_permiso(modulo) {
         }
     });
 }
-

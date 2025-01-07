@@ -1,5 +1,6 @@
 <?php
 require_once 'api/autenticacion.php';
+require_once 'api/permisos.php';
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -178,7 +179,10 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                         <li class="nav-item"><a class="nav-link" href="pacientes_dietas.php">Dietas</a></li>
                         <li class="nav-item"><a class="nav-link" href="totales.php">Pizarron</a></li>
                         <li class="nav-item"><a class="nav-link" href="reportes.php">Reportes</a></li>
-                        <li class="nav-item"><a class="nav-link" href="usuarios.php">Usuarios</a></li>
+                        <!-- <li class="nav-item"><a class="nav-link" href="usuarios.php">Usuarios</a></li> -->
+                        <?php if (tienePermiso($user_id, 'usuarios')) : ?>
+                            <li class="nav-item"><a class="nav-link" href="usuarios.php">Usuarios</a></li>
+                        <?php endif; ?>
                     </ul>
                     <!-- Información de usuario -->
                     <div class="user-info ms-auto d-flex align-items-center">
@@ -222,7 +226,7 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                         <a href="pacientes_dietas.php" class="btn btn-primary">Ir a Dietas</a>
                     </div>
                 </div>
-                
+
                 <div class="card">
                     <div class="card-header">
                         <i class="bi bi-easel"></i> Pizarrón

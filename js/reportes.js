@@ -128,6 +128,100 @@ const app = Vue.createApp({
         //         doc.save('informe_internaciones.pdf');
         //     };
         // }
+        // generarPDF() {
+        //     const { jsPDF } = window.jspdf; // Asegúrate de que jsPDF esté definido
+        //     const logoPath = '/vianda/img/logo.png'; // Ruta al logo
+        //     const img = new Image();
+        //     img.src = logoPath;
+        
+        //     img.onload = () => {
+        //         const doc = new jsPDF();
+        
+        //         // Tamaño y posición del logo
+        //         const logoWidth = 20;
+        //         const logoHeight = 15;
+        //         const logoX = 14;
+        //         const logoY = 10;
+        
+        //         // Agregar el logo al PDF
+        //         doc.addImage(img, 'PNG', logoX, logoY, logoWidth, logoHeight);
+        
+        //         // Título general y texto de rango de fechas en la misma línea que el logo
+        //         const title = "Informe de Dietas";
+        //         const dateRangeText = `Desde: ${this.fechaDesde} | Hasta: ${this.fechaHasta}`;
+        //         const combinedText = `${title} - ${dateRangeText}`;
+        //         doc.setFontSize(14);
+        
+        //         // Calcular las coordenadas para centrar el texto verticalmente con el logo
+        //         const combinedTextX = logoX + logoWidth + 5; // Espaciado a la derecha del logo
+        //         const combinedTextY = logoY + logoHeight / 2 + 2; // Centrado verticalmente respecto al logo
+        
+        //         // Agregar el texto combinado al PDF
+        //         doc.text(combinedText, combinedTextX, combinedTextY);
+        
+        //         let y = logoY + logoHeight + 10; // Posición inicial ajustada para los elementos
+        
+        //         // Agrupar los datos por sector
+        //         const datosPorSector = this.reporte.reduce((acc, item) => {
+        //             if (!acc[item.sector]) {
+        //                 acc[item.sector] = [];
+        //             }
+        //             acc[item.sector].push({ dieta: item.dieta, cantidad: item.cantidad });
+        //             return acc;
+        //         }, {});
+        
+        //         // Iterar por cada sector y agregar datos al PDF
+        //         for (const [sector, datos] of Object.entries(datosPorSector)) {
+        //             // Agregar el título del sector (centralizado)
+        //             doc.setFontSize(12);
+        //             const sectorText = `${sector}`;
+        //             const sectorTextX = (doc.internal.pageSize.width - doc.getTextWidth(sectorText)) / 2;
+        //             doc.text(sectorText, sectorTextX, y);
+        //             y += 5; // Reducir espacio para que la grilla esté más pegada
+        
+        //             // Agregar la tabla de dietas y cantidades
+        //             const tableData = datos.map(d => [d.dieta, d.cantidad]);
+        //             doc.autoTable({
+        //                 startY: y,
+        //                 head: [['Dieta', 'Cantidad']],
+        //                 body: tableData,
+        //                 headStyles: {
+        //                     fontSize: 10,
+        //                     cellPadding: 2,
+        //                 },
+        //                 margin: { left: 14, right: 14 }, // Opcional: Ajustar márgenes si es necesario
+        //                 columnStyles: {
+        //                     1: { cellWidth: 30 }, // Ajustar ancho si es necesario
+        //                 },
+        //             });
+        
+        //             // Actualizar la posición Y para el siguiente sector
+        //             y = doc.lastAutoTable.finalY + 7; // Reducir espacio entre tablas
+        //         }
+        
+        //         // Mostrar la vista previa del PDF sin descargarlo
+        //         window.open(doc.output('bloburl'), '_blank');
+        //     };
+        
+        //     img.onerror = () => {
+        //         console.error("No se pudo cargar el logo desde la ruta proporcionada.");
+        //     };
+        // },
+        // formatearFecha(fecha) {
+        //     if (!fecha || fecha === '-') return '-'; // Manejar valores nulos, vacíos o "-"
+
+        //     // Intentar interpretar la fecha de manera segura
+        //     const date = new Date(fecha);
+
+        //     // Verificar si la fecha es válida
+        //     if (isNaN(date.getTime())) return '-'; // Si no es válida, retornar "-"
+
+        //     const dia = date.getDate().toString().padStart(2, '0');
+        //     const mes = (date.getMonth() + 1).toString().padStart(2, '0'); // Los meses son base 0
+        //     const anio = date.getFullYear();
+
+        //     return `${dia}/${mes}/${anio}`;
+        // },
         generarPDF() {
             const { jsPDF } = window.jspdf; // Asegúrate de que jsPDF esté definido
             const logoPath = '/vianda/img/logo.png'; // Ruta al logo
@@ -146,13 +240,17 @@ const app = Vue.createApp({
                 // Agregar el logo al PDF
                 doc.addImage(img, 'PNG', logoX, logoY, logoWidth, logoHeight);
         
-                // Título general y texto de rango de fechas en la misma línea que el logo
+                // Formatear las fechas del rango
+                const fechaDesdeFormateada = this.formatearFecha(this.fechaDesde);
+                const fechaHastaFormateada = this.formatearFecha(this.fechaHasta);
+        
+                // Título general y texto de rango de fechas
                 const title = "Informe de Dietas";
-                const dateRangeText = `Desde: ${this.fechaDesde} | Hasta: ${this.fechaHasta}`;
+                const dateRangeText = `Desde: ${fechaDesdeFormateada} | Hasta: ${fechaHastaFormateada}`;
                 const combinedText = `${title} - ${dateRangeText}`;
                 doc.setFontSize(14);
         
-                // Calcular las coordenadas para centrar el texto verticalmente con el logo
+                // Coordenadas para centrar el texto verticalmente con el logo
                 const combinedTextX = logoX + logoWidth + 5; // Espaciado a la derecha del logo
                 const combinedTextY = logoY + logoHeight / 2 + 2; // Centrado verticalmente respecto al logo
         
@@ -166,7 +264,10 @@ const app = Vue.createApp({
                     if (!acc[item.sector]) {
                         acc[item.sector] = [];
                     }
-                    acc[item.sector].push({ dieta: item.dieta, cantidad: item.cantidad });
+                    acc[item.sector].push({
+                        dieta: item.dieta,
+                        cantidad: item.cantidad
+                    });
                     return acc;
                 }, {});
         
@@ -180,7 +281,10 @@ const app = Vue.createApp({
                     y += 5; // Reducir espacio para que la grilla esté más pegada
         
                     // Agregar la tabla de dietas y cantidades
-                    const tableData = datos.map(d => [d.dieta, d.cantidad]);
+                    const tableData = datos.map(d => [
+                        d.dieta,
+                        d.cantidad
+                    ]);
                     doc.autoTable({
                         startY: y,
                         head: [['Dieta', 'Cantidad']],
@@ -209,19 +313,14 @@ const app = Vue.createApp({
         },
         formatearFecha(fecha) {
             if (!fecha || fecha === '-') return '-'; // Manejar valores nulos, vacíos o "-"
-            
-            // Intentar interpretar la fecha de manera segura
             const date = new Date(fecha);
-    
-            // Verificar si la fecha es válida
             if (isNaN(date.getTime())) return '-'; // Si no es válida, retornar "-"
-    
             const dia = date.getDate().toString().padStart(2, '0');
             const mes = (date.getMonth() + 1).toString().padStart(2, '0'); // Los meses son base 0
             const anio = date.getFullYear();
-    
             return `${dia}/${mes}/${anio}`;
         }
+        
         
     }
 });

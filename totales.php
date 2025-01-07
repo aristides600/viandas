@@ -9,9 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@3.2.0/dist/vue.global.js"></script>
     <link rel="stylesheet" href="./css/estilos.css">
 
-
-
-
     <style>
         /* Estilos para almuerzo y cena */
         .almuerzo {
