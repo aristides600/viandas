@@ -39,11 +39,12 @@
                     <th>Paciente</th>
                     <!-- <th>Nombres</th> -->
                     <th>Sector</th>
+                    <th>Cama</th>
                     <th>Ingreso</th>
                     <!-- <th>Alta</th> -->
                     <th>Diagnóstico</th>
                     <th>Observación</th>
-                    <th>Acciones</th>
+                    <!-- <th>Acciones</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -52,6 +53,7 @@
                     <td>{{ internacion.apellido }}, {{ internacion.nombre }}</td>
                     <!-- <td>{{ internacion.nombre }}</td> -->
                     <td>{{ internacion.sector_nombre }}</td>
+                    <td>{{ internacion.cama }}</td>
                     <td>{{ formatearFecha(internacion.fecha_ingreso) }}</td>
                     <!-- <td>{{ formatearFecha(internacion.fecha_egreso ? internacion.fecha_egreso : '-') }}</td> -->
                     <td>{{ internacion.diagnostico }}</td>
@@ -88,9 +90,9 @@
                             </template>
 
                             <!-- Mostrar botón Detalles solo si está cerrada -->
-                            <button v-if="filtroEstado === 'cerrada'" class="btn btn-primary btn-sm" @click="detallesInternacion(internacion.id)">
+                            <!-- <button v-if="filtroEstado === 'cerrada'" class="btn btn-primary btn-sm" @click="detallesInternacion(internacion.id)">
                                 <i class="bi bi-eye"></i>
-                            </button>
+                            </button> -->
                         </div>
                     </td>
 

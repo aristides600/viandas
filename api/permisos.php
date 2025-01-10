@@ -1,7 +1,8 @@
 <?php
 require_once 'db.php';
 
-function tienePermiso($usuario_id, $modulo) {
+function tienePermiso($usuario_id, $modulo)
+{
     global $conn;
 
     if (!$conn || !($conn instanceof PDO)) {
@@ -24,4 +25,3 @@ function tienePermiso($usuario_id, $modulo) {
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     return $result && $result['permiso'] == 1;
 }
-?>

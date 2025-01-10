@@ -20,7 +20,7 @@
             <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido o Sector">
             <div class="d-flex align-items-center gap-2">
                 <button @click="abrirModalComida" class="btn btn-primary btn-sm d-flex align-items-center">
-                    <i class="bi bi-printer me-2"></i> Todas las Etiquetas
+                    <i class="bi bi-printer me-2"></i> Etiquetas
                 </button>
                
                 <button @click="procesarColacion" class="btn btn-primary btn-sm d-flex align-items-center">
