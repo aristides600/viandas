@@ -53,8 +53,11 @@
                         <th>Paciente</th>
                         <!-- <th>Nombre</th> -->
                         <th>Edad</th>
+                        <th>Ac.</th>
                         <th>Código</th>
                         <th>Dieta</th>
+                        <th>Colacion</th>
+                        <th>Suplemento</th>
                         <th>Dignostico</th>
                         <th>Observación</th>
                         <th>Profesional</th>
@@ -70,8 +73,12 @@
                         <td>{{ dieta.apellido_paciente}}, {{ dieta.nombre_paciente}}</td>
                         <!-- <td>{{ dieta.nombre_paciente || '-' }}</td> -->
                         <td>{{ dieta.edad || '-' }}</td>
+                        <td>{{ dieta.acompaniante === 1 ? 'SI' : dieta.acompaniante === 0 ? 'NO' : '-' }}</td>
+
                         <td>{{ dieta.codigo_dieta || '-' }}</td>
                         <td>{{ dieta.nombre_dieta || '-' }}</td>
+                        <td>{{ dieta.nombre_colación || '-' }}</td>
+                        <td>{{ dieta.nombre_suplemento || '-' }}</td>
                         <td>{{ dieta.diagnostico || '-' }}</td>
                         <td>{{ dieta.observacion || '-' }}</td>
                         <td>{{ dieta.apellido_usuario }} {{ dieta.nombre_usuario }}</td>

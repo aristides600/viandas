@@ -26,6 +26,17 @@
                 <input type="radio" v-model="filtroEstado" value="cerrada"> Altas
             </label>
         </div>
+        <!-- <div class="d-flex align-items-center">
+            <label class="me-3">
+                <input type="radio" v-model="filtroRevisado" value="todas"> Todas
+            </label>
+            <label class="me-3">
+                <input type="radio" v-model="filtroRevisado" value="revisadas"> Revisadas
+            </label>
+            <label>
+                <input type="radio" v-model="filtroRevisado" value="no_revisadas"> No Revisadas
+            </label>
+        </div> -->
 
 
 
@@ -93,8 +104,14 @@
                             <!-- <button v-if="filtroEstado === 'cerrada'" class="btn btn-primary btn-sm" @click="detallesInternacion(internacion.id)">
                                 <i class="bi bi-eye"></i>
                             </button> -->
+
                         </div>
                     </td>
+                    <!-- <td>
+                        <input type="checkbox"
+                            :checked="internacion.revisado"
+                            @change="marcarRevisado(internacion.id, $event.target.checked)">
+                    </td> -->
 
                 </tr>
             </tbody>
