@@ -10,6 +10,7 @@ try {
             pd.id AS id_dieta,
             pd.dieta_id,
             pd.acompaniante,
+            pd.mensaje,
             pd.observacion,
             pd.postre_id,
             pd.colacion_id,

@@ -11,6 +11,7 @@ const app = Vue.createApp({
                 paciente_id: '',
                 dieta_id: '',
                 internacion_id: '',
+                mensaje: '',
                 observacion: '',
                 acompaniante: false,
                 postre_id: '',
@@ -117,7 +118,7 @@ const app = Vue.createApp({
             this.dietaInternacion.paciente_id = parseInt(this.dietaInternacion.paciente_id);
             this.dietaInternacion.dieta_id = parseInt(this.dietaInternacion.dieta_id);
             this.dietaInternacion.internacion_id = parseInt(this.dietaInternacion.internacion_id);
-            console.log(this.dietaInternacion)
+            // console.log(this.dietaInternacion)
 
             // Enviar datos al servidor
             axios.post('api/pacientes_dietas.php', this.dietaInternacion)
@@ -137,6 +138,7 @@ const app = Vue.createApp({
                 paciente_id: '',
                 dieta_id: '',
                 internacion_id: '',
+                mensaje: '',
                 observacion: '',
                 acompaniante: false,
                 postre_id: null,

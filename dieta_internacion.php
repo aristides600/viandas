@@ -83,6 +83,14 @@
                     <option v-for="suplemento in suplementos" :value="suplemento.id">{{ suplemento.nombre }}</option>
                 </select>
             </div>
+            <div class="mb-3">
+                <label for="mensaje" class="form-label">Mensaje</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    v-model="dietaInternacion.mensaje"
+                    maxlength="50">
+            </div>
 
             <div class="mb-3">
                 <label for="observacion" class="form-label">Observación</label>

@@ -23,7 +23,8 @@ if (isset($data['id'], $data['dieta_id'])) {
             UPDATE pacientes_dietas 
             SET dieta_id = :dieta_id, 
                 fecha_consumo = :fecha_consumo, 
-                acompaniante = :acompaniante, 
+                acompaniante = :acompaniante,
+                mensaje = :mensaje,
                 observacion = :observacion,
                 usuario_id = :usuario_id, 
                 postre_id = :postre_id,
@@ -36,6 +37,7 @@ if (isset($data['id'], $data['dieta_id'])) {
         $query->bindParam(':dieta_id', $data['dieta_id'], PDO::PARAM_INT);
         $query->bindParam(':fecha_consumo', $fecha_consumo); // Usar la fecha actual si no está definida
         $query->bindParam(':acompaniante', $data['acompaniante'], PDO::PARAM_BOOL);
+        $query->bindParam(':mensaje', $data['mensaje']);
         $query->bindParam(':observacion', $data['observacion']);
         $query->bindParam(':postre_id', $data['postre_id'], PDO::PARAM_INT);
         $query->bindParam(':colacion_id', $data['colacion_id'], PDO::PARAM_INT);

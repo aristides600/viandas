@@ -38,6 +38,7 @@ try {
                         pd.usuario_id,
                         pd.internacion_id,
                         pd.fecha_consumo,
+                        pd.mensaje,
                         pd.observacion,
                         pd.acompaniante,
                         pd.estado,
@@ -96,6 +97,7 @@ try {
             }
 
             // Convertir los valores a mayúsculas
+            $mensaje = htmlspecialchars(trim($data['mensaje'] ?? ''));
             $observacion = htmlspecialchars(trim($data['observacion'] ?? ''));
             $acompaniante = isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0;
             $postre_id = !empty($data['postre_id']) ? intval($data['postre_id']) : null;
@@ -111,15 +113,16 @@ try {
 
             // Insertar nueva dieta
             $sql = "INSERT INTO pacientes_dietas 
-                                    (paciente_id, dieta_id, internacion_id, fecha_consumo, usuario_id, estado, observacion, acompaniante, postre_id, colacion_id, suplemento_id) 
+                                    (paciente_id, dieta_id, internacion_id, fecha_consumo, usuario_id, estado, mensaje, observacion, acompaniante, postre_id, colacion_id, suplemento_id) 
                                 VALUES 
-                                    (:paciente_id, :dieta_id, :internacion_id, NOW(), :usuario_id, 1, :observacion, :acompaniante, :postre_id, :colacion_id, :suplemento_id)";
+                                    (:paciente_id, :dieta_id, :internacion_id, NOW(), :usuario_id, 1, :mensaje, :observacion, :acompaniante, :postre_id, :colacion_id, :suplemento_id)";
             $stmt = $conn->prepare($sql);
             $stmt->execute([
                 ':paciente_id' => intval($data['paciente_id']),
                 ':dieta_id' => intval($data['dieta_id']),
                 ':internacion_id' => intval($data['internacion_id']),
                 ':usuario_id' => $usuario_id,
+                ':mensaje' => $mensaje,
                 ':observacion' => $observacion,
                 ':acompaniante' => $acompaniante,
                 ':postre_id' => $postre_id,
@@ -141,7 +144,7 @@ try {
             }
 
             $data = json_decode(file_get_contents('php://input'), true);
-
+            $mensaje = htmlspecialchars(trim($data['mensaje'] ?? ''));
             $observacion = htmlspecialchars(trim($data['observacion'] ?? ''));
             $acompaniante = isset($data['acompaniante']) && $data['acompaniante'] ? 1 : 0;
             $postre_id = !empty($data['postre_id']) ? intval($data['postre_id']) : null;
@@ -155,6 +158,7 @@ try {
                             paciente_id = :paciente_id,
                             dieta_id = :dieta_id,
                             internacion_id = :internacion_id,
+                            mensaje = :mensaje,
                             observacion = :observacion,
                             acompaniante = :acompaniante,
                             fecha_consumo = NOW(),
@@ -168,6 +172,7 @@ try {
                 ':paciente_id' => intval($data['paciente_id']),
                 ':dieta_id' => intval($data['dieta_id']),
                 ':internacion_id' => intval($data['internacion_id']),
+                ':mensaje' => $mensaje,
                 ':observacion' => $observacion,
                 ':acompaniante' => $acompaniante,
                 ':postre_id' => $postre_id,

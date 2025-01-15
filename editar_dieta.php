@@ -95,15 +95,14 @@
           </option>
         </select>
       </div>
-      <!-- <div class="mb-3">
-        <label for="diagnostico" class="form-label">Diagnóstico</label>
+      <div class="mb-3">
+        <label for="mensaje" class="form-label">Mensaje</label>
         <input
           type="text"
           class="form-control"
-          v-model="pacienteDieta.diagnostico"
-          maxlength="50"
-          required>
-      </div> -->
+          v-model="pacienteDieta.mensaje"
+          maxlength="50">
+      </div>
 
       <div class="mb-3">
         <label for="observacion" class="form-label">Observación</label>

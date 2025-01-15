@@ -8,60 +8,74 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/estilos.css">
+    <style>
+        .tabla-optimizada {
+            margin-left: 0;
+            margin-right: auto;
+            font-size: 0.9rem; /* Reduce el tamaño de la fuente */
+        }
+
+        .tabla-optimizada th, .tabla-optimizada td {
+            padding: 0.5rem; /* Reduce el padding de las celdas */
+        }
+
+        .btn-sm {
+            font-size: 0.85rem;
+        }
+
+        .input-busqueda {
+            max-width: 300px;
+        }
+    </style>
 </head>
 
 <body>
     <?php include 'header.php'; ?>
     <div id="app">
-        <div class="container mt-2">
+        <div class="container-fluid mt-2">
 
-            <h2>Dietas de Internados</h2>
+        <h2>Dietas de Internados</h2>
 
-            <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido o Sector">
-            <div class="d-flex align-items-center gap-2">
-                <button @click="abrirModalComida" class="btn btn-primary btn-sm d-flex align-items-center">
-                    <i class="bi bi-printer me-2"></i> Etiquetas
-                </button>
-               
-                <button @click="procesarColacion" class="btn btn-primary btn-sm d-flex align-items-center">
-                    <i class="bi bi-printer me-2"></i> Colaciones
-                </button>
-
-
-                <!-- <button @click="imprimirSuplementos" class="btn btn-primary btn-sm d-flex align-items-center">
-                    <i class="bi bi-printer me-2"></i> suplementos
-                </button> -->
-                <button @click="procesarSuplemento" class="btn btn-primary btn-sm d-flex align-items-center">
-                    <i class="bi bi-printer me-2"></i> Suplementos
-                </button>
-
-                <button class="btn btn-primary btn-sm d-flex align-items-center" @click="nutricionPDF">
-                    <i class="bi bi-printer me-2"></i> Nutricionista PDF
-                </button>
-                <button class="btn btn-primary btn-sm d-flex align-items-center" @click="camareroPDF">
-                    <i class="bi bi-printer me-2"></i> Camarero PDF
-                </button>
-            </div>
+<input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido o Sector">
+<div class="d-flex align-items-center gap-2">
+    <button @click="abrirModalComida" class="btn btn-primary btn-sm d-flex align-items-center">
+        <i class="bi bi-printer me-2"></i> Etiquetas
+    </button>
+   
+    <button @click="procesarColacion" class="btn btn-primary btn-sm d-flex align-items-center">
+        <i class="bi bi-printer me-2"></i> Colaciones
+    </button>
 
 
-            <table class="table table-bordered">
+    <!-- <button @click="imprimirSuplementos" class="btn btn-primary btn-sm d-flex align-items-center">
+        <i class="bi bi-printer me-2"></i> suplementos
+    </button> -->
+    <button @click="procesarSuplemento" class="btn btn-primary btn-sm d-flex align-items-center">
+        <i class="bi bi-printer me-2"></i> Suplementos
+    </button>
+
+    <button class="btn btn-primary btn-sm d-flex align-items-center" @click="nutricionPDF">
+        <i class="bi bi-printer me-2"></i> Nutricionista PDF
+    </button>
+    <button class="btn btn-primary btn-sm d-flex align-items-center" @click="camareroPDF">
+        <i class="bi bi-printer me-2"></i> Camarero PDF
+    </button>
+</div>
+            <table class="table table-bordered table-sm tabla-optimizada">
                 <thead>
                     <tr>
                         <th>Sector</th>
                         <th>Cama</th>
                         <th>DNI</th>
                         <th>Paciente</th>
-                        <!-- <th>Nombre</th> -->
                         <th>Edad</th>
                         <th>Ac.</th>
                         <th>Código</th>
                         <th>Dieta</th>
-                        <th>Colacion</th>
+                        <th>Colación</th>
                         <th>Suplemento</th>
-                        <th>Dignostico</th>
+                        <th>Diagnóstico</th>
                         <th>Observación</th>
-                        <th>Profesional</th>
-                        <th>Asignación</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -70,35 +84,26 @@
                         <td>{{ dieta.nombre_sector || '-' }}</td>
                         <td>{{ dieta.cama || '-' }}</td>
                         <td>{{ dieta.dni || '-' }}</td>
-                        <td>{{ dieta.apellido_paciente}}, {{ dieta.nombre_paciente}}</td>
-                        <!-- <td>{{ dieta.nombre_paciente || '-' }}</td> -->
+                        <td>{{ dieta.apellido_paciente }}, {{ dieta.nombre_paciente }}</td>
                         <td>{{ dieta.edad || '-' }}</td>
                         <td>{{ dieta.acompaniante === 1 ? 'SI' : dieta.acompaniante === 0 ? 'NO' : '-' }}</td>
-
                         <td>{{ dieta.codigo_dieta || '-' }}</td>
                         <td>{{ dieta.nombre_dieta || '-' }}</td>
-                        <td>{{ dieta.nombre_colación || '-' }}</td>
+                        <td>{{ dieta.nombre_colacion || '-' }}</td>
                         <td>{{ dieta.nombre_suplemento || '-' }}</td>
                         <td>{{ dieta.diagnostico || '-' }}</td>
                         <td>{{ dieta.observacion || '-' }}</td>
-                        <td>{{ dieta.apellido_usuario }} {{ dieta.nombre_usuario }}</td>
-
-                        <td>{{ formatearFecha(dieta.fecha_consumo) || '-' }}</td>
-
-                        <td class="d-flex">
+                        <td class="d-flex gap-1">
                             <button class="btn btn-info btn-sm" @click="editarDieta(dieta.id)">
                                 <i class="bi bi-pencil"></i>
                             </button>
-
-                            <button class="btn btn-sm btn-outline-success" @click="verDietas(dieta.internacion_id)">
+                            <button class="btn btn-outline-success btn-sm" @click="verDietas(dieta.internacion_id)">
                                 <i class="bi bi-eye"></i>
                             </button>
-
-                            <button class="btn btn-secondary btn-sm d-flex align-items-center" @click="seleccionarUnaComida(dieta.internacion_id)">
+                            <button class="btn btn-secondary btn-sm" @click="seleccionarUnaComida(dieta.internacion_id)">
                                 <i class="bi bi-printer"></i>
                             </button>
                         </td>
-
                     </tr>
                 </tbody>
             </table>
@@ -158,7 +163,6 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.15/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -170,5 +174,4 @@
     <script src="./cdn/popper.min.js"></script>
     <script src="./js/pacientes_dietas.js"></script>
 </body>
-
 </html>

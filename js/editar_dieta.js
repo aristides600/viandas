@@ -17,6 +17,7 @@ const app = Vue.createApp({
                 dieta_id: null,
                 // fecha_consumo: null,
                 acompaniante: null, // Valor inicial
+                mensaje: '',
                 observacion: '',
                 postre_id: null,
                 colacion_id: null,
@@ -71,6 +72,7 @@ const app = Vue.createApp({
                         fecha_consumo: datos.fecha_consumo,
                         // acompaniante: datos.acompaniante,
                         acompaniante: datos.acompaniante === 1, // Conversión a booleano
+                        mensaje: datos.mensaje,
                         observacion: datos.observacion,
                         postre_id: datos.postre_id,
                         colacion_id: datos.colacion_id,
