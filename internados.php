@@ -26,20 +26,7 @@
                 <input type="radio" v-model="filtroEstado" value="cerrada"> Altas
             </label>
         </div>
-        <!-- <div class="d-flex align-items-center">
-            <label class="me-3">
-                <input type="radio" v-model="filtroRevisado" value="todas"> Todas
-            </label>
-            <label class="me-3">
-                <input type="radio" v-model="filtroRevisado" value="revisadas"> Revisadas
-            </label>
-            <label>
-                <input type="radio" v-model="filtroRevisado" value="no_revisadas"> No Revisadas
-            </label>
-        </div> -->
-
-
-
+       
         <!-- Buscador -->
         <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por DNI o Apellido o Sector">
 

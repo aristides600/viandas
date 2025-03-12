@@ -7,10 +7,14 @@ createApp({
             filtro: '',
             filtroEstado: 'pendiente', // Filtro por estado (pendiente o cerrada)
             filtroRevisado: 'todas',  // Filtro por revisado (todas, revisadas, no revisadas)
+            intervalId: null, // ID del intervalo
         };
     },
     mounted() {
-        this.cargarInternaciones();
+        // this.cargarInternaciones();
+        this.intervalId = setInterval(() => {
+            this.cargarInternaciones();
+        }, 1000); // 1000 ms = 1 segundo
         this.inicializarTooltips();
     },
     watch: {

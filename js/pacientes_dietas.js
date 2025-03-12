@@ -45,6 +45,64 @@ const app = Vue.createApp({
             }
         },
 
+        async actualizarControlado(dieta) {
+            try {
+                const nuevoEstado = dieta.controlado === 1 ? 0 : 1; // Asegura que es un número
+
+                console.log(`Enviando ID: ${dieta.id}, Controlado: ${nuevoEstado}`);
+
+                const response = await axios.post('api/actualizar_controlado.php', {
+                    id: dieta.id,
+                    controlado: nuevoEstado
+                }, {
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' } // Asegura la correcta codificación
+                });
+
+                console.log(response.data); // Verifica la respuesta del servidor
+
+                if (response.data.success) {
+                    dieta.controlado = nuevoEstado; // Actualiza localmente el estado
+                } else {
+                    Swal.fire('Error', response.data.error || 'No se pudo actualizar el control.', 'error');
+                }
+            } catch (error) {
+                console.error("Error actualizando controlado:", error);
+                Swal.fire('Error', 'Hubo un problema al actualizar.', 'error');
+            }
+        },
+        // async destildarTodo() {
+        //     this.dietas.forEach(dieta => dieta.controlado = 0); // Usar this.dietas en lugar de this.pacientes
+
+        //     try {
+        //         await axios.post('api/destildar_todo.php');
+        //     } catch (error) {
+        //         console.error('Error al destildar todo:', error);
+        //     }
+        // },
+        async destildarTodo() {
+            const confirmacion = await Swal.fire({
+                title: "¿Estás seguro?",
+                text: "Se destildarán todas las dietas.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, destildar",
+                cancelButtonText: "Cancelar"
+            });
+        
+            if (confirmacion.isConfirmed) {
+                this.dietas.forEach(dieta => dieta.controlado = 0);
+        
+                try {
+                    await axios.post('api/destildar_todo.php');
+                    Swal.fire("Éxito", "Todas las dietas han sido destildadas.", "success");
+
+                } catch (error) {
+                    console.error("Error al destildar todo:", error);
+                    Swal.fire("Error", "Hubo un problema al destildar.", "error");
+                }
+            }
+        },
+        
         obtenerComidas() {
             axios.get('api/comidas.php')
                 .then(response => {

@@ -64,21 +64,21 @@
             </div>
             <div class="mb-3">
                 <label for="postre_id" class="form-label">Postre</label>
-                <select class="form-select" v-model="dietaInternacion.postre_id">
+                <select class="form-select" v-model="dietaInternacion.postre_id" required>
                     <option disabled value="">Seleccionar un postre</option>
                     <option v-for="postre in postres" :value="postre.id">{{ postre.nombre }}</option>
                 </select>
             </div>
             <div class="mb-3">
                 <label for="colacion_id" class="form-label">Colación</label>
-                <select class="form-select" v-model="dietaInternacion.colacion_id">
+                <select class="form-select" v-model="dietaInternacion.colacion_id" required>
                     <option disabled value="">Seleccionar una colación</option>
                     <option v-for="colacion in colaciones" :value="colacion.id">{{ colacion.nombre }}</option>
                 </select>
             </div>
             <div class="mb-3">
                 <label for="suplemento_id" class="form-label">Suplemento</label>
-                <select class="form-select" v-model="dietaInternacion.suplemento_id">
+                <select class="form-select" v-model="dietaInternacion.suplemento_id" required>
                     <option disabled value="">Seleccionar un suplemento</option>
                     <option v-for="suplemento in suplementos" :value="suplemento.id">{{ suplemento.nombre }}</option>
                 </select>

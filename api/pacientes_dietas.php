@@ -40,6 +40,7 @@ try {
                         pd.fecha_consumo,
                         pd.mensaje,
                         pd.observacion,
+                        pd.controlado,
                         pd.acompaniante,
                         pd.estado,
                         pd.postre_id,
