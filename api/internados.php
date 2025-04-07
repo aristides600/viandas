@@ -20,6 +20,60 @@ try {
     $input = json_decode(file_get_contents('php://input'), true);
 
     switch ($method) {
+        // case 'GET':
+        //     // Consulta SQL para obtener internaciones con datos relacionados, aplicando filtro opcional
+        //     if ($estado == 'pendiente') {
+        //         $sql = "SELECT i.id, i.paciente_id, i.fecha_ingreso, 
+        //                        i.fecha_egreso, 
+        //                        i.diagnostico,
+        //                        i.cama,
+        //                        p.dni, 
+        //                        p.apellido,
+        //                        p.nombre,
+        //                        s.nombre AS sector_nombre, 
+        //                        u.nombre AS usuario_nombre, 
+        //                        u.apellido AS usuario_apellido,
+        //                        pd.observacion
+        //                 FROM internaciones i
+        //                 JOIN pacientes p ON i.paciente_id = p.id
+        //                 JOIN sectores s ON i.sector_id = s.id
+        //                 JOIN usuarios u ON i.usuario_id = u.id
+        //                 LEFT JOIN pacientes_dietas pd ON pd.internacion_id = i.id
+        //                 WHERE i.estado = 1 AND i.fecha_egreso IS NULL ORDER BY s.sector_nombre";
+        //     } else {
+        //         $sql = "SELECT i.id, i.paciente_id, i.fecha_ingreso, 
+        //                        i.fecha_egreso, 
+        //                        i.diagnostico, 
+        //                        p.dni, 
+        //                        p.apellido,
+        //                        p.nombre,
+        //                        s.nombre AS sector_nombre, 
+        //                        u.nombre AS usuario_nombre, 
+        //                        u.apellido AS usuario_apellido,
+        //                        pd.observacion
+        //                 FROM internaciones i
+        //                 JOIN pacientes p ON i.paciente_id = p.id
+        //                 JOIN sectores s ON i.sector_id = s.id
+        //                 JOIN usuarios u ON i.usuario_id = u.id
+        //                 LEFT JOIN pacientes_dietas pd ON pd.internacion_id = i.id
+        //                 WHERE i.estado = 0 AND i.fecha_egreso IS NOT NULL";
+        //     }
+
+        //     // Agregar condición de búsqueda si hay un término de búsqueda
+        //     if ($searchTerm) {
+        //         $sql .= " HAVING (p.dni LIKE :search OR p.apellido LIKE :search OR p.nombre LIKE :search OR sector_nombre LIKE :search)";            }
+
+        //     $stmt = $conn->prepare($sql);
+
+        //     // Enlazar el término de búsqueda si existe
+        //     if ($searchTerm) {
+        //         $stmt->bindValue(':search', "%$searchTerm%");
+        //     }
+
+        //     $stmt->execute();
+        //     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        //     echo json_encode($result);
+        //     break;
         case 'GET':
             // Consulta SQL para obtener internaciones con datos relacionados, aplicando filtro opcional
             if ($estado == 'pendiente') {
@@ -61,7 +115,11 @@ try {
 
             // Agregar condición de búsqueda si hay un término de búsqueda
             if ($searchTerm) {
-                $sql .= " HAVING (p.dni LIKE :search OR p.apellido LIKE :search OR p.nombre LIKE :search OR sector_nombre LIKE :search)";            }
+                $sql .= " AND (p.dni LIKE :search OR p.apellido LIKE :search OR p.nombre LIKE :search OR s.nombre LIKE :search)";
+            }
+
+            // Agregar ordenamiento por nombre del sector
+            $sql .= " ORDER BY s.nombre, i.cama";
 
             $stmt = $conn->prepare($sql);
 
@@ -74,6 +132,7 @@ try {
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             echo json_encode($result);
             break;
+
 
         case 'POST':
             // Registrar una nueva internación
