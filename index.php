@@ -184,6 +184,11 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                             <li class="nav-item"><a class="nav-link" href="usuarios.php">Usuarios</a></li>
                         <?php endif; ?>
                     </ul>
+
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="ayuda.php">Ayuda</a></li>
+                       
+                    </ul>
                     <!-- Información de usuario -->
                     <div class="user-info ms-auto d-flex align-items-center">
                         <span><?php echo $nombre . ' ' . $apellido; ?></span>
