@@ -504,7 +504,7 @@ const app = Vue.createApp({
                 const nombreComida = comida ? comida.nombre : 'No seleccionada';
                 const lineHeight = 5;
                 const pageWidth = 63;
-                const textoComidaCama = `${nombreComida} | Cama: ${dieta.cama}`;
+                const textoComidaCama = `${nombreComida} | Cama:${dieta.cama}`;
                 const anchoTextoComidaCama = doc.getTextWidth(textoComidaCama);
                 const centroTextoComidaCama = (pageWidth - anchoTextoComidaCama) / 2;
                 const observacion = dieta.observacion || 'Ninguna';
@@ -513,7 +513,9 @@ const app = Vue.createApp({
                     if (dieta.acompaniante === 1) {
                         let currentY = 5;
                         doc.setFontSize(14);
-                        doc.text(textoComidaCama, centroTextoComidaCama, currentY);
+                        // doc.text(textoComidaCama, centroTextoComidaCama, currentY);
+                        doc.text(textoComidaCama, pageWidth / 2, currentY, { align: 'center' });
+
                         currentY += lineHeight;
 
                         doc.setFontSize(12);
@@ -550,7 +552,9 @@ const app = Vue.createApp({
                 doc.setTextColor(0, 0, 0);
 
                 doc.setFontSize(14);
-                doc.text(textoComidaCama, centroTextoComidaCama, currentY);
+                // doc.text(textoComidaCama, centroTextoComidaCama, currentY);
+                doc.text(textoComidaCama, pageWidth / 2, currentY, { align: 'center' });
+
                 currentY += lineHeight;
 
                 doc.setFontSize(12);
@@ -584,7 +588,9 @@ const app = Vue.createApp({
                     currentY = 5;
 
                     doc.setFontSize(14);
-                    doc.text(textoComidaCama, centroTextoComidaCama, currentY);
+                    // doc.text(textoComidaCama, centroTextoComidaCama, currentY);
+                    doc.text(textoComidaCama, pageWidth / 2, currentY, { align: 'center' });
+
                     currentY += lineHeight;
 
                     doc.setFontSize(12);

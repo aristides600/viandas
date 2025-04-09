@@ -2,15 +2,43 @@
 require_once 'api/autenticacion.php';
 require_once 'api/permisos.php';
 
+// if (session_status() == PHP_SESSION_NONE) {
+//     session_start();
+// }
+
+// if (!isset($_SESSION['user_id'])) {
+//     header('Location: login.php');
+//     exit;
+// }
+
+// $user_id = $_SESSION['user_id'];
+// $nombre = isset($_SESSION['nombre']) ? $_SESSION['nombre'] : 'Usuario';
+// $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+// Tiempo máximo de inactividad (ej. 60 segundos en este ejemplo, podés cambiarlo a 1800 para 30 minutos)
+$inactividad = 60; // cambiar a 1800 para 30 minutos
+
+// Verifica si el usuario está autenticado
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: index.php');
     exit;
+} else {
+    if (isset($_SESSION['time']) && (time() - $_SESSION['time']) > $inactividad) {
+        session_unset();     // Elimina variables de sesión
+        session_destroy();   // Destruye la sesión
+        header('Location: login.php');
+        exit;
+    }
 }
 
+// Actualiza el tiempo de última actividad
+$_SESSION['time'] = time();
+
+// Obtener datos del usuario
 $user_id = $_SESSION['user_id'];
 $nombre = isset($_SESSION['nombre']) ? $_SESSION['nombre'] : 'Usuario';
 $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
@@ -187,7 +215,7 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
 
                     <ul class="navbar-nav">
                         <li class="nav-item"><a class="nav-link" href="ayuda.php">Ayuda</a></li>
-                       
+
                     </ul>
                     <!-- Información de usuario -->
                     <div class="user-info ms-auto d-flex align-items-center">
