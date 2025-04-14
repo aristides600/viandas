@@ -15,12 +15,15 @@ require_once 'api/permisos.php';
 // $nombre = isset($_SESSION['nombre']) ? $_SESSION['nombre'] : 'Usuario';
 // $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
 
+
+////POR INACTIVIDAD
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 // Tiempo máximo de inactividad (ej. 60 segundos en este ejemplo, podés cambiarlo a 1800 para 30 minutos)
-$inactividad = 60; // cambiar a 1800 para 30 minutos
+$inactividad = 1800; // cambiar a 1800 para 30 minutos
 
 // Verifica si el usuario está autenticado
 if (!isset($_SESSION['user_id'])) {
