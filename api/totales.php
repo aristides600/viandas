@@ -12,8 +12,8 @@ $sqlGrupo1Almuerzo = "
         s.nombre AS sector,
         SUM(CASE WHEN c.postre_id = 1 THEN c.cantidad ELSE 0 END) AS total_flan,
         SUM(CASE WHEN c.postre_id = 2 THEN c.cantidad ELSE 0 END) AS total_gelatina,
-        SUM(CASE WHEN d.codigo = 'D13' THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
-        SUM(CASE WHEN d.codigo != 'D13' THEN c.cantidad ELSE 0 END) AS total_otras_dietas
+        SUM(CASE WHEN d.id = 9 THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
+        SUM(CASE WHEN d.id != 9 THEN c.cantidad ELSE 0 END) AS total_otras_dietas
     FROM consumos_diarios c
     JOIN sectores s ON c.sector_id = s.id
     JOIN dietas d ON c.dieta_id = d.id
@@ -27,8 +27,8 @@ $sqlGrupo1Cena = "
         s.nombre AS sector,
         SUM(CASE WHEN c.postre_id = 1 THEN c.cantidad ELSE 0 END) AS total_flan,
         SUM(CASE WHEN c.postre_id = 2 THEN c.cantidad ELSE 0 END) AS total_gelatina,
-        SUM(CASE WHEN d.codigo = 'D13' THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
-        SUM(CASE WHEN d.codigo != 'D13' THEN c.cantidad ELSE 0 END) AS total_otras_dietas
+        SUM(CASE WHEN d.id = 9 THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
+        SUM(CASE WHEN d.id != 9 THEN c.cantidad ELSE 0 END) AS total_otras_dietas
     FROM consumos_diarios c
     JOIN sectores s ON c.sector_id = s.id
     JOIN dietas d ON c.dieta_id = d.id
@@ -42,8 +42,8 @@ $sqlGrupo2Almuerzo = "
         s.nombre AS sector,
         SUM(CASE WHEN c.postre_id = 1 THEN c.cantidad ELSE 0 END) AS total_flan,
         SUM(CASE WHEN c.postre_id = 2 THEN c.cantidad ELSE 0 END) AS total_gelatina,
-        SUM(CASE WHEN d.codigo = 'D13' THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
-        SUM(CASE WHEN d.codigo != 'D13' THEN c.cantidad ELSE 0 END) AS total_otras_dietas
+        SUM(CASE WHEN d.id = 9 THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
+        SUM(CASE WHEN d.id != 9 THEN c.cantidad ELSE 0 END) AS total_otras_dietas
     FROM consumos_diarios c
     JOIN sectores s ON c.sector_id = s.id
     JOIN dietas d ON c.dieta_id = d.id
@@ -57,8 +57,8 @@ $sqlGrupo2Cena = "
         s.nombre AS sector,
         SUM(CASE WHEN c.postre_id = 1 THEN c.cantidad ELSE 0 END) AS total_flan,
         SUM(CASE WHEN c.postre_id = 2 THEN c.cantidad ELSE 0 END) AS total_gelatina,
-        SUM(CASE WHEN d.codigo = 'D13' THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
-        SUM(CASE WHEN d.codigo != 'D13' THEN c.cantidad ELSE 0 END) AS total_otras_dietas
+        SUM(CASE WHEN d.id = 9 THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
+        SUM(CASE WHEN d.id != 9 THEN c.cantidad ELSE 0 END) AS total_otras_dietas
     FROM consumos_diarios c
     JOIN sectores s ON c.sector_id = s.id
     JOIN dietas d ON c.dieta_id = d.id
@@ -71,8 +71,8 @@ $sqlTotalesAlmuerzo = "
     SELECT 
         SUM(CASE WHEN c.postre_id = 1 THEN c.cantidad ELSE 0 END) AS total_flan,
         SUM(CASE WHEN c.postre_id = 2 THEN c.cantidad ELSE 0 END) AS total_gelatina,
-        SUM(CASE WHEN d.codigo = 'D13' THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
-        SUM(CASE WHEN d.codigo != 'D13' THEN c.cantidad ELSE 0 END) AS total_otras_dietas
+        SUM(CASE WHEN d.id = 9 THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
+        SUM(CASE WHEN d.id != 9 THEN c.cantidad ELSE 0 END) AS total_otras_dietas
     FROM consumos_diarios c
     JOIN dietas d ON c.dieta_id = d.id
     WHERE c.fecha_consumo = :fecha_consumo AND c.comida_id = 1
@@ -83,8 +83,8 @@ $sqlTotalesCena = "
     SELECT 
         SUM(CASE WHEN c.postre_id = 1 THEN c.cantidad ELSE 0 END) AS total_flan,
         SUM(CASE WHEN c.postre_id = 2 THEN c.cantidad ELSE 0 END) AS total_gelatina,
-        SUM(CASE WHEN d.codigo = 'D13' THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
-        SUM(CASE WHEN d.codigo != 'D13' THEN c.cantidad ELSE 0 END) AS total_otras_dietas
+        SUM(CASE WHEN d.id = 9 THEN (c.cantidad + c.acompaniante) ELSE 0 END) AS total_dietas_generales,
+        SUM(CASE WHEN d.id != 9 THEN c.cantidad ELSE 0 END) AS total_otras_dietas
     FROM consumos_diarios c
     JOIN dietas d ON c.dieta_id = d.id
     WHERE c.fecha_consumo = :fecha_consumo AND c.comida_id = 2
