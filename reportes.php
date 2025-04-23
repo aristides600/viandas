@@ -36,49 +36,71 @@
             <button @click="generarPDF" class="btn btn-success">Generar PDF</button>
         </div>
 
-        <!-- Tabla de informe -->
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Sector</th>
-                    <th>Dieta</th>
-                    <th>Cantidad</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(dieta, index) in reporte" :key="index">
-                    <td>{{ dieta.sector }}</td>
-                    <td>{{ dieta.dieta }}</td>
-                    <td>{{ dieta.cantidad }}</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- Nueva Tabla con Dietas y Cantidades -->
-        <h5 class="mt-4">Dietas y Cantidades</h5>
-        <table>
-            <thead>
-                <tr>
-                    <th>Dieta</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="dieta in dietasTotales" :key="dieta.dieta">
-                    <td>{{ dieta.dieta }}</td>
-                    <td>{{ dieta.total }}</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- Subtotales y Total general -->
-        <h5 class="mt-4">Subtotales y Total General</h5>
-        <div v-for="(subtotal, index) in subtotales" :key="index">
-            <strong>{{ subtotal.sector }}:</strong> {{ subtotal.total }} dietas
+        <!-- Tabla de informe principal -->
+        <h5 class="mt-4">Detalle por Sector y Dieta</h5>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>Sector</th>
+                        <th>Dieta</th>
+                        <th class="text-end">Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(dieta, index) in reporte" :key="index">
+                        <td>{{ dieta.sector }}</td>
+                        <td>{{ dieta.dieta }}</td>
+                        <td class="text-end">{{ dieta.cantidad }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <div class="mt-2">
-            <strong>Total General:</strong> {{ totalGeneral }} dietas
+
+        <!-- Tabla de Dietas y Cantidades Totales -->
+        <h5 class="mt-5">Totales por Tipo de Dieta</h5>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>Dieta</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="dieta in dietasTotales" :key="dieta.dieta">
+                        <td>{{ dieta.dieta }}</td>
+                        <td class="text-end">{{ dieta.total }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+
+        <!-- Subtotales por sector -->
+        <h5 class="mt-5">Totales por Sector</h5>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>Sector</th>
+                        <th class="text-end">Total Dietas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(subtotal, index) in subtotales" :key="index">
+                        <td>{{ subtotal.sector }}</td>
+                        <td class="text-end">{{ subtotal.total }}</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="table-secondary">
+                        <th>Total General</th>
+                        <th class="text-end">{{ totalGeneral }}</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
 
         <!-- Gráfico -->
         <h5 class="mt-4">Gráfico de Dietas por Sector</h5>
