@@ -29,6 +29,7 @@ const app = Vue.createApp({
                     Swal.fire('Error', 'No se pudo generar el informe', 'error');
                 });
         },
+                
         calcularSubtotales() {
             // Subtotales por sector
             this.subtotales = [];
@@ -94,6 +95,90 @@ const app = Vue.createApp({
                 }
             });
         },
+        generarExcel() {
+            // Formatear las fechas
+            const fechaDesdeFormateada = this.formatearFecha(this.fechaDesde);
+            const fechaHastaFormateada = this.formatearFecha(this.fechaHasta);
+        
+            // Título general y texto de rango de fechas
+            const title = "Informe de Dietas";
+            const dateRangeText = `Desde: ${fechaDesdeFormateada} | Hasta: ${fechaHastaFormateada}`;
+            const combinedText = `${title} - ${dateRangeText}`;
+        
+            // Crear un arreglo de datos para Excel
+            const data = [];
+        
+            // Agregar el título general
+            data.push([combinedText]);
+        
+            // Detalle por sector y dieta
+            data.push([]);
+            data.push(["Detalle por Sector y Dieta"]);
+            data.push(["Sector", "Dieta", "Cantidad"]);
+        
+            // Agrupar los datos por sector y dieta
+            const datosPorSector = this.reporte.reduce((acc, item) => {
+                if (!acc[item.sector]) {
+                    acc[item.sector] = [];
+                }
+                acc[item.sector].push({
+                    dieta: item.dieta,
+                    cantidad: item.cantidad
+                });
+                return acc;
+            }, {});
+        
+            // Agregar los datos de detalle por sector y dieta
+            for (const [sector, datos] of Object.entries(datosPorSector)) {
+                datos.forEach(d => {
+                    data.push([sector, d.dieta, d.cantidad]);
+                });
+            }
+        
+            // Totales por tipo de dieta
+            data.push([]);
+            data.push(["Totales por Tipo de Dieta"]);
+            data.push(["Dieta", "Total Cantidad"]);
+        
+            // Calcular los totales por tipo de dieta
+            const totalesPorDieta = this.reporte.reduce((acc, item) => {
+                if (!acc[item.dieta]) {
+                    acc[item.dieta] = 0;
+                }
+                acc[item.dieta] += item.cantidad;
+                return acc;
+            }, {});
+        
+            // Agregar los totales por tipo de dieta
+            for (const [dieta, total] of Object.entries(totalesPorDieta)) {
+                data.push([dieta, total]);
+            }
+        
+            // Totales por sector
+            data.push([]);
+            data.push(["Totales por Sector"]);
+            data.push(["Sector", "Total Cantidad"]);
+        
+            // Calcular los totales por sector
+            const totalesPorSector = Object.entries(datosPorSector).map(([sector, datos]) => {
+                const totalCantidad = datos.reduce((acc, item) => acc + item.cantidad, 0);
+                return [sector, totalCantidad];
+            });
+        
+            // Agregar los totales por sector
+            totalesPorSector.forEach(row => {
+                data.push(row);
+            });
+        
+            // Crear el libro de trabajo y la hoja
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Informe Dietas");
+        
+            // Exportar a Excel
+            XLSX.writeFile(wb, "informe_dietas.xlsx");
+        },
+        
 
         generarPDF() {
             const { jsPDF } = window.jspdf; // Asegúrate de que jsPDF esté definido

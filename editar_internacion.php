@@ -75,17 +75,6 @@
           @input="internacion.cama = internacion.cama.replace(/[^0-9]/g, '').slice(0, 3)">
       </div>
 
-
-      <!-- Campo de texto para el Diagnóstico -->
-      <!-- <div class="mb-3">
-        <label for="diagnostico" class="form-label">Diagnóstico</label>
-        <textarea
-          id="diagnostico"
-          class="form-control"
-          rows="4"
-          v-model="internacion.diagnostico"
-          required></textarea>
-      </div> -->
       <div class="mb-3">
                 <label for="diagnostico" class="form-label">Diagnóstico</label>
                 <input

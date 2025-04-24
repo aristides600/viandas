@@ -49,7 +49,7 @@
             </div>
         </div>
         <!-- Cambiar Dieta -->
-        <form @submit.prevent="guardarDieta">
+        <!-- <form @submit.prevent="guardarDieta">
             <div class="mb-3">
                 <label for="dieta_id" class="form-label">Tipo de Dieta</label>
                 <select class="form-select" v-model="dietaInternacion.dieta_id" required>
@@ -70,17 +70,24 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="colacion_id" class="form-label">Colación</label>
+                <label for="colacion_id" class="form-label">Desayuno</label>
                 <select class="form-select" v-model="dietaInternacion.colacion_id" required>
-                    <option disabled value="">Seleccionar una colación</option>
+                    <option disabled value="">Seleccionar una desayuno</option>
                     <option v-for="colacion in colaciones" :value="colacion.id">{{ colacion.nombre }}</option>
                 </select>
             </div>
             <div class="mb-3">
-                <label for="suplemento_id" class="form-label">Suplemento</label>
+                <label for="suplemento_id" class="form-label">Merienda</label>
                 <select class="form-select" v-model="dietaInternacion.suplemento_id" required>
-                    <option disabled value="">Seleccionar un suplemento</option>
+                    <option disabled value="">Seleccionar una merienda</option>
                     <option v-for="suplemento in suplementos" :value="suplemento.id">{{ suplemento.nombre }}</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="nocturno_id" class="form-label">Nocturno</label>
+                <select class="form-select" v-model="dietaInternacion.nocturno_id" required>
+                    <option disabled value="">Seleccionar una col. nocturno</option>
+                    <option v-for="nocturno in nocturnos" :value="nocturno.id">{{ nocturno.nombre }}</option>
                 </select>
             </div>
             <div class="mb-3">
@@ -101,7 +108,74 @@
                     maxlength="50">
             </div>
             <button type="submit" class="btn btn-primary">Guardar Dieta</button>
+        </form> -->
+        <form @submit.prevent="guardarDieta">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="dieta_id" class="form-label">Tipo de Dieta</label>
+                    <select class="form-select" v-model="dietaInternacion.dieta_id" required>
+                        <option disabled value="">Seleccionar una dieta</option>
+                        <option v-for="dieta in dietas" :value="dieta.id">{{ dieta.codigo }} - {{ dieta.nombre }}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="colacion_id" class="form-label">Desayuno</label>
+                    <select class="form-select" v-model="dietaInternacion.colacion_id" required>
+                        <option disabled value="">Seleccionar un desayuno</option>
+                        <option v-for="colacion in colaciones" :value="colacion.id">{{ colacion.nombre }}</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="postre_id" class="form-label">Postre</label>
+                    <select class="form-select" v-model="dietaInternacion.postre_id" required>
+                        <option disabled value="">Seleccionar un postre</option>
+                        <option v-for="postre in postres" :value="postre.id">{{ postre.nombre }}</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="suplemento_id" class="form-label">Merienda</label>
+                    <select class="form-select" v-model="dietaInternacion.suplemento_id" required>
+                        <option disabled value="">Seleccionar una merienda</option>
+                        <option v-for="suplemento in suplementos" :value="suplemento.id">{{ suplemento.nombre }}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3 d-flex align-items-center">
+                    <label for="acompaniante" class="form-label me-2">Acompañante</label>
+                    <input type="checkbox" v-model="dietaInternacion.acompaniante">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="nocturno_id" class="form-label">Col. Nocturna</label>
+                    <select class="form-select" v-model="dietaInternacion.nocturno_id" required>
+                        <option disabled value="">Seleccionar colación nocturna</option>
+                        <option v-for="nocturno in nocturnos" :value="nocturno.id">{{ nocturno.nombre }}</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="mensaje" class="form-label">Mensaje</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        v-model="dietaInternacion.mensaje"
+                        maxlength="50">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="observacion" class="form-label">Observación</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        v-model="dietaInternacion.observacion"
+                        maxlength="50">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar Dieta</button>
         </form>
+
     </div>
     <?php include 'footer.php'; ?>
 

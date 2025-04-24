@@ -7,6 +7,7 @@ const app = Vue.createApp({
             postres: [],
             colaciones: [],
             suplementos: [],
+            nocturnos: [],
             dietaInternacion: {
                 paciente_id: '',
                 dieta_id: '',
@@ -16,7 +17,8 @@ const app = Vue.createApp({
                 acompaniante: false,
                 postre_id: '',
                 colacion_id: '',
-                suplemento_id: ''
+                suplemento_id: '',
+                nocturno_id: ''
             },
         };
     },
@@ -29,8 +31,7 @@ const app = Vue.createApp({
             this.obtenerPostres();
             this.obtenerColaciones();
             this.obtenerSuplementos();
-
-
+            this.obtenerNocturnos();
         }
     },
     methods: {
@@ -108,6 +109,15 @@ const app = Vue.createApp({
                     Swal.fire('Error', 'No se pudieron cargar los suplementos.', 'error');
                 });
         },
+        obtenerNocturnos() {
+            axios.get('api/nocturnos.php')
+                .then(response => {
+                    this.nocturnos = response.data;
+                })
+                .catch(() => {
+                    Swal.fire('Error', 'No se pudieron cargar los nocturnos.', 'error');
+                });
+        },
         guardarDieta() {
             if (!this.dietaInternacion.paciente_id || !this.dietaInternacion.dieta_id || !this.dietaInternacion.internacion_id) {
                 Swal.fire('Error', 'Todos los campos obligatorios deben completarse.', 'error');
@@ -131,8 +141,6 @@ const app = Vue.createApp({
                     Swal.fire('Error', mensaje, 'error');
                 });
         },
-
-
         reiniciarFormulario() {
             this.dietaInternacion = {
                 paciente_id: '',

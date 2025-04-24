@@ -229,6 +229,25 @@ const app = Vue.createApp({
                 Swal.fire('Error', 'Hubo un error al procesar la solicitud.', 'error');
             }
         },
+        async procesarNocturno() {
+            try {
+                // Enviar solicitud al backend
+                const response = await axios.post('api/consumos_nocturnos.php');
+
+                const data = response.data;
+
+                if (data.status === 'success') {
+                    Swal.fire('Éxito', data.message, 'success');
+                    // Lógica para imprimir todas las etiquetas (si es necesario)
+                    this.imprimirNocturnos();
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error al registrar el consumo:', error);
+                Swal.fire('Error', 'Hubo un error al procesar la solicitud.', 'error');
+            }
+        },
 
         editarDieta(id) {
             window.location.href = "editar_dieta.php?id=" + id;
@@ -655,7 +674,7 @@ const app = Vue.createApp({
 
                 // Centrar y agregar el título "COLACIÓN" en la parte superior de cada página
                 const pageWidth = 63;  // Ancho de la página en milímetros
-                const titleText = `COLACIÓN | Cama: ${dieta.cama}`; // Corregido el uso del template literal
+                const titleText = `DESAYUNO | Cama: ${dieta.cama}`; // Corregido el uso del template literal
                 const titleWidth = doc.getTextWidth(titleText);
                 const centeredX = (pageWidth - titleWidth) / 2;
 
@@ -670,7 +689,7 @@ const app = Vue.createApp({
                 currentY += lineHeight;
 
                 // Imprimir "Col." y su valor
-                doc.text(`Col.: ${dieta.nombre_colacion}`, 1, currentY);
+                doc.text(`Des.: ${dieta.nombre_colacion}`, 1, currentY);
                 currentY += lineHeight;
 
                 // Imprimir "Obs." y su valor (observación)
@@ -731,7 +750,7 @@ const app = Vue.createApp({
                 // Título "SUPLEMENTO" con Cama
                 doc.setFontSize(12);
                 doc.setFont('helvetica', 'bold');
-                const title = `SUPLEMENTO | Cama: ${dieta.cama}`;
+                const title = `MERIENDA | Cama: ${dieta.cama}`;
                 const titleWidth = doc.getTextWidth(title);
                 const centeredX = (pageWidth - titleWidth) / 2;
                 doc.text(title, centeredX, 6);
@@ -745,7 +764,80 @@ const app = Vue.createApp({
                 doc.text(`${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
                 currentY += lineHeight;
 
-                doc.text(`Sup.: ${dieta.nombre_suplemento}`, 1, currentY);
+                doc.text(`Mer.: ${dieta.nombre_suplemento}`, 1, currentY);
+                currentY += lineHeight;
+
+                // Observación
+                doc.setFontSize(10);
+                const observacion = dieta.observacion || 'Ninguna';
+                const observacionLineas = doc.splitTextToSize(`Obs.: ${observacion}`, 61); // Ancho disponible 61mm
+                observacionLineas.forEach(linea => {
+                    doc.text(linea, 1, currentY);
+                    currentY += lineHeight;
+                });
+
+                // Restablecer tamaño de fuente para el resto del texto
+                doc.setFontSize(12);
+
+                // Agregar nueva página si no es la última dieta válida
+                if (index < dietasValidas.length - 1) {
+                    doc.addPage([63, 44], 'l'); // Crear nueva página
+                }
+            });
+
+            // Mostrar el PDF solo si hay dietas válidas
+            if (hasValidDietas) {
+                window.open(doc.output('bloburl'), '_blank'); // Abrir en nueva ventana
+            } else {
+                Swal.fire('Error', 'No hay dietas válidas para imprimir.', 'error');
+            }
+        },
+        imprimirNocturnos() {
+            if (this.dietas.length === 0) {
+                Swal.fire('Error', 'No hay dietas disponibles para imprimir.', 'error');
+                return;
+            }
+
+            // Crear un nuevo documento PDF con el tamaño adecuado
+            const doc = new jsPDF({
+                unit: 'mm',  // Unidades en milímetros
+                format: [63, 44],  // Tamaño de página: 63mm x 44mm
+                orientation: 'l'  // Horizontal
+            });
+
+            let hasValidDietas = false; // Bandera para verificar si hay dietas válidas
+
+            // Filtrar solo las dietas válidas (id_suplemento distinto de 1 y no null)
+            const dietasValidas = this.dietas.filter(
+                dieta => dieta.id_nocturno !== 1 && dieta.id_nocturno !== null
+            );
+
+            dietasValidas.forEach((dieta, index) => {
+                hasValidDietas = true; // Hay al menos una dieta válida
+
+                // Configuración de espacio y posición
+                const lineHeight = 6;  // Espacio entre líneas
+                let currentY = 12;  // Posición inicial para el contenido
+                const pageWidth = 63;  // Ancho de la página
+
+                // Título "SUPLEMENTO" con Cama
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                const title = `COL. NOCTURNA | Cama: ${dieta.cama}`;
+                const titleWidth = doc.getTextWidth(title);
+                const centeredX = (pageWidth - titleWidth) / 2;
+                doc.text(title, centeredX, 6);
+
+                // Detalles del suplemento
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(12);
+                doc.text(`Sector: ${dieta.nombre_sector}`, 1, currentY);
+                currentY += lineHeight;
+
+                doc.text(`${dieta.apellido_paciente} ${dieta.nombre_paciente}`, 1, currentY);
+                currentY += lineHeight;
+
+                doc.text(`Col.: ${dieta.nombre_nocturno}`, 1, currentY);
                 currentY += lineHeight;
 
                 // Observación
@@ -932,7 +1024,7 @@ const app = Vue.createApp({
                     // Agregar la tabla con los pacientes del sector
                     doc.autoTable({
                         startY: y,
-                        head: [['Cama', 'Apellido', 'Nombre', 'Ac.', 'Cod.', 'Dieta', 'Colación', 'Suplemento', 'Mensaje']],
+                        head: [['Cama', 'Apellido', 'Nombre', 'Ac.', 'Cod.', 'Dieta', 'Desayuno', 'Merienda', 'Mensaje']],
                         body: pacientes.map(dieta => [
                             dieta.cama,
                             dieta.apellido_paciente,

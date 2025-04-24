@@ -32,6 +32,8 @@ try {
                         c1.nombre AS nombre_colacion,
                         s1.id AS id_suplemento,
                         s1.nombre AS nombre_suplemento,
+                        n.id AS id_nocturno,
+                        n.nombre AS nombre_nocturno,
                         postres.nombre AS nombre_postre,
                         u.apellido AS apellido_usuario,
                         u.nombre AS nombre_usuario,
@@ -61,6 +63,7 @@ try {
                     LEFT JOIN postres ON postres.id = pd.postre_id
                     LEFT JOIN colaciones c1 ON c1.id = pd.colacion_id
                     LEFT JOIN suplementos s1 ON s1.id = pd.suplemento_id
+                    LEFT JOIN nocturnos n ON n.id = pd.nocturno_id
                    
                     WHERE pd.estado = 1
                     ORDER BY i.sector_id ASC, i.cama ASC"; // Ordenar por sector y cama de forma ascendente
@@ -104,6 +107,8 @@ try {
             $postre_id = !empty($data['postre_id']) ? intval($data['postre_id']) : null;
             $colacion_id = !empty($data['colacion_id']) ? intval($data['colacion_id']) : null;
             $suplemento_id = !empty($data['suplemento_id']) ? intval($data['suplemento_id']) : null;
+            $nocturno_id = !empty($data['nocturno_id']) ? intval($data['nocturno_id']) : null;
+
 
             // Verificar si usuario_id está definido, puedes obtenerlo de la sesión o algún método de autenticación
             if (!isset($usuario_id)) {
@@ -114,9 +119,9 @@ try {
 
             // Insertar nueva dieta
             $sql = "INSERT INTO pacientes_dietas 
-                                    (paciente_id, dieta_id, internacion_id, fecha_consumo, usuario_id, estado, mensaje, observacion, acompaniante, postre_id, colacion_id, suplemento_id) 
+                                    (paciente_id, dieta_id, internacion_id, fecha_consumo, usuario_id, estado, mensaje, observacion, acompaniante, postre_id, colacion_id, suplemento_id, nocturno_id) 
                                 VALUES 
-                                    (:paciente_id, :dieta_id, :internacion_id, NOW(), :usuario_id, 1, :mensaje, :observacion, :acompaniante, :postre_id, :colacion_id, :suplemento_id)";
+                                    (:paciente_id, :dieta_id, :internacion_id, NOW(), :usuario_id, 1, :mensaje, :observacion, :acompaniante, :postre_id, :colacion_id, :suplemento_id, :nocturno_id)";
             $stmt = $conn->prepare($sql);
             $stmt->execute([
                 ':paciente_id' => intval($data['paciente_id']),
@@ -129,6 +134,7 @@ try {
                 ':postre_id' => $postre_id,
                 ':colacion_id' => $colacion_id,
                 ':suplemento_id' => $suplemento_id,
+                ':nocturno_id' => $nocturno_id,
             ]);
 
             echo json_encode(['mensaje' => 'Dieta creada correctamente']);
@@ -151,8 +157,7 @@ try {
             $postre_id = !empty($data['postre_id']) ? intval($data['postre_id']) : null;
             $postre_id = !empty($data['colacion_id']) ? intval($data['colacion_id']) : null;
             $postre_id = !empty($data['suplemento_id']) ? intval($data['suplemento_id']) : null;
-
-
+            $postre_id = !empty($data['nocturno_id']) ? intval($data['nocturno_id']) : null;
 
             $sql = "UPDATE pacientes_dietas 
                         SET 
@@ -166,6 +171,7 @@ try {
                             postre_id = :postre_id,
                             colacion_id = :colacion_id,
                             suplemento_id = :suplemento_id
+                            nocturno_id = :nocturno_id
 
                         WHERE id = :id";
             $stmt = $conn->prepare($sql);
@@ -179,6 +185,7 @@ try {
                 ':postre_id' => $postre_id,
                 ':colacion_id' => $colacion_id,
                 ':suplemento_id' => $suplemento_id,
+                ':nocturno_id' => $nocturno_id,
                 ':id' => $dieta_id,
             ]);
 

@@ -7,59 +7,56 @@ const app = Vue.createApp({
         };
     },
     methods: {
-        // Método para obtener los datos desde el servidor
-        obtenerDatos() {
-            axios.get('api/totales.php') // Cambia por la ruta a tu archivo PHP
-                .then(response => {
-                    // Asignar datos a las variables almuerzo y cena
-                    this.almuerzo = [response.data.por_sector.almuerzo.grupo_1, response.data.por_sector.almuerzo.grupo_2];
-                    this.cena = [response.data.por_sector.cena.grupo_1, response.data.por_sector.cena.grupo_2];
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                });
+        async obtenerDatos() {
+            try {
+                const response = await axios.get('api/totales.php');
+
+                const almuerzo = response.data?.por_sector?.almuerzo || {};
+                const cena = response.data?.por_sector?.cena || {};
+
+                this.almuerzo = [
+                    almuerzo.grupo_1 || { sector: "Grupo 1", total_flan: 0, total_gelatina: 0, total_dietas_generales: 0, total_otras_dietas: 0 },
+                    almuerzo.grupo_2 || { sector: "Grupo 2", total_flan: 0, total_gelatina: 0, total_dietas_generales: 0, total_otras_dietas: 0 }
+                ];
+
+                this.cena = [
+                    cena.grupo_1 || { sector: "Grupo 1", total_flan: 0, total_gelatina: 0, total_dietas_generales: 0, total_otras_dietas: 0 },
+                    cena.grupo_2 || { sector: "Grupo 2", total_flan: 0, total_gelatina: 0, total_dietas_generales: 0, total_otras_dietas: 0 }
+                ];
+            } catch (error) {
+                console.error('Error al obtener los datos:', error);
+            }
         },
 
-        // Método para obtener la fecha actual
         obtenerFechaActual() {
             const fecha = new Date();
             const dia = String(fecha.getDate()).padStart(2, '0');
-            const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses son 0-indexados
+            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
             const anio = fecha.getFullYear();
             this.fechaActual = `${dia}/${mes}/${anio}`;
         },
 
-        // Método para calcular el total de cada columna
         calcularTotales(grupo) {
-            let totalFlan = 0;
-            let totalGelatina = 0;
-            let totalDietasGenerales = 0;
-            let totalOtrasDietas = 0;
-
-            grupo.forEach(data => {
-                totalFlan += parseFloat(data.total_flan) || 0;
-                totalGelatina += parseFloat(data.total_gelatina) || 0;
-                totalDietasGenerales += parseFloat(data.total_dietas_generales) || 0;
-                totalOtrasDietas += parseFloat(data.total_otras_dietas) || 0;
+            return grupo.reduce((totales, item) => {
+                totales.totalFlan += parseFloat(item.total_flan) || 0;
+                totales.totalGelatina += parseFloat(item.total_gelatina) || 0;
+                totales.totalDietasGenerales += parseFloat(item.total_dietas_generales) || 0;
+                totales.totalOtrasDietas += parseFloat(item.total_otras_dietas) || 0;
+                return totales;
+            }, {
+                totalFlan: 0,
+                totalGelatina: 0,
+                totalDietasGenerales: 0,
+                totalOtrasDietas: 0
             });
-
-            return {
-                totalFlan,
-                totalGelatina,
-                totalDietasGenerales,
-                totalOtrasDietas
-            };
         }
     },
 
     mounted() {
-        this.obtenerFechaActual(); // Obtener la fecha actual al cargar el componente
-        this.obtenerDatos(); // Obtener los datos al cargar el componente
+        this.obtenerFechaActual();
+        this.obtenerDatos();
 
-        // Actualizar cada 2 minutos
-        setInterval(() => {
-            this.obtenerDatos();
-        }, 120000); // 120000 milisegundos = 2 minutos
+        setInterval(this.obtenerDatos, 120000);
     }
 });
 

@@ -15,6 +15,7 @@ try {
             pd.postre_id,
             pd.colacion_id,
             pd.suplemento_id,
+            pd.nocturno_id,
             p.nombre AS nombre_paciente,
             p.apellido AS apellido_paciente,
             p.dni AS dni_paciente,

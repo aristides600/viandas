@@ -57,11 +57,14 @@
                 </button>
 
                 <button @click="procesarColacion" class="btn btn-primary btn-sm d-flex align-items-center">
-                    <i class="bi bi-printer me-2"></i> Colaciones
+                    <i class="bi bi-printer me-2"></i> Desayuno
                 </button>
 
                 <button @click="procesarSuplemento" class="btn btn-primary btn-sm d-flex align-items-center">
-                    <i class="bi bi-printer me-2"></i> Suplementos
+                    <i class="bi bi-printer me-2"></i> Merienda
+                </button>
+                <button @click="procesarNocturno" class="btn btn-primary btn-sm d-flex align-items-center">
+                    <i class="bi bi-printer me-2"></i> Col. Nocturna
                 </button>
 
                 <button class="btn btn-primary btn-sm d-flex align-items-center" @click="nutricionPDF">
@@ -87,8 +90,9 @@
                         <th>Ac.</th>
                         <th>Código</th>
                         <th>Dieta</th>
-                        <th>Colación</th>
-                        <th>Suplemento</th>
+                        <th>Desayuno</th>
+                        <th>Merienda</th>
+                        <th>Col. Nocturna</th>
                         <th>Diagnóstico</th>
                         <th>Observación</th>
                         <th>Control</th>
@@ -109,6 +113,7 @@
                         <td>{{ dieta.nombre_dieta || '-' }}</td>
                         <td>{{ dieta.nombre_colacion || '-' }}</td>
                         <td>{{ dieta.nombre_suplemento || '-' }}</td>
+                        <td>{{ dieta.nombre_nocturno || '-' }}</td>
                         <td>{{ dieta.diagnostico || '-' }}</td>
                         <td>{{ dieta.observacion || '-' }}</td>
 

@@ -32,9 +32,12 @@
         </div>
 
         <!-- Botón para generar PDF -->
-        <div class="mt-4" v-if="reporte.length > 0">
+        <div class="mt-4 d-flex gap-2" v-if="reporte.length > 0">
             <button @click="generarPDF" class="btn btn-success">Generar PDF</button>
+            <button type="button" class="btn btn-success" @click="generarExcel">Exportar Excel</button>
         </div>
+
+
 
         <!-- Tabla de informe principal -->
         <h5 class="mt-4">Detalle por Sector y Dieta</h5>
@@ -114,6 +117,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

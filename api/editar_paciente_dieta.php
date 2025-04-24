@@ -29,7 +29,8 @@ if (isset($data['id'], $data['dieta_id'])) {
                 usuario_id = :usuario_id, 
                 postre_id = :postre_id,
                 colacion_id = :colacion_id, 
-                suplemento_id = :suplemento_id 
+                suplemento_id = :suplemento_id,
+                nocturno_id = :nocturno_id
             WHERE id = :id
         ");
 
@@ -42,6 +43,7 @@ if (isset($data['id'], $data['dieta_id'])) {
         $query->bindParam(':postre_id', $data['postre_id'], PDO::PARAM_INT);
         $query->bindParam(':colacion_id', $data['colacion_id'], PDO::PARAM_INT);
         $query->bindParam(':suplemento_id', $data['suplemento_id'], PDO::PARAM_INT);
+        $query->bindParam(':nocturno_id', $data['nocturno_id'], PDO::PARAM_INT);
         $query->bindParam(':usuario_id', $_SESSION['user_id'], PDO::PARAM_INT); // Se asigna el ID del usuario logueado
         $query->bindParam(':id', $data['id'], PDO::PARAM_INT);
 

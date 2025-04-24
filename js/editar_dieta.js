@@ -22,13 +22,14 @@ const app = Vue.createApp({
                 postre_id: null,
                 colacion_id: null,
                 suplemento_id: null,
+                nocturno_id: null,
+
             },
             dietas: [],
             postres: [],
             colaciones: [],
-            suplementos: []
-
-
+            suplementos: [],
+            nocturnos: [],
         };
     },
     mounted() {
@@ -41,7 +42,7 @@ const app = Vue.createApp({
         this.cargarPostres();
         this.obtenerColaciones();
         this.obtenerSuplementos();
-
+        this.obtenerNocturnos();
         this.pacienteDieta.acompaniante = !!this.pacienteDieta.acompaniante;
     },
     methods: {
@@ -76,7 +77,9 @@ const app = Vue.createApp({
                         observacion: datos.observacion,
                         postre_id: datos.postre_id,
                         colacion_id: datos.colacion_id,
-                        suplemento_id: datos.suplemento_id
+                        suplemento_id: datos.suplemento_id,
+                        nocturno_id: datos.nocturno_id
+
 
                     };
                 })
@@ -122,6 +125,15 @@ const app = Vue.createApp({
                 })
                 .catch(() => {
                     Swal.fire('Error', 'No se pudieron cargar los suplementos.', 'error');
+                });
+        },
+        obtenerNocturnos() {
+            axios.get('api/nocturnos.php')
+                .then(response => {
+                    this.nocturnos = response.data;
+                })
+                .catch(() => {
+                    Swal.fire('Error', 'No se pudieron cargar los nocturnos.', 'error');
                 });
         },
         editarDieta() {

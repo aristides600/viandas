@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                               WHERE id = :id";
                 $stmtUpdate = $conn->prepare($updateSql);
                 $stmtUpdate->execute([
-                    ':nueva_cantidad' => $registroExistente['cantidad'] + 1,
+                    ':nueva_cantidad' => $registroExistente['cantidad'],
                     ':usuario_id' => $usuario_id,
                     ':id' => $registroExistente['id']
                 ]);
