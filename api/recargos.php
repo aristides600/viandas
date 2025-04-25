@@ -1,5 +1,5 @@
 <?php
-// <?php
+
 require_once 'db.php';
 session_start();
 header('Content-Type: application/json');
@@ -31,26 +31,21 @@ try {
             $estado = 1;
             $fecha_alta = date('Y-m-d');
 
-            // Validar nombre duplicado
-            $validarNombre = $conn->prepare("SELECT COUNT(*) FROM recargos WHERE nombre = :nombre AND estado = 1");
-            $validarNombre->execute([':nombre' => $nombre]);
-            if ($validarNombre->fetchColumn() > 0) {
+            // Validar combinación única de nombre + sector + comida_id
+            $validarCombinacion = $conn->prepare("SELECT COUNT(*) FROM recargos WHERE nombre = :nombre AND sector = :sector AND comida_id = :comida_id AND estado = 1");
+            $validarCombinacion->execute([
+                ':nombre' => $nombre,
+                ':sector' => $sector,
+                ':comida_id' => $comida_id
+            ]);
+            if ($validarCombinacion->fetchColumn() > 0) {
                 http_response_code(409);
-                echo json_encode(['error' => 'Ya existe un recargo con ese nombre.']);
-                exit();
-            }
-
-            // Validar sector duplicado
-            $validarSector = $conn->prepare("SELECT COUNT(*) FROM recargos WHERE sector = :sector AND estado = 1");
-            $validarSector->execute([':sector' => $sector]);
-            if ($validarSector->fetchColumn() > 0) {
-                http_response_code(409);
-                echo json_encode(['error' => 'Ya existe un recargo con ese sector.']);
+                echo json_encode(['error' => 'Ya existe un recargo con ese nombre, sector y comida.']);
                 exit();
             }
 
             $insertar = $conn->prepare("INSERT INTO recargos (nombre, sector, fecha_alta, dieta_id, comida_id, cantidad, usuario_id, estado)
-                                            VALUES (:nombre, :sector, :fecha_alta, :dieta_id, :comida_id, :cantidad, :usuario_id, :estado)");
+                                        VALUES (:nombre, :sector, :fecha_alta, :dieta_id, :comida_id, :cantidad, :usuario_id, :estado)");
             $insertar->execute([
                 ':nombre' => $nombre,
                 ':sector' => $sector,
@@ -72,21 +67,17 @@ try {
             $cantidad = $entrada['cantidad'];
             $dieta_id = $entrada['dieta_id'] ?? 9;
 
-            // Validar nombre duplicado (excluyendo el actual)
-            $validarNombre = $conn->prepare("SELECT COUNT(*) FROM recargos WHERE nombre = :nombre AND estado = 1 AND id != :id");
-            $validarNombre->execute([':nombre' => $nombre, ':id' => $id]);
-            if ($validarNombre->fetchColumn() > 0) {
+            // Validar combinación única excluyendo el actual
+            $validarCombinacion = $conn->prepare("SELECT COUNT(*) FROM recargos WHERE nombre = :nombre AND sector = :sector AND comida_id = :comida_id AND estado = 1 AND id != :id");
+            $validarCombinacion->execute([
+                ':nombre' => $nombre,
+                ':sector' => $sector,
+                ':comida_id' => $comida_id,
+                ':id' => $id
+            ]);
+            if ($validarCombinacion->fetchColumn() > 0) {
                 http_response_code(409);
-                echo json_encode(['error' => 'Ya existe otro recargo con ese nombre.']);
-                exit();
-            }
-
-            // Validar sector duplicado (excluyendo el actual)
-            $validarSector = $conn->prepare("SELECT COUNT(*) FROM recargos WHERE sector = :sector AND estado = 1 AND id != :id");
-            $validarSector->execute([':sector' => $sector, ':id' => $id]);
-            if ($validarSector->fetchColumn() > 0) {
-                http_response_code(409);
-                echo json_encode(['error' => 'Ya existe otro recargo con ese sector.']);
+                echo json_encode(['error' => 'Ya existe otro recargo con ese nombre, sector y comida.']);
                 exit();
             }
 
