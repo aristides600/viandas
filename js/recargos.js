@@ -6,7 +6,8 @@ const app = Vue.createApp({
             recargos: [],
             comidas: [],
             filtro: '',
-            recargo: { id: null, nombre: '', sector: '', comida_id: '', cantidad: '' }
+            comidaSeleccionada: null,
+            recargo: { id: null, nombre: '', sector: '', comida_id: '', observacion: '', cantidad: '', controlado: '' }
         };
     },
     mounted() {
@@ -23,21 +24,70 @@ const app = Vue.createApp({
         }
     },
     methods: {
-        // Llamar al backend para obtener los recargos y comidas
-        async cargarRecargosYComidas() {
-            try {
-                const recargosResponse = await axios.get('api/recargos.php', { params: { filtro: this.filtro } });
-                this.recargos = recargosResponse.data;
-                const comidasResponse = await axios.get('comidas.php'); // Suponiendo que este archivo proporciona la lista de comidas
-                this.comidas = comidasResponse.data;
-            } catch (error) {
-                console.error('Error al cargar los recargos y comidas', error);
-            }
+        abrirModalComida() {
+            this.obtenerRecargos();
+
+            // Mostrar el modal
+            const modal = new bootstrap.Modal(document.getElementById('modalComida'));
+            modal.show();
         },
         obtenerComidas() {
             axios.get('api/comidas.php')
                 .then(res => this.comidas = res.data)
                 .catch(() => Swal.fire('Error', 'No se pudieron cargar las comidas.', 'error'));
+        },
+        async actualizarControlado(recargo) {
+            try {
+                const nuevoEstado = recargo.controlado === 1 ? 0 : 1; // Asegura que es un número
+
+                console.log(`Enviando ID: ${recargo.id}, Controlado: ${nuevoEstado}`);
+
+                const response = await axios.post('api/actualizar_controlado_recargo.php', {
+                    id: recargo.id,
+                    controlado: nuevoEstado
+                }, {
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' } // Asegura la correcta codificación
+                });
+
+                console.log(response.data); // Verifica la respuesta del servidor
+
+                if (response.data.success) {
+                    recargo.controlado = nuevoEstado; // Actualiza localmente el estado
+                } else {
+                    Swal.fire('Error', response.data.error || 'No se pudo actualizar el control.', 'error');
+                }
+            } catch (error) {
+                console.error("Error actualizando controlado:", error);
+                Swal.fire('Error', 'Hubo un problema al actualizar.', 'error');
+            }
+        },
+        async procesarRecargo() {
+            if (!this.comidaSeleccionada) {
+                Swal.fire('Error', 'Por favor, seleccione una comida.', 'error');
+                return;
+            }
+
+            try {
+                // Enviar el ID de la comida seleccionada al backend
+                const response = await axios.post('api/consumos_recargos.php', {
+                    comida_id: this.comidaSeleccionada
+                });
+
+                const data = response.data;
+
+                if (data.status === 'success') {
+                    Swal.fire('Éxito', data.message, 'success');
+                    // Ejecutar la lógica para imprimir todas las etiquetas (si es necesario)
+                    this.imprimirRecargos();
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error al registrar el consumo:', error);
+                Swal.fire('Error', 'Hubo un error al procesar la solicitud.', 'error');
+            }
+
+
         },
         obtenerRecargos() {
             fetch('api/recargos.php')
@@ -79,6 +129,7 @@ const app = Vue.createApp({
                 })
                 .catch(() => Swal.fire('Error', 'No se pudo actualizar la cantidad.', 'error'));
         },
+
         eliminarRecargo(id) {
             Swal.fire({
                 title: '¿Estás seguro?',
@@ -100,8 +151,17 @@ const app = Vue.createApp({
             });
         },
         imprimirRecargos() {
-            if (this.recargos.length === 0) {
-                Swal.fire('Error', 'No hay recargos disponibles para imprimir.', 'error');
+            if (!this.comidaSeleccionada) {
+                Swal.fire('Error', 'Por favor, seleccione una comida.', 'error');
+                return;
+            }
+
+            // Filtrar los recargos que corresponden a la comida seleccionada
+            
+            const recargosFiltrados = this.recargos.filter(recargo => recargo.comida_id == this.comidaSeleccionada);
+
+            if (recargosFiltrados.length === 0) {
+                Swal.fire('Error', 'No hay recargos disponibles para la comida seleccionada.', 'error');
                 return;
             }
 
@@ -110,7 +170,7 @@ const app = Vue.createApp({
             const pageWidth = 63;
             let etiquetasAgregadas = 0;
 
-            this.recargos.forEach((recargo, recargoIndex) => {
+            recargosFiltrados.forEach((recargo, recargoIndex) => {
                 const cantidad = parseInt(recargo.cantidad) || 0;
 
                 for (let i = 0; i < cantidad; i++) {
@@ -130,8 +190,10 @@ const app = Vue.createApp({
                     doc.text(`Nombre: ${recargo.nombre}`, 2, currentY);
                     currentY += lineHeight;
 
+                    doc.text(`Observacion: ${recargo.observacion}`, 2, currentY);
+                    currentY += lineHeight;
                     etiquetasAgregadas++;
-                    if (i < cantidad - 1 || recargoIndex < this.recargos.length - 1) {
+                    if (i < cantidad - 1 || recargoIndex < recargosFiltrados.length - 1) {
                         doc.addPage([63, 44], 'l');
                     }
                 }
@@ -143,8 +205,9 @@ const app = Vue.createApp({
                 Swal.fire('Error', 'No hay recargos válidos para imprimir.', 'error');
             }
         },
+
         reiniciarFormulario() {
-            this.recargo = { id: null, nombre: '', sector: '', comida_id: '', cantidad: '' };
+            this.recargo = { id: null, nombre: '', sector: '', comida_id: '', observacion: '', cantidad: '' };
         }
     }
 });

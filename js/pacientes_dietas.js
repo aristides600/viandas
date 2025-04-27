@@ -70,15 +70,7 @@ const app = Vue.createApp({
                 Swal.fire('Error', 'Hubo un problema al actualizar.', 'error');
             }
         },
-        // async destildarTodo() {
-        //     this.dietas.forEach(dieta => dieta.controlado = 0); // Usar this.dietas en lugar de this.pacientes
-
-        //     try {
-        //         await axios.post('api/destildar_todo.php');
-        //     } catch (error) {
-        //         console.error('Error al destildar todo:', error);
-        //     }
-        // },
+        
         async destildarTodo() {
             const confirmacion = await Swal.fire({
                 title: "¿Estás seguro?",

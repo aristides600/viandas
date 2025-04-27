@@ -27,6 +27,8 @@ try {
             $sector = strtoupper($entrada['sector']);
             $comida_id = $entrada['comida_id'];
             $cantidad = $entrada['cantidad'];
+            $observacion = $entrada['observacion'];
+
             $dieta_id = 9;
             $estado = 1;
             $fecha_alta = date('Y-m-d');
@@ -36,7 +38,7 @@ try {
             $validarCombinacion->execute([
                 ':nombre' => $nombre,
                 ':sector' => $sector,
-                ':comida_id' => $comida_id
+                ':comida_id' => $comida_id,
             ]);
             if ($validarCombinacion->fetchColumn() > 0) {
                 http_response_code(409);
@@ -44,14 +46,15 @@ try {
                 exit();
             }
 
-            $insertar = $conn->prepare("INSERT INTO recargos (nombre, sector, fecha_alta, dieta_id, comida_id, cantidad, usuario_id, estado)
-                                        VALUES (:nombre, :sector, :fecha_alta, :dieta_id, :comida_id, :cantidad, :usuario_id, :estado)");
+            $insertar = $conn->prepare("INSERT INTO recargos (nombre, sector, fecha_alta, dieta_id, comida_id, cantidad, usuario_id, observacion, estado)
+                                        VALUES (:nombre, :sector, :fecha_alta, :dieta_id, :comida_id, :cantidad, :usuario_id, :observacion, :estado)");
             $insertar->execute([
                 ':nombre' => $nombre,
                 ':sector' => $sector,
                 ':fecha_alta' => $fecha_alta,
                 ':dieta_id' => $dieta_id,
                 ':comida_id' => $comida_id,
+                ':observacion' => $observacion,
                 ':cantidad' => $cantidad,
                 ':usuario_id' => $usuario_id,
                 ':estado' => $estado
@@ -60,15 +63,28 @@ try {
             break;
 
         case 'PUT':
-            $id = $entrada['id'];
+            parse_str($_SERVER['QUERY_STRING'], $params);
+            $id = $params['id'] ?? null;
+
+            if (!$id) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Falta el ID del recargo a actualizar.']);
+                exit();
+            }
+
             $nombre = strtoupper($entrada['nombre']);
             $sector = strtoupper($entrada['sector']);
             $comida_id = $entrada['comida_id'];
+            $observacion = $entrada['observacion'];
             $cantidad = $entrada['cantidad'];
             $dieta_id = $entrada['dieta_id'] ?? 9;
 
             // Validar combinación única excluyendo el actual
-            $validarCombinacion = $conn->prepare("SELECT COUNT(*) FROM recargos WHERE nombre = :nombre AND sector = :sector AND comida_id = :comida_id AND estado = 1 AND id != :id");
+            $validarCombinacion = $conn->prepare("
+                    SELECT COUNT(*) FROM recargos 
+                    WHERE nombre = :nombre AND sector = :sector AND comida_id = :comida_id 
+                    AND estado = 1 AND id != :id
+                ");
             $validarCombinacion->execute([
                 ':nombre' => $nombre,
                 ':sector' => $sector,
@@ -81,17 +97,21 @@ try {
                 exit();
             }
 
-            $actualizar = $conn->prepare("UPDATE recargos SET nombre = :nombre, sector = :sector, dieta_id = :dieta_id, comida_id = :comida_id, cantidad = :cantidad WHERE id = :id");
+            // Actualizar recargo
+            $actualizar = $conn->prepare("
+                    UPDATE recargos 
+                    SET cantidad = :cantidad 
+                    WHERE id = :id
+                ");
             $actualizar->execute([
-                ':id' => $id,
-                ':nombre' => $nombre,
-                ':sector' => $sector,
-                ':dieta_id' => $dieta_id,
-                ':comida_id' => $comida_id,
-                ':cantidad' => $cantidad
+                
+                ':cantidad' => $cantidad,
+                ':id' => $id
             ]);
+
             echo json_encode(['mensaje' => 'Recargo actualizado con éxito']);
             break;
+
 
         case 'DELETE':
             if (isset($_GET['id'])) {

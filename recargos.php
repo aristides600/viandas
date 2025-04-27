@@ -27,7 +27,7 @@
                 <input v-model="recargo.sector" class="form-control" required>
             </div>
 
-            <div class="flex-grow-1" style="min-width: 200px;">
+            <div class="flex-grow-1" style="min-width: 150px;">
                 <label class="form-label mb-1">Comida</label>
                 <select v-model="recargo.comida_id" class="form-select" required>
                     <option value="" disabled>Seleccionar comida</option>
@@ -35,11 +35,11 @@
                 </select>
             </div>
 
-            <!-- <div class="flex-grow-1" style="min-width: 150px;">
-                <label class="form-label mb-1">Cantidad</label>
-                <input v-model="recargo.cantidad" type="number" class="form-control" required>
-            </div> -->
-            <div class="flex-grow-1" style="min-width: 150px;">
+            <div class="flex-grow-1" style="min-width: 200px;">
+                <label class="form-label mb-1">Observacion</label>
+                <input v-model="recargo.observacion" class="form-control">
+            </div>
+            <div class="flex-grow-1" style="min-width: 90px;">
                 <label class="form-label mb-1">Cantidad</label>
                 <input v-model="recargo.cantidad"
                     type="number"
@@ -56,7 +56,7 @@
                 </button>
             </div>
         </form>
-        <button @click="imprimirRecargos" class="btn btn-primary btn-sm d-flex align-items-center">
+        <button @click="abrirModalComida" class="btn btn-primary btn-sm d-flex align-items-center">
             <i class="bi bi-printer me-2"></i> Recargos
         </button>
 
@@ -71,7 +71,9 @@
                         <th>Nombre</th>
                         <th>Sector</th>
                         <th>Comida</th>
+                        <th>Observacion</th>
                         <th>Cantidad</th>
+                        <th>Control</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -82,10 +84,17 @@
                         <td>{{ item.nombre }}</td>
                         <td>{{ item.sector }}</td>
                         <td>{{ comidas.find(c => c.id == item.comida_id)?.nombre || 'Sin nombre' }}</td>
+                        <td>{{ item.observacion }}</td>
+
                         <td>
                             <input type="number" class="form-control form-control-sm" :value="item.cantidad"
                                 @change="actualizarCantidad(item.id, $event.target.value)">
                         </td>
+                        <td>
+                            <!-- Usamos :checked para que se refleje el valor -->
+                            <input type="checkbox" :checked="recargo.controlado == 1" @change="actualizarControlado(recargo)">
+                        </td>
+
                         <td>
                             <button class="btn btn-warning btn-sm me-2" @click="editarRecargo(item)">
                                 <i class="bi bi-pencil"></i>
@@ -97,6 +106,27 @@
                     </tr>
                 </tbody>
             </table>
+            <div class="modal fade" id="modalComida" tabindex="-1" aria-labelledby="modalComidaLabel" aria-hidden="true" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalComidaLabel">Seleccionar Comida</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Qué tipo de comida deseas seleccionar?</p>
+                            <!-- Dropdown para seleccionar la comida -->
+                            <select v-model="comidaSeleccionada" class="form-select" aria-label="Seleccionar Comida">
+                                <option v-for="comida in comidas" :key="comida.id" :value="comida.id">
+                                    {{ comida.nombre }}
+                                </option>
+                            </select>
+                            <!-- Botón para procesar el consumo -->
+                            <button @click="procesarRecargo" class="btn btn-primary w-100 mt-2">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -107,9 +137,15 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>
+
+    <!-- Add Bootstrap JS here -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.15/jspdf.plugin.autotable.min.js"></script>
+
     <script src="./js/recargos.js"></script>
+
 </body>
 
 </html>

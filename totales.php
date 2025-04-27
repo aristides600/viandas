@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,94 +43,108 @@
         <h5 class="text-center mb-4">Dietas - {{ fechaActual }}</h5>
         <div class="row">
 
-            <!-- Almuerzo -->
-            <div class="col-md-6 mb-4">
-                <div class="almuerzo p-3 rounded">
-                    <h4 class="text-center">Almuerzo</h4>
-                    <div v-for="(grupo, index) in almuerzo" :key="'almuerzo-' + index" class="mb-4">
-                        <h5>Grupo {{ index + 1 }}</h5>
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Sector</th>
-                                    <th>Postres</th>
-                                    <th>Gelatinas</th>
-                                    <th>Dietas Generales</th>
-                                    <th>Otras Dietas</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(data, idx) in grupo" :key="'almuerzo-dato-' + idx">
-                                    <td>{{ data.sector }}</td>
-                                    <td>{{ data.total_flan }}</td>
-                                    <td>{{ data.total_gelatina }}</td>
-                                    <td>{{ data.total_dietas_generales }}</td>
-                                    <td>{{ data.total_otras_dietas }}</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Total</th>
-                                    <td>{{ calcularTotales(grupo).totalFlan }}</td>
-                                    <td>{{ calcularTotales(grupo).totalGelatina }}</td>
-                                    <td>{{ calcularTotales(grupo).totalDietasGenerales }}</td>
-                                    <td>{{ calcularTotales(grupo).totalOtrasDietas }}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
+            <!-- Bloque de Almuerzo -->
+            <div class="col-md-6 mb-3">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h5>Almuerzo</h5>
+                    </div>
+                    <div class="card-body">
+                        <div v-if="almuerzo.length > 0">
+                            <!-- Tabla de Almuerzo -->
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Sector</th>
+                                        <th>Dietas Generales</th>
+                                        <th>Otras Dietas</th>
+                                        <th>Gelatinas</th>
+                                        <th>Otros Postres</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="sector in almuerzo" :key="sector.sector_id">
+                                        <td>{{ sector.sector_nombre }}</td>
+                                        <td>{{ sector.total_dietas_generales }}</td>
+                                        <td>{{ sector.total_otros_dietas }}</td>
+                                        <td>{{ sector.total_gelatinas }}</td>
+                                        <td>{{ sector.total_otros_postres }}</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td><strong>Totales</strong></td>
+                                        <td><strong>{{ totalAlmuerzo.dietasGenerales }}</strong></td>
+                                        <td><strong>{{ totalAlmuerzo.otrasDietas }}</strong></td>
+                                        <td><strong>{{ totalAlmuerzo.gelatinas }}</strong></td>
+                                        <td><strong>{{ totalAlmuerzo.otrosPostres }}</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div v-else class="text-center text-muted">
+                            No hay datos para almuerzo.
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Cena -->
-            <div class="col-md-6 mb-4">
-                <div class="cena p-3 rounded">
-                    <h4 class="text-center">Cena</h4>
-                    <div v-for="(grupo, index) in cena" :key="'cena-' + index" class="mb-4">
-                        <h5>Grupo {{ index + 1 }}</h5>
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Sector</th>
-                                    <th>Postres</th>
-                                    <th>Gelatinas</th>
-                                    <th>Dietas Generales</th>
-                                    <th>Otras Dietas</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(data, idx) in grupo" :key="'cena-dato-' + idx">
-                                    <td>{{ data.sector }}</td>
-                                    <td>{{ data.total_flan }}</td>
-                                    <td>{{ data.total_gelatina }}</td>
-                                    <td>{{ data.total_dietas_generales }}</td>
-                                    <td>{{ data.total_otras_dietas }}</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Total</th>
-                                    <td>{{ calcularTotales(grupo).totalFlan }}</td>
-                                    <td>{{ calcularTotales(grupo).totalGelatina }}</td>
-                                    <td>{{ calcularTotales(grupo).totalDietasGenerales }}</td>
-                                    <td>{{ calcularTotales(grupo).totalOtrasDietas }}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
+            <!-- Bloque de Cena -->
+            <div class="col-md-6 mb-3">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white text-center">
+                        <h5>Cena</h5>
+                    </div>
+                    <div class="card-body">
+                        <div v-if="cena.length > 0">
+                            <!-- Tabla de Cena -->
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Sector</th>
+                                        <th>Dietas Generales</th>
+                                        <th>Otras Dietas</th>
+                                        <th>Gelatinas</th>
+                                        <th>Otros Postres</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="sector in cena" :key="sector.sector_id">
+                                        <td>{{ sector.sector_nombre }}</td>
+                                        <td>{{ sector.total_dietas_generales }}</td>
+                                        <td>{{ sector.total_otros_dietas }}</td>
+                                        <td>{{ sector.total_gelatinas }}</td>
+                                        <td>{{ sector.total_otros_postres }}</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td><strong>Totales</strong></td>
+                                        <td><strong>{{ totalCena.dietasGenerales }}</strong></td>
+                                        <td><strong>{{ totalCena.otrasDietas }}</strong></td>
+                                        <td><strong>{{ totalCena.gelatinas }}</strong></td>
+                                        <td><strong>{{ totalCena.otrosPostres }}</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div v-else class="text-center text-muted">
+                            No hay datos para cena.
+                        </div>
                     </div>
                 </div>
             </div>
 
         </div>
-    </div>
 
-    <!-- Footer -->
-    <?php include 'footer.php'; ?>
+        <!-- Footer -->
+        <?php include 'footer.php'; ?>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>
-    <script src="./js/totales.js"></script>
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>
+        <script src="./js/totales.js"></script>
 
 </body>
+
 </html>
