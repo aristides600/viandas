@@ -59,7 +59,7 @@
         <button @click="abrirModalComida" class="btn btn-primary btn-sm d-flex align-items-center">
             <i class="bi bi-printer me-2"></i> Recargos
         </button>
-
+        
         <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por Nombre  o Sector">
 
 
@@ -106,6 +106,7 @@
                     </tr>
                 </tbody>
             </table>
+            
             <div class="modal fade" id="modalComida" tabindex="-1" aria-labelledby="modalComidaLabel" aria-hidden="true" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -122,7 +123,7 @@
                                 </option>
                             </select>
                             <!-- Botón para procesar el consumo -->
-                            <button @click="procesarRecargo" class="btn btn-primary w-100 mt-2">Confirmar</button>
+                            <button @click="procesarTodoRecargo" class="btn btn-primary w-100 mt-2">Confirmar</button>
                         </div>
                     </div>
                 </div>

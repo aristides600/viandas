@@ -61,7 +61,7 @@ const app = Vue.createApp({
                 Swal.fire('Error', 'Hubo un problema al actualizar.', 'error');
             }
         },
-        async procesarRecargo() {
+        async procesarTodoRecargo() {
             if (!this.comidaSeleccionada) {
                 Swal.fire('Error', 'Por favor, seleccione una comida.', 'error');
                 return;
@@ -78,7 +78,7 @@ const app = Vue.createApp({
                 if (data.status === 'success') {
                     Swal.fire('Éxito', data.message, 'success');
                     // Ejecutar la lógica para imprimir todas las etiquetas (si es necesario)
-                    this.imprimirRecargos();
+                    this.imprimirTodosRecargos();
                 } else {
                     Swal.fire('Error', data.message, 'error');
                 }
@@ -86,8 +86,6 @@ const app = Vue.createApp({
                 console.error('Error al registrar el consumo:', error);
                 Swal.fire('Error', 'Hubo un error al procesar la solicitud.', 'error');
             }
-
-
         },
         obtenerRecargos() {
             fetch('api/recargos.php')
@@ -150,7 +148,7 @@ const app = Vue.createApp({
                 }
             });
         },
-        imprimirRecargos() {
+        imprimirTodosRecargos() {
             if (!this.comidaSeleccionada) {
                 Swal.fire('Error', 'Por favor, seleccione una comida.', 'error');
                 return;
