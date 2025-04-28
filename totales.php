@@ -136,14 +136,15 @@
             </div>
 
         </div>
+    </div>
 
-        <!-- Footer -->
-        <?php include 'footer.php'; ?>
+    <!-- Footer -->
+    <?php include 'footer.php'; ?>
 
-        <!-- Scripts -->
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>
-        <script src="./js/totales.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>
+    <script src="./js/totales.js"></script>
 
 </body>
 

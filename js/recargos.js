@@ -7,7 +7,8 @@ const app = Vue.createApp({
             comidas: [],
             filtro: '',
             comidaSeleccionada: null,
-            recargo: { id: null, nombre: '', sector: '', comida_id: '', observacion: '', cantidad: '', controlado: '' }
+            recargo: { id: null, nombre: '', sector: '', comida_id: '', observacion: '', cantidad: 0, controlado: 0 }
+
         };
     },
     mounted() {
@@ -155,7 +156,7 @@ const app = Vue.createApp({
             }
 
             // Filtrar los recargos que corresponden a la comida seleccionada
-            
+
             const recargosFiltrados = this.recargos.filter(recargo => recargo.comida_id == this.comidaSeleccionada);
 
             if (recargosFiltrados.length === 0) {

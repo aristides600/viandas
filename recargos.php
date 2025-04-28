@@ -59,7 +59,7 @@
         <button @click="abrirModalComida" class="btn btn-primary btn-sm d-flex align-items-center">
             <i class="bi bi-printer me-2"></i> Recargos
         </button>
-        
+
         <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por Nombre  o Sector">
 
 
@@ -92,8 +92,7 @@
                         </td>
                         <td>
                             <!-- Usamos :checked para que se refleje el valor -->
-                            <input type="checkbox" :checked="recargo.controlado == 1" @change="actualizarControlado(recargo)">
-                        </td>
+                            <input type="checkbox" :checked="item.controlado == 1" @change="actualizarControlado(item)">
 
                         <td>
                             <button class="btn btn-warning btn-sm me-2" @click="editarRecargo(item)">
@@ -106,7 +105,7 @@
                     </tr>
                 </tbody>
             </table>
-            
+
             <div class="modal fade" id="modalComida" tabindex="-1" aria-labelledby="modalComidaLabel" aria-hidden="true" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
