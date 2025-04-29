@@ -211,7 +211,7 @@ $apellido = isset($_SESSION['apellido']) ? $_SESSION['apellido'] : '';
                         <li class="nav-item"><a class="nav-link" href="recargos.php">Recargos</a></li>
 
                         <li class="nav-item"><a class="nav-link" href="totales.php">Pizarron</a></li>
-                        <!-- <li class="nav-item"><a class="nav-link" href="reportes.php">Reportes</a></li> -->
+                        <li class="nav-item"><a class="nav-link" href="reportes.php">Reportes</a></li>
                         <!-- <li class="nav-item"><a class="nav-link" href="usuarios.php">Usuarios</a></li> -->
                         <?php if (tienePermiso($user_id, 'usuarios')) : ?>
                             <li class="nav-item"><a class="nav-link" href="usuarios.php">Usuarios</a></li>

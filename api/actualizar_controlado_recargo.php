@@ -21,4 +21,5 @@ if (isset($_POST['id']) && isset($_POST['controlado'])) {
 } else {
     echo json_encode(["success" => false, "error" => "Datos no válidos"]);
 }
+
 ?>

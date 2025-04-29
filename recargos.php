@@ -14,7 +14,7 @@
     <?php include 'header.php'; ?>
 
     <div id="app" class="container mt-2">
-        <h2 class="text-center mb-4">Gestión de Recargos</h2>
+        <h2 class="text-center mb-4">Recargos</h2>
 
         <form @submit.prevent="guardarRecargo" class="d-flex flex-wrap gap-2 align-items-end">
             <div class="flex-grow-1" style="min-width: 200px;">
@@ -40,14 +40,8 @@
                 <input v-model="recargo.observacion" class="form-control">
             </div>
             <div class="flex-grow-1" style="min-width: 90px;">
-                <label class="form-label mb-1">Cantidad</label>
-                <input v-model="recargo.cantidad"
-                    type="number"
-                    class="form-control"
-                    required
-                    min="0"
-                    max="99"
-                    @input="recargo.cantidad = recargo.cantidad.toString().slice(0, 2)">
+                <input v-model="recargo.cantidad" type="number" class="form-control" required min="0" max="99" @input="validarCantidad">
+
             </div>
 
             <div>
@@ -60,7 +54,7 @@
             <i class="bi bi-printer me-2"></i> Recargos
         </button>
 
-        <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por Nombre  o Sector">
+        <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por Nombre  o Sector o Comida">
 
 
 
@@ -78,12 +72,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- <tr v-for="item in recargos" :key="item.id"> -->
-                    <tr v-for="item in recargosFiltrados" :key="item.id">
+                    <!-- <tr v-for="item in recargosFiltrados" :key="item.id"> -->
+                    <tr v-for="item in recargosFiltrados" :key="item.id" :class="{ 'table-primary': item.controlado == 1 }">
+
 
                         <td>{{ item.nombre }}</td>
                         <td>{{ item.sector }}</td>
-                        <td>{{ comidas.find(c => c.id == item.comida_id)?.nombre || 'Sin nombre' }}</td>
+                        <!-- <td>{{ comidas.find(c => c.id == item.comida_id)?.nombre || 'Sin nombre' }}</td> -->
+                        <td>{{ item.comida_nombre || 'Sin nombre' }}</td>
+
                         <td>{{ item.observacion }}</td>
 
                         <td>
@@ -91,8 +88,9 @@
                                 @change="actualizarCantidad(item.id, $event.target.value)">
                         </td>
                         <td>
-                            <!-- Usamos :checked para que se refleje el valor -->
                             <input type="checkbox" :checked="item.controlado == 1" @change="actualizarControlado(item)">
+
+                        </td>
 
                         <td>
                             <button class="btn btn-warning btn-sm me-2" @click="editarRecargo(item)">
@@ -106,6 +104,7 @@
                 </tbody>
             </table>
 
+            
             <div class="modal fade" id="modalComida" tabindex="-1" aria-labelledby="modalComidaLabel" aria-hidden="true" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">

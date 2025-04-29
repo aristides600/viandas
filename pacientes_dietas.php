@@ -100,8 +100,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- <tr v-for="dieta in pacientesFiltrados" :key="dieta.id"> -->
-                    <!-- <tr v-for="dieta in pacientesFiltrados" :key="dieta.id" :class="{'fila-controlada': dieta.controlado == 1}"> -->
+
                     <tr v-for="dieta in pacientesFiltrados" :key="dieta.id" :class="{'fila-controlada': dieta.controlado == 1}">
                         <td>{{ dieta.nombre_sector || '-' }}</td>
                         <td>{{ dieta.cama || '-' }}</td>
@@ -116,10 +115,7 @@
                         <td>{{ dieta.nombre_nocturno || '-' }}</td>
                         <td>{{ dieta.diagnostico || '-' }}</td>
                         <td>{{ dieta.observacion || '-' }}</td>
-
-                        <!-- <td>
-                            <input type="checkbox" :checked="dieta.controlado == 1" @change="actualizarControlado(dieta)">
-                        </td> -->
+                   
                         <td>
                             <!-- Usamos :checked para que se refleje el valor -->
                             <input type="checkbox" :checked="dieta.controlado == 1" @change="actualizarControlado(dieta)">
