@@ -29,11 +29,11 @@ try {
         case 'POST':
             if (!$entrada) throw new Exception('Entrada vacía');
             
-            $nombre = strtoupper($entrada['nombre'] ?? '');
-            $sector = strtoupper($entrada['sector'] ?? '');
+            $nombre = strtoupper(trim($entrada['nombre'] ?? ''));
+            $sector = strtoupper(trim($entrada['sector'] ?? ''));
             $comida_id = $entrada['comida_id'] ?? null;
             $cantidad = (int)($entrada['cantidad'] ?? 0);
-            $observacion = $entrada['observacion'] ?? '';
+            $observacion = trim($entrada['observacion'] ?? '');
             $dieta_id = 9;
             $estado = 1;
             $fecha_alta = date('Y-m-d');
@@ -88,11 +88,19 @@ try {
             $valores = [];
 
             foreach (['nombre', 'sector', 'cantidad', 'observacion'] as $campo) {
+                // if (isset($entrada[$campo])) {
+                //     $campos[] = "$campo = :$campo";
+                //     $valores[":$campo"] = $campo === 'nombre' || $campo === 'sector' 
+                //         ? strtoupper($entrada[$campo]) 
+                //         : $entrada[$campo];
+                // }
                 if (isset($entrada[$campo])) {
+                    if (in_array($campo, ['nombre', 'sector'])) {
+                        $valores[":$campo"] = strtoupper(trim($entrada[$campo]));
+                    } else {
+                        $valores[":$campo"] = trim($entrada[$campo]);
+                    }
                     $campos[] = "$campo = :$campo";
-                    $valores[":$campo"] = $campo === 'nombre' || $campo === 'sector' 
-                        ? strtoupper($entrada[$campo]) 
-                        : $entrada[$campo];
                 }
             }
 

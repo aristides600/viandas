@@ -37,6 +37,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['status' => 'error', 'message' => 'No hay recargos para esta comida.']);
             exit();
         }
+        if (!$resultados) {
+            echo json_encode(['status' => 'error', 'message' => 'No hay recargos para esta comida.']);
+            exit();
+        }
+        
+        // >>> ACTUALIZAR CAMPO fecha_consumo EN recargos <<<
+        $updateRecargosSql = "UPDATE recargos 
+                              SET fecha_consumo = NOW() 
+                              WHERE estado = 1 AND controlado = 0 AND comida_id = :comida_id";
+        $stmtUpdateRecargos = $conn->prepare($updateRecargosSql);
+        $stmtUpdateRecargos->bindParam(':comida_id', $comida_id_post, PDO::PARAM_INT);
+        $stmtUpdateRecargos->execute();
+        /////
+        
 
         $registrados = 0;
         $actualizados = 0;

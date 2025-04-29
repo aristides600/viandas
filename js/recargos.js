@@ -118,24 +118,51 @@ const app = Vue.createApp({
         })
         .catch(() => Swal.fire('Error', 'No se pudieron cargar los recargos.', 'error'));
     },
+    // guardarRecargo() {
+    //   const metodo = this.recargo.id ? 'PUT' : 'POST';
+    //   const url = 'api/recargos.php' + (this.recargo.id ? `?id=${this.recargo.id}` : '');
+    //   const datos = { ...this.recargo };
+
+    //   fetch(url, {
+    //     method: metodo,
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify(datos)
+    //   })
+    //     .then(res => res.json())
+    //     .then(data => {
+    //       Swal.fire('Éxito', data.mensaje, 'success');
+    //       this.obtenerRecargos();
+    //       this.reiniciarFormulario();
+    //     })
+    //     .catch(() => Swal.fire('Error', 'No se pudo guardar el recargo.', 'error'));
+    // },
     guardarRecargo() {
       const metodo = this.recargo.id ? 'PUT' : 'POST';
       const url = 'api/recargos.php' + (this.recargo.id ? `?id=${this.recargo.id}` : '');
       const datos = { ...this.recargo };
-
+    
       fetch(url, {
         method: metodo,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(datos)
       })
-        .then(res => res.json())
-        .then(data => {
+        .then(async res => {
+          const data = await res.json();
+    
+          if (!res.ok) {
+            // Mostrar error específico si viene del servidor
+            const mensaje = data.error || 'No se pudo guardar el recargo.';
+            Swal.fire('Error', mensaje, 'error');
+            return;
+          }
+    
           Swal.fire('Éxito', data.mensaje, 'success');
           this.obtenerRecargos();
           this.reiniciarFormulario();
         })
         .catch(() => Swal.fire('Error', 'No se pudo guardar el recargo.', 'error'));
     },
+    
 
     editarRecargo(item) {
       this.recargo = { ...item };

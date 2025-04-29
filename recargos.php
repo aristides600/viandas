@@ -14,9 +14,9 @@
     <?php include 'header.php'; ?>
 
     <div id="app" class="container mt-2">
-        <h2 class="text-center mb-4">Recargos</h2>
+        <h3 class="text-center mb-2">Recargos</h3>
 
-        <form @submit.prevent="guardarRecargo" class="d-flex flex-wrap gap-2 align-items-end">
+        <form @submit.prevent="guardarRecargo" class="d-flex flex-wrap gap-1 align-items-end">
             <div class="flex-grow-1" style="min-width: 200px;">
                 <label class="form-label mb-1">Nombre</label>
                 <input v-model="recargo.nombre" class="form-control" required>
@@ -50,15 +50,19 @@
                 </button>
             </div>
         </form>
-        <button @click="abrirModalComida" class="btn btn-primary btn-sm d-flex align-items-center">
-            <i class="bi bi-printer me-2"></i> Recargos
-        </button>
 
-        <input type="text" v-model="filtro" class="form-control mb-3" placeholder="Buscar por Nombre  o Sector o Comida">
+        <!-- Botón Recargos y campo Buscar en línea -->
+        <div class="d-flex align-items-center mt-2 mb-2">
+            <div style="min-width: 140px; margin-right: 10px;">
+                <button @click="abrirModalComida" class="btn btn-primary btn-sm w-100 d-flex align-items-center justify-content-center">
+                    <i class="bi bi-printer me-2"></i> Recargos
+                </button>
+            </div>
 
+            <input type="text" v-model="filtro" class="form-control" placeholder="Buscar por Nombre, Sector o Comida">
+        </div>
 
-
-        <div class="table-responsive mt-4">
+        <div class="table-responsive mt-2">
             <table class="table table-bordered table-hover">
                 <thead class="table-light">
                     <tr>
@@ -78,9 +82,7 @@
 
                         <td>{{ item.nombre }}</td>
                         <td>{{ item.sector }}</td>
-                        <!-- <td>{{ comidas.find(c => c.id == item.comida_id)?.nombre || 'Sin nombre' }}</td> -->
                         <td>{{ item.comida_nombre || 'Sin nombre' }}</td>
-
                         <td>{{ item.observacion }}</td>
 
                         <td>
@@ -104,7 +106,7 @@
                 </tbody>
             </table>
 
-            
+
             <div class="modal fade" id="modalComida" tabindex="-1" aria-labelledby="modalComidaLabel" aria-hidden="true" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
